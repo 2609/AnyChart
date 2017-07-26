@@ -1908,6 +1908,7 @@ anychart.stockModule.Plot.prototype.highlight = function(value, isLastPlot, hlSo
   var x = this.seriesBounds_.left + ratio * this.seriesBounds_.width;
   x = anychart.utils.applyPixelShift(x, thickness);
 
+  this.crosshair().xLabelAutoEnabled(isLastPlot);
   this.crosshair().autoHighlightX(x, isLastPlot, hlSource != this);
 
   for (var i = 0; i < this.series_.length; i++) {
@@ -1977,6 +1978,7 @@ anychart.stockModule.Plot.prototype.handlePlotMouseOverAndMove_ = function(e) {
       this.frameHighlightRatio_ = x / this.seriesBounds_.width;
       this.frameHighlightX_ = e['clientX'];
       this.frameHighlightY_ = e['clientY'];
+      this.crosshair().xLabelAutoEnabled(this.chart_.isLastPlot(this));
       if (!goog.isDef(this.frame_))
         this.frame_ = window.requestAnimationFrame(this.frameAction_);
     }

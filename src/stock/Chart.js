@@ -1866,7 +1866,7 @@ anychart.stockModule.Chart.prototype.createInteractivitySettings = function() {
 
 
 //endregion
-//region --- Crosshair
+//region Crosshair
 //----------------------------------------------------------------------------------------------------------------------
 //
 //  Crosshair
@@ -1902,6 +1902,24 @@ anychart.stockModule.Chart.prototype.crosshair = function(opt_value) {
  */
 anychart.stockModule.Chart.prototype.onCrosshairSignal_ = function(event) {
   this.invalidate(anychart.ConsistencyState.AXES_CHART_CROSSHAIR, anychart.Signal.NEEDS_REDRAW);
+};
+
+
+/**
+ * Checks whether incoming plot is last one on chart.
+ * @param {anychart.stockModule.Plot} plot - Plot to check.
+ * @return {boolean}
+ */
+anychart.stockModule.Chart.prototype.isLastPlot = function(plot) {
+  if (this.plots_.length) {
+    for (var i = this.plots_.length - 1; i >= 0; i--) {
+      var testPlot = this.plots_[i];
+      if (testPlot) {
+        return testPlot == plot;
+      }
+    }
+  }
+  return false;
 };
 
 
