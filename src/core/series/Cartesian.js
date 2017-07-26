@@ -240,11 +240,12 @@ anychart.core.series.Cartesian.prototype.getSeriesState = function() {
 //----------------------------------------------------------------------------------------------------------------------
 /** @inheritDoc */
 anychart.core.series.Cartesian.prototype.prepareData = function() {
-  if (this.data().checkFieldExist('selected')) {
+  if (this.data().checkFieldExist('state')) {
     var iterator = this.getDetachedIterator();
     var indexes = [];
     while (iterator.advance()) {
-      if (iterator.get('selected'))
+      var state = String(iterator.get('state')).toLowerCase();
+      if (state == 'selected')
         indexes.push(iterator.getIndex());
     }
     if (indexes.length) {
