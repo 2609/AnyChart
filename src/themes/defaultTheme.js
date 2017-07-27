@@ -4664,7 +4664,8 @@ goog.provide('anychart.themes.defaultTheme');
         'zIndex': 10,
         'yAxes': [{}],
         'crosshair': {
-          'zIndex': 41
+          'zIndex': 41,
+          'enabled': null
         }
       },
       'padding': [20, 30, 20, 60],
