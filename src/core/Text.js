@@ -449,6 +449,31 @@ anychart.core.Text.prototype.applyTextSettings = function(textElement, isInitial
 //endregion
 //region -- Serialization/Deserialization.
 /** @inheritDoc */
+anychart.core.Text.prototype.enabled = function(opt_value) {
+  if (goog.isDef(opt_value)) {
+    if (this.ownSettings['enabled'] != opt_value) {
+      this.ownSettings['enabled'] = opt_value;
+      this.invalidate(anychart.ConsistencyState.ENABLED,
+          anychart.Signal.NEEDS_REDRAW | anychart.Signal.BOUNDS_CHANGED | anychart.Signal.ENABLED_STATE_CHANGED);
+      if (this.ownSettings['enabled']) {
+        this.doubleSuspension = false;
+        this.resumeSignalsDispatching(true);
+      } else {
+        if (isNaN(this.suspendedDispatching)) {
+          this.suspendSignalsDispatching();
+        } else {
+          this.doubleSuspension = true;
+        }
+      }
+    }
+    return this;
+  } else {
+    return /** @type {boolean} */(this.getOption('enabled'));
+  }
+};
+
+
+/** @inheritDoc */
 anychart.core.Text.prototype.serialize = function() {
   var json = anychart.core.Text.base(this, 'serialize');
   anychart.core.settings.serialize(this, anychart.core.Text.BASE_DESCRIPTORS, json, 'Text');

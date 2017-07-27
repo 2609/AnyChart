@@ -123,10 +123,11 @@ anychart.stockModule.Plot = function(chart) {
    */
   this.frameAction_ = goog.bind(function(time) {
     this.frame_ = undefined;
-    if (isNaN(this.frameHighlightRatio_))
+    if (isNaN(this.frameHighlightRatio_)) {
       this.chart_.unhighlight();
-    else
+    } else {
       this.chart_.highlightAtRatio(this.frameHighlightRatio_, this.frameHighlightX_, this.frameHighlightY_, this);
+    }
   }, this);
 
   this.defaultSeriesType(anychart.enums.StockSeriesType.LINE);
@@ -1895,8 +1896,9 @@ anychart.stockModule.Plot.prototype.prepareHighlight = function(value) {
  * @param {number} value
  * @param {boolean} isLastPlot - .
  * @param {anychart.stockModule.Plot} hlSource - Highlight source.
+ * @param {number=} opt_y - .
  */
-anychart.stockModule.Plot.prototype.highlight = function(value, isLastPlot, hlSource) {
+anychart.stockModule.Plot.prototype.highlight = function(value, isLastPlot, hlSource, opt_y) {
   if (!this.rootLayer_ || !this.seriesBounds_) return;
 
   this.crosshair().suspendSignalsDispatching();
@@ -1909,7 +1911,7 @@ anychart.stockModule.Plot.prototype.highlight = function(value, isLastPlot, hlSo
   x = anychart.utils.applyPixelShift(x, thickness);
 
   this.crosshair().xLabelAutoEnabled(isLastPlot);
-  this.crosshair().autoHighlightX(x, isLastPlot, hlSource != this);
+  this.crosshair().autoHighlightX(x, isLastPlot, hlSource != this, opt_y);
 
   for (var i = 0; i < this.series_.length; i++) {
     var series = this.series_[i];
@@ -1996,7 +1998,6 @@ anychart.stockModule.Plot.prototype.handlePlotMouseOut_ = function(e) {
   this.frameHighlightRatio_ = NaN;
   if (!goog.isDef(this.frame_))
     this.frame_ = window.requestAnimationFrame(this.frameAction_);
-  this.chart_.unhighlightPlots();
 };
 
 

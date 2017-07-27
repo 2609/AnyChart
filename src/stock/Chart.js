@@ -1749,6 +1749,10 @@ anychart.stockModule.Chart.prototype.preventHighlight = function() {
  */
 anychart.stockModule.Chart.prototype.allowHighlight = function() {
   this.highlightPrevented_ = false;
+  for (var i = 0; i < this.plots_.length; i++) {
+    var plot = this.plots_[i];
+    plot.crosshair().bindHandlers(plot);
+  }
   this.refreshHighlight_();
 };
 
@@ -1792,7 +1796,7 @@ anychart.stockModule.Chart.prototype.highlightAtRatio_ = function(ratio, clientX
   for (i = 0; i < this.plots_.length; i++) {
     if (this.plots_[i]) {
       var lastPlot = i == this.plots_.length - 1;
-      this.plots_[i].highlight(value, lastPlot, sourcePlot);
+      this.plots_[i].highlight(value, lastPlot, sourcePlot, clientY);
     }
   }
   this.highlighted_ = true;
@@ -1839,23 +1843,15 @@ anychart.stockModule.Chart.prototype.unhighlight_ = function() {
   if (this.highlighted_/* && this.dispatchEvent(anychart.enums.EventType.UNHIGHLIGHT)*/) {
     this.highlighted_ = false;
     for (var i = 0; i < this.plots_.length; i++) {
-      if (this.plots_[i])
-        this.plots_[i].unhighlight();
+      var plot = this.plots_[i];
+      if (plot) {
+        if (this.highlightPrevented_)
+          plot.crosshair().unbindHandlers();
+        plot.unhighlight();
+      }
     }
     this.tooltip().hide();
   }
-};
-
-
-/**
- * Removes crosshair from plots.
- */
-anychart.stockModule.Chart.prototype.unhighlightPlots = function() {
-  for (var i = 0; i < this.plots_.length; i++) {
-    if (this.plots_[i])
-      this.plots_[i].unhighlight();
-  }
-  this.tooltip().hide();
 };
 
 
