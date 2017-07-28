@@ -3863,93 +3863,99 @@ goog.provide('anychart.themes.defaultTheme');
         },
         'scale': 1
       },
-      /**
-       * @this {*}
-       * @return {*}
-       */
-      'fill': function() {
-        var color;
-        if (this['colorScale']) {
-          var value = this['iterator']['get']('heat');
-          color = this['colorScale']['valueToColor'](value);
-        } else {
-          color = setOpacity(this['sourceColor'], 0.85, true);
-        }
-        return color;
-      },
-      'stroke': '1 #ffffff',
-      'hoverStroke': '2 #ffffff',
-      'hoverFill': defaultHoverColor,
-      'selectStroke': '2 #ffffff',
-      'selectFill': defaultSelectColor,
-      'labels': {
-        'enabled': true,
-        'fontSize': 11,
-        'adjustFontSize': {
-          'width': true,
-          'height': true
-        },
-        'minFontSize': 7,
-        'maxFontSize': 13,
-        'hAlign': 'center',
-        'vAlign': 'middle',
-        'fontWeight': 'normal',
-        'fontColor': '#212121',
-        'selectable': false,
-        'background': {
-          'enabled': false
-        },
-        'padding': {
-          'top': 2,
-          'right': 4,
-          'bottom': 2,
-          'left': 4
-        },
-        'position': 'center',
+      'normal': {
         /**
          * @this {*}
          * @return {*}
          */
-        'format': function() {
-          return locNum(this['heat']);
-        }
+        'fill': function() {
+          var color;
+          if (this['colorScale']) {
+            var value = this['iterator']['get']('heat');
+            color = this['colorScale']['valueToColor'](value);
+          } else {
+            color = setOpacity(this['sourceColor'], 0.85, true);
+          }
+          return color;
+        },
+        'stroke': '1 #ffffff',
+        'labels': {
+          'enabled': true,
+          'fontSize': 11,
+          'adjustFontSize': {
+            'width': true,
+            'height': true
+          },
+          'minFontSize': 7,
+          'maxFontSize': 13,
+          'hAlign': 'center',
+          'vAlign': 'middle',
+          'fontWeight': 'normal',
+          'fontColor': '#212121',
+          'selectable': false,
+          'background': {
+            'enabled': false
+          },
+          'padding': {
+            'top': 2,
+            'right': 4,
+            'bottom': 2,
+            'left': 4
+          },
+          'position': 'center',
+          /**
+           * @this {*}
+           * @return {*}
+           */
+          'format': function() {
+            return locNum(this['heat']);
+          }
+        },
+        'markers': {
+          'enabled': false,
+          'disablePointerEvents': false,
+          'position': 'center',
+          'rotation': 0,
+          'anchor': 'center',
+          'offsetX': 0,
+          'offsetY': 0,
+          'size': 4,
+          'positionFormatter': returnValue,
+          'fill': '#dd2c00',
+          'type': 'circle',
+          'stroke': 'none'
+        },
+        'hatchFill': false
       },
-      'hoverLabels': {
-        'fontColor': '#f5f5f5',
-        'enabled': null
+      'hovered': {
+        'fill': defaultHoverColor,
+        'stroke': '2 #ffffff',
+        'labels': {
+          'fontColor': '#f5f5f5',
+          'enabled': null
+        },
+        'markers': {
+          'enabled': null,
+          'size': 6
+        },
+        'hatchFill': null
       },
-      'selectLabels': {
-        'fontColor': '#fff',
-        'enabled': null
-      },
-      'markers': {
-        'enabled': false,
-        'disablePointerEvents': false,
-        'position': 'center',
-        'rotation': 0,
-        'anchor': 'center',
-        'offsetX': 0,
-        'offsetY': 0,
-        'size': 4,
-        'positionFormatter': returnValue,
-        'fill': '#dd2c00',
-        'type': 'circle',
-        'stroke': 'none'
-      },
-      'hoverMarkers': {
-        'enabled': null,
-        'size': 6
-      },
-      'selectMarkers': {
-        'enabled': null,
-        'size': 6,
+      'selected': {
         'fill': defaultSelectColor,
-        'stroke': defaultSelectStroke
+        'stroke': '2 #ffffff',
+        'labels': {
+          'fontColor': '#fff',
+          'enabled': null
+        },
+        'markers': {
+          'enabled': null,
+          'size': 6,
+          'fill': defaultSelectColor,
+          'stroke': defaultSelectStroke
+        },
+        'hatchFill': null
       },
       'labelsDisplayMode': 'drop',
-      'hatchFill': false,
-      'hoverHatchFill': null,
-      'selectHatchFill': null,
       'clip': true,
       'xZoom': {
         'continuous': true,
