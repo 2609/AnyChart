@@ -2582,7 +2582,7 @@ anychart.core.series.Base.prototype.labelsInvalidated_ = function(event) {
 anychart.core.series.Base.prototype.drawLabel = function(point, pointState, pointStateChanged) {
   point.meta('label', this.drawFactoryElement(
       [this.normal_.labels, this.hovered_.labels, this.selected_.labels],
-      [this.getChart().labels, this.getChart().hoverLabels, this.getChart().selectLabels],
+      [this.getChart().normal().labels, this.getChart().hovered().labels, this.getChart().selected().labels],
       ['label', 'hoverLabel', 'selectLabel'],
       this.planHasPointLabels(),
       true,
