@@ -5569,44 +5569,50 @@ goog.provide('anychart.themes.defaultTheme');
         'mode': 'chart-elements'
       },
       'color': '#64b5f6',
-      'fill': returnSourceColor50,
-      'hoverFill': returnLightenSourceColor50,
-      'selectFill': defaultSelectColor,
+      'normal': {
+        'fill': returnSourceColor50,
+        'stroke': 'none',
+        'hatchFill': false,
+        'labels': {
+          'fontColor': '#f4f4f4',
+          'format': '{%Name}',
+          'enabled': true,
+          'disablePointerEvents': true,
+          'zIndex': 100,
+          'fontWeight': 'bold'
+        },
+        'markers': {
+          'enabled': false,
+          'zIndex': 99,
+          'disablePointerEvents': true,
+          'stroke': 'none'
+        }
+      },
+      'hovered': {
+        'fill': returnLightenSourceColor50,
+        'stroke': 'none',
+        'hatchFill': false,
+        'labels': {
+          'enabled': null
+        },
+        'markers': {
+          'enabled': null
+        }
+      },
+      'selected': {
+        'fill': defaultSelectColor,
+        'stroke': 'none',
+        'hatchFill': false,
+        'labels': {
+          'enabled': null
+        },
+        'markers': {
+          'enabled': null
+        }
+      },
       'tooltip': {
         'titleFormat': '{%Name}',
         'format': 'Value: {%Value}'
-      },
-      'stroke': 'none',
-      'hoverStroke': 'none',
-      'hatchFill': false,
-      'hoverHatchFill': false,
-      'selectHatchFill': false,
-      'selectStroke': 'none',
-      'labels': {
-        'fontColor': '#f4f4f4',
-        'format': '{%Name}',
-        'enabled': true,
-        'disablePointerEvents': true,
-        'zIndex': 100,
-        'fontWeight': 'bold'
-      },
-      'hoverLabels': {
-        'enabled': null
-      },
-      'selectLabels': {
-        'enabled': null
-      },
-      'markers': {
-        'enabled': false,
-        'zIndex': 99,
-        'disablePointerEvents': true,
-        'stroke': 'none'
-      },
-      'hoverMarkers': {
-        'enabled': null
-      },
-      'selectMarkers': {
-        'enabled': null
       },
       'intersections': {
         'normal': {
