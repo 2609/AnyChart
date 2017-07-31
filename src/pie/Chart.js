@@ -176,7 +176,7 @@ anychart.pieModule.Chart = function(opt_data, opt_csvSettings) {
     ['hatchFill',
       anychart.ConsistencyState.APPEARANCE | anychart.ConsistencyState.CHART_LEGEND,
       anychart.Signal.NEEDS_REDRAW],
-    ['labels', 0, 0, 0, this.labelsInvalidated_, this]
+    ['labels', 0, 0]
   ]);
   function pieFillNormalizer(args) {
     var isAqua = false;
@@ -195,7 +195,12 @@ anychart.pieModule.Chart = function(opt_data, opt_csvSettings) {
     [anychart.enums.PropertyHandlerType.MULTI_ARG, 'fill', pieFillNormalizer]
   ];
   this.normal_ = new anychart.core.StateSettings(this, normalDescriptorsMeta, anychart.PointState.NORMAL, descriptorsOverride);
-  this.normal_.setOption('labelsFactoryConstructor', anychart.core.ui.CircularLabelsFactory);
+  this.normal_.setOption(anychart.core.StateSettings.LABELS_FACTORY_CONSTRUCTOR, anychart.core.ui.CircularLabelsFactory);
+  this.normal_.setOption(anychart.core.StateSettings.LABELS_AFTER_INIT_CALLBACK, /** @this {anychart.pieModule.Chart} */ function(factory) {
+    factory.listenSignals(this.labelsInvalidated_, this);
+    factory.setParentEventTarget(this);
+    this.invalidate(anychart.ConsistencyState.PIE_LABELS, anychart.Signal.NEEDS_REDRAW);
+  });
 
   var hoveredDescriptorsMeta = {};
   anychart.core.settings.createDescriptorsMeta(hoveredDescriptorsMeta, [
@@ -205,12 +210,13 @@ anychart.pieModule.Chart = function(opt_data, opt_csvSettings) {
     ['labels', 0, 0]
   ]);
   this.hovered_ = new anychart.core.StateSettings(this, hoveredDescriptorsMeta, anychart.PointState.HOVER);
-  this.hovered_.setOption('labelsFactoryConstructor', anychart.core.ui.CircularLabelsFactory);
+  this.hovered_.setOption(anychart.core.StateSettings.LABELS_FACTORY_CONSTRUCTOR, anychart.core.ui.CircularLabelsFactory);
 
   this.resumeSignalsDispatching(false);
 };
 goog.inherits(anychart.pieModule.Chart, anychart.core.SeparateChart);
 anychart.core.settings.populateAliases(anychart.pieModule.Chart, ['fill', 'stroke', 'hatchFill'], 'normal');
+
 
 /**
  * Normal state settings.

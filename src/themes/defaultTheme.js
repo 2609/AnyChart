@@ -1731,10 +1731,15 @@ goog.provide('anychart.themes.defaultTheme');
         },
         'label': {}
       },
-      'labels': {'enabled': false},
-      'hoverLabels': {'enabled': null},
-      'selectLabels': {'enabled': null},
-
+      'normal': {
+        'labels': {'enabled': false}
+      },
+      'hovered': {
+        'labels': {'enabled': null}
+      },
+      'selected': {
+        'labels': {'enabled': null}
+      },
       'crossing': {
         'stroke': 'none'
       },
@@ -5604,31 +5609,37 @@ goog.provide('anychart.themes.defaultTheme');
         'enabled': null
       },
       'intersections': {
-        'fill': '#fff 0.00001',
-        'hoverFill': '#fff 0.5',
-        'selectFill': defaultSelectColor,
-        'stroke': 'none',
-        'hoverStroke': 'none',
-        'selectStroke': 'none',
-        'labels': {
-          'fontWeight': 'normal',
-          'format': '{%Value}',
-          'enabled': null
+        'normal': {
+          'fill': '#fff 0.00001',
+          'stroke': 'none',
+          'labels': {
+            'fontWeight': 'normal',
+            'format': '{%Value}',
+            'enabled': null
+          },
+          'markers': {
+            'enabled': null
+          }
         },
-        'hoverLabels': {
-          'enabled': null
+        'hovered': {
+          'fill': '#fff 0.5',
+          'stroke': 'none',
+          'labels': {
+            'enabled': null
+          },
+          'hoverMarkers': {
+            'enabled': null
+          }
         },
-        'selectLabels': {
-          'enabled': null
-        },
-        'markers': {
-          'enabled': null
-        },
-        'hoverMarkers': {
-          'enabled': null
-        },
-        'selectMarkers': {
-          'enabled': null
+        'selected': {
+          'fill': defaultSelectColor,
+          'stroke': 'none',
+          'labels': {
+            'enabled': null
+          },
+          'markers': {
+            'enabled': null
+          }
         },
         'tooltip': {
           'titleFormat': '{%Name}'

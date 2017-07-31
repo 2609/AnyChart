@@ -217,44 +217,17 @@ anychart.core.series.Base = function(chart, plot, type, config) {
       anychart.ConsistencyState.SERIES_POINTS,
       anychart.Signal.NEEDS_REDRAW,
       anychart.core.drawers.Capabilities.IS_MARKER_BASED],
-    ['labels', 0, 0, 0, this.labelsInvalidated_, this],
-    ['markers', 0, 0, 0, this.markersInvalidated_, this],
-    ['outlierMarkers', 0, 0, 0, this.outlierMarkersInvalidated_, this]
-  ]);
-  this.normal_ = new anychart.core.StateSettings(this, normalDescriptorsMeta, anychart.PointState.NORMAL);
-  this.normal_.setOption('labelsFactoryConstructor', anychart.core.ui.LabelsFactory);
-
-  var hoveredDescriptorsMeta = {};
-  anychart.core.settings.createDescriptorsMeta(hoveredDescriptorsMeta, [
-    ['fill', 0, 0, anychart.core.series.Capabilities.ALLOW_INTERACTIVITY],
-    ['negativeFill', 0, 0, anychart.core.series.Capabilities.ANY],
-    ['risingFill', 0, 0, anychart.core.series.Capabilities.ANY],
-    ['fallingFill', 0, 0, anychart.core.series.Capabilities.ANY],
-    ['stroke', 0, 0, anychart.core.series.Capabilities.ANY],
-    ['lowStroke', 0, 0, anychart.core.series.Capabilities.ANY],
-    ['highStroke', 0, 0, anychart.core.series.Capabilities.ANY],
-    ['negativeStroke', 0, 0, anychart.core.series.Capabilities.ANY],
-    ['risingStroke', 0, 0, anychart.core.series.Capabilities.ANY],
-    ['fallingStroke', 0, 0, anychart.core.series.Capabilities.ANY],
-    ['medianStroke', 0, 0, anychart.core.series.Capabilities.ANY],
-    ['stemStroke', 0, 0, anychart.core.series.Capabilities.ANY],
-    ['whiskerStroke', 0, 0, anychart.core.series.Capabilities.ANY],
-    ['hatchFill', 0, 0, anychart.core.series.Capabilities.ANY],
-    ['negativeHatchFill', 0, 0, anychart.core.series.Capabilities.ANY],
-    ['risingHatchFill', 0, 0, anychart.core.series.Capabilities.ANY],
-    ['fallingHatchFill', 0, 0, anychart.core.series.Capabilities.ANY],
-    ['whiskerWidth', 0, 0, anychart.core.drawers.Capabilities.SUPPORTS_OUTLIERS],
-    ['type', 0, 0, anychart.core.drawers.Capabilities.IS_MARKER_BASED],
-    ['size', 0, 0, anychart.core.drawers.Capabilities.IS_MARKER_BASED],
     ['labels', 0, 0],
     ['markers', 0, 0],
     ['outlierMarkers', 0, 0]
   ]);
-  this.hovered_ = new anychart.core.StateSettings(this, hoveredDescriptorsMeta, anychart.PointState.HOVER);
-  this.hovered_.setOption('labelsFactoryConstructor', anychart.core.ui.LabelsFactory);
+  this.normal_ = new anychart.core.StateSettings(this, normalDescriptorsMeta, anychart.PointState.NORMAL);
+  this.normal_.setOption(anychart.core.StateSettings.LABELS_AFTER_INIT_CALLBACK, anychart.core.StateSettings.DEFAULT_LABELS_AFTER_INIT_CALLBACK);
+  this.normal_.setOption(anychart.core.StateSettings.MARKERS_AFTER_INIT_CALLBACK, anychart.core.StateSettings.DEFAULT_MARKERS_AFTER_INIT_CALLBACK);
+  this.normal_.setOption(anychart.core.StateSettings.OUTLIER_MARKERS_AFTER_INIT_CALLBACK, anychart.core.StateSettings.DEFAULT_OUTLIER_MARKERS_AFTER_INIT_CALLBACK);
 
-  var selectedDescriptorsMeta = {};
-  anychart.core.settings.createDescriptorsMeta(selectedDescriptorsMeta, [
+  var descriptorsMeta = {};
+  anychart.core.settings.createDescriptorsMeta(descriptorsMeta, [
     ['fill', 0, 0, anychart.core.series.Capabilities.ANY],
     ['negativeFill', 0, 0, anychart.core.series.Capabilities.ANY],
     ['risingFill', 0, 0, anychart.core.series.Capabilities.ANY],
@@ -279,8 +252,15 @@ anychart.core.series.Base = function(chart, plot, type, config) {
     ['markers', 0, 0],
     ['outlierMarkers', 0, 0]
   ]);
-  this.selected_ = new anychart.core.StateSettings(this, selectedDescriptorsMeta, anychart.PointState.SELECT);
-  this.selected_.setOption('labelsFactoryConstructor', anychart.core.ui.LabelsFactory);
+  this.hovered_ = new anychart.core.StateSettings(this, descriptorsMeta, anychart.PointState.HOVER);
+  this.selected_ = new anychart.core.StateSettings(this, descriptorsMeta, anychart.PointState.SELECT);
+  function markAllConsistent(factory) {
+    factory.markConsistent(anychart.ConsistencyState.ALL);
+  }
+  this.hovered_.setOption(anychart.core.StateSettings.LABELS_AFTER_INIT_CALLBACK, markAllConsistent);
+  this.hovered_.setOption(anychart.core.StateSettings.MARKERS_AFTER_INIT_CALLBACK, markAllConsistent);
+  this.selected_.setOption(anychart.core.StateSettings.LABELS_AFTER_INIT_CALLBACK, markAllConsistent);
+  this.selected_.setOption(anychart.core.StateSettings.MARKERS_AFTER_INIT_CALLBACK, markAllConsistent);
 
   anychart.core.settings.createDescriptorsMeta(this.descriptorsMeta, [
     ['color',

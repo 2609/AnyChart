@@ -528,14 +528,14 @@ anychart.color.colorResolversCache2 = {};
  * @param {anychart.enums.ColorType} colorType
  * @return {function(anychart.core.IShapeManagerUser, number, boolean=, boolean=):acgraph.vector.AnyColor}
  */
-anychart.color.getColorResolver = function(colorNames, colorType) {
+/*anychart.color.getColorResolver = function(colorNames, colorType) {
   var result;
   if (!colorNames) return anychart.color.getNullColor;
   if (goog.isArray(colorNames)) {
     var hash = colorType + '|' + colorNames.join('|');
     result = anychart.color.colorResolversCache[hash];
     if (!result) {
-      /** @type {!Function} */
+      /!** @type {!Function} *!/
       var normalizerFunc;
       switch (colorType) {
         case anychart.enums.ColorType.STROKE:
@@ -558,7 +558,7 @@ anychart.color.getColorResolver = function(colorNames, colorType) {
       result = anychart.color.colorResolversCache['transparent'] = function() { return anychart.color.TRANSPARENT_HANDLER; };
   }
   return result;
-};
+};*/
 
 
 /**
@@ -581,7 +581,7 @@ anychart.color.getNullColor = function() {
  * @param {boolean=} opt_ignoreColorScale
  * @return {acgraph.vector.Fill|acgraph.vector.Stroke|acgraph.vector.PatternFill}
  */
-anychart.color.getColor = function(colorNames, normalizer, isHatchFill, series, state, opt_ignorePointSettings, opt_ignoreColorScale) {
+/*anychart.color.getColor = function(colorNames, normalizer, isHatchFill, series, state, opt_ignorePointSettings, opt_ignoreColorScale) {
   var stateColor, context;
   state = Math.min(state & (anychart.PointState.HOVER | anychart.PointState.SELECT),
       anychart.PointState.SELECT);
@@ -593,10 +593,10 @@ anychart.color.getColor = function(colorNames, normalizer, isHatchFill, series, 
       stateColor = normalizer(series.getAutoHatchFill());
     if (goog.isDef(stateColor)) {
       if (!goog.isFunction(stateColor))
-        return /** @type {acgraph.vector.Fill|acgraph.vector.Stroke|acgraph.vector.PatternFill} */(stateColor);
+        return /!** @type {acgraph.vector.Fill|acgraph.vector.Stroke|acgraph.vector.PatternFill} *!/(stateColor);
       else if (isHatchFill) { // hatch fills set as function some why cannot nest by initial implementation
         context = series.getHatchFillResolutionContext(opt_ignorePointSettings);
-        return /** @type {acgraph.vector.PatternFill} */(normalizer(stateColor.call(context, context)));
+        return /!** @type {acgraph.vector.PatternFill} *!/(normalizer(stateColor.call(context, context)));
       }
     }
   }
@@ -610,17 +610,17 @@ anychart.color.getColor = function(colorNames, normalizer, isHatchFill, series, 
     context = isHatchFill ?
         series.getHatchFillResolutionContext(opt_ignorePointSettings) :
         series.getColorResolutionContext(void 0, opt_ignorePointSettings, opt_ignoreColorScale);
-    color = /** @type {acgraph.vector.Fill|acgraph.vector.Stroke|acgraph.vector.PatternFill} */(normalizer(color.call(context, context)));
+    color = /!** @type {acgraph.vector.Fill|acgraph.vector.Stroke|acgraph.vector.PatternFill} *!/(normalizer(color.call(context, context)));
   }
   if (stateColor) { // it is a function and not a hatch fill here
     context = series.getColorResolutionContext(
-        /** @type {acgraph.vector.Fill|acgraph.vector.Stroke} */(color),
+        /!** @type {acgraph.vector.Fill|acgraph.vector.Stroke} *!/(color),
         opt_ignorePointSettings,
         opt_ignoreColorScale);
     color = normalizer(stateColor.call(context, context));
   }
-  return /** @type {acgraph.vector.Fill|acgraph.vector.Stroke|acgraph.vector.PatternFill} */(color);
-};
+  return /!** @type {acgraph.vector.Fill|acgraph.vector.Stroke|acgraph.vector.PatternFill} *!/(color);
+};*/
 
 
 /**

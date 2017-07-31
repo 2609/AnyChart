@@ -42,6 +42,67 @@ anychart.core.StateSettings = function(stateHolder, descriptorsMeta, stateType, 
 goog.inherits(anychart.core.StateSettings, anychart.core.Base);
 
 
+/**
+ * Option name for labels factory constructor.
+ * @type {string}
+ */
+anychart.core.StateSettings.LABELS_FACTORY_CONSTRUCTOR = 'labelsFactoryConstructor';
+
+
+/**
+ * Option name for labels factory after init callback.
+ * @type {string}
+ */
+anychart.core.StateSettings.LABELS_AFTER_INIT_CALLBACK = 'labelsAfterInitCallback';
+
+
+/**
+ * Option name for markers factory after init callback.
+ * @type {string}
+ */
+anychart.core.StateSettings.MARKERS_AFTER_INIT_CALLBACK = 'markersAfterInitCallback';
+
+
+/**
+ * Option name for outlier markers factory after init callback.
+ * @type {string}
+ */
+anychart.core.StateSettings.OUTLIER_MARKERS_AFTER_INIT_CALLBACK = 'outlierMarkersAfterInitCallback';
+
+
+/**
+ * Default labels factory after init callback.
+ * @param {anychart.core.ui.LabelsFactory} factory
+ * @this {*}
+ */
+anychart.core.StateSettings.DEFAULT_LABELS_AFTER_INIT_CALLBACK = function(factory) {
+  factory.listenSignals(this.labelsInvalidated_, this);
+  factory.setParentEventTarget(/** @type {goog.events.EventTarget} */ (this));
+};
+
+
+/**
+ * Default labels factory after init callback.
+ * @param {anychart.core.ui.MarkersFactory} factory
+ * @this {*}
+ */
+anychart.core.StateSettings.DEFAULT_MARKERS_AFTER_INIT_CALLBACK = function(factory) {
+  factory.listenSignals(this.markersInvalidated_, this);
+  factory.setParentEventTarget(/** @type {goog.events.EventTarget} */ (this));
+};
+
+
+/**
+ * Default labels factory after init callback.
+ * @param {anychart.core.ui.MarkersFactory} factory
+ * @this {*}
+ */
+anychart.core.StateSettings.DEFAULT_OUTLIER_MARKERS_AFTER_INIT_CALLBACK = function(factory) {
+  factory.listenSignals(this.outlierMarkersInvalidated_, this);
+  factory.setParentEventTarget(/** @type {goog.events.EventTarget} */ (this));
+};
+
+
 /** @inheritDoc */
 anychart.core.StateSettings.prototype.invalidate = function(state, opt_signal) {
   return this.stateHolder.invalidate(state, opt_signal);
@@ -139,13 +200,10 @@ anychart.core.settings.populate(anychart.core.StateSettings, anychart.core.State
  */
 anychart.core.StateSettings.prototype.labels = function(opt_value) {
   if (!this.labels_) {
-    var labelsFactoryConstructor = /** @type {Function} */ (this.getOption('labelsFactoryConstructor'));
+    var labelsFactoryConstructor = /** @type {Function} */ (this.getOption(anychart.core.StateSettings.LABELS_FACTORY_CONSTRUCTOR)) || anychart.core.ui.LabelsFactory;
+    var afterInitCallback = /** @type {Function} */ (this.getOption(anychart.core.StateSettings.LABELS_AFTER_INIT_CALLBACK)) || goog.nullFunction;
     this.labels_ = new labelsFactoryConstructor();
-    if (this.stateType == anychart.PointState.NORMAL) {
-      var hook = /** @type {function(anychart.SignalEvent):(boolean|undefined)} */ (this.descriptorsMeta['labels'].beforeInvalidationHook);
-      this.labels_.listenSignals(hook, this.stateHolder);
-      this.labels_.setParentEventTarget(/** @type {goog.events.EventTarget} */ (this.stateHolder));
-    }
+    afterInitCallback.call(this.stateHolder, this.labels_);
   }
 
   if (goog.isDef(opt_value)) {
@@ -165,12 +223,9 @@ anychart.core.StateSettings.prototype.labels = function(opt_value) {
  */
 anychart.core.StateSettings.prototype.markers = function(opt_value) {
   if (!this.markers_) {
+    var afterInitCallback = /** @type {Function} */ (this.getOption(anychart.core.StateSettings.MARKERS_AFTER_INIT_CALLBACK)) || goog.nullFunction;
     this.markers_ = new anychart.core.ui.MarkersFactory();
-    if (this.stateType == anychart.PointState.NORMAL) {
-      var hook = /** @type {function(anychart.SignalEvent):(boolean|undefined)} */ (this.descriptorsMeta['markers'].beforeInvalidationHook);
-      this.markers_.listenSignals(hook, this.stateHolder);
-      this.markers_.setParentEventTarget(/** @type {goog.events.EventTarget} */ (this.stateHolder));
-    }
+    afterInitCallback.call(this.stateHolder, this.markers_);
   }
 
   if (goog.isDef(opt_value)) {
@@ -190,12 +245,9 @@ anychart.core.StateSettings.prototype.markers = function(opt_value) {
  */
 anychart.core.StateSettings.prototype.outlierMarkers = function(opt_value) {
   if (!this.outlierMarkers_) {
+    var afterInitCallback = /** @type {Function} */ (this.getOption(anychart.core.StateSettings.OUTLIER_MARKERS_AFTER_INIT_CALLBACK)) || goog.nullFunction;
     this.outlierMarkers_ = new anychart.core.ui.MarkersFactory();
-    if (this.stateType == anychart.PointState.NORMAL) {
-      var hook = /** @type {function(anychart.SignalEvent):(boolean|undefined)} */ (this.descriptorsMeta['markers'].beforeInvalidationHook);
-      this.outlierMarkers_.listenSignals(hook, this.stateHolder);
-      this.outlierMarkers_.setParentEventTarget(/** @type {goog.events.EventTarget} */ (this.stateHolder));
-    }
+    afterInitCallback.call(this.stateHolder, this.outlierMarkers_);
   }
 
   if (goog.isDef(opt_value)) {

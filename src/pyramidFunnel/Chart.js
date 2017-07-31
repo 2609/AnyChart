@@ -109,11 +109,16 @@ anychart.pyramidFunnelModule.Chart = function(opt_data, opt_csvSettings) {
     ['hatchFill',
       anychart.ConsistencyState.APPEARANCE | anychart.ConsistencyState.CHART_LEGEND,
       anychart.Signal.NEEDS_REDRAW],
-    ['labels', 0, 0, 0, this.labelsInvalidated_, this],
-    ['markers', 0, 0, 0, this.markersInvalidated_, this]
+    ['labels', 0, 0],
+    ['markers', 0, 0]
   ]);
   this.normal_ = new anychart.core.StateSettings(this, normalDescriptorsMeta, anychart.PointState.NORMAL);
-  this.normal_.setOption('labelsFactoryConstructor', anychart.core.ui.LabelsFactory);
+  this.normal_.setOption(anychart.core.StateSettings.LABELS_AFTER_INIT_CALLBACK, /** @this {anychart.pyramidFunnelModule.Chart} */ function(factory) {
+    factory.listenSignals(this.labelsInvalidated_, this);
+    factory.setParentEventTarget(this);
+    this.invalidate(anychart.ConsistencyState.PYRAMID_FUNNEL_LABELS, anychart.Signal.NEEDS_REDRAW);
+  });
+  this.normal_.setOption(anychart.core.StateSettings.MARKERS_AFTER_INIT_CALLBACK, anychart.core.StateSettings.DEFAULT_MARKERS_AFTER_INIT_CALLBACK);
 
   var interactivityDescriptorsMeta = {};
   anychart.core.settings.createDescriptorsMeta(interactivityDescriptorsMeta, [
@@ -124,10 +129,7 @@ anychart.pyramidFunnelModule.Chart = function(opt_data, opt_csvSettings) {
     ['markers', 0, 0]
   ]);
   this.hovered_ = new anychart.core.StateSettings(this, interactivityDescriptorsMeta, anychart.PointState.HOVER);
-  this.hovered_.setOption('labelsFactoryConstructor', anychart.core.ui.LabelsFactory);
-
   this.selected_ = new anychart.core.StateSettings(this, interactivityDescriptorsMeta, anychart.PointState.SELECT);
-  this.selected_.setOption('labelsFactoryConstructor', anychart.core.ui.LabelsFactory);
 
   anychart.core.settings.createDescriptorsMeta(this.descriptorsMeta, [
     ['baseWidth', anychart.ConsistencyState.APPEARANCE, anychart.Signal.NEEDS_REDRAW],
@@ -146,6 +148,7 @@ anychart.pyramidFunnelModule.Chart = function(opt_data, opt_csvSettings) {
 };
 goog.inherits(anychart.pyramidFunnelModule.Chart, anychart.core.SeparateChart);
 anychart.core.settings.populateAliases(anychart.pyramidFunnelModule.Chart, ['fill', 'stroke', 'hatchFill'], 'normal');
+
 
 /**
  * Normal state settings.

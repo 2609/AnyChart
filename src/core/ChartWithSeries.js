@@ -876,20 +876,6 @@ anychart.core.ChartWithSeries.prototype.selected = function(opt_value) {
 
 
 /**
- * Getter/setter for labels.
- * @param {(Object|boolean|null)=} opt_value .
- * @return {anychart.core.ui.LabelsFactory|anychart.core.ChartWithSeries} .
- */
-anychart.core.ChartWithSeries.prototype.labels = function(opt_value) {
-  if (goog.isDef(opt_value)) {
-    this.normal_.labels(opt_value);
-    return this;
-  }
-  return /** @type {anychart.core.ui.LabelsFactory} */ (this.normal_.labels());
-};
-
-
-/**
  * Listener for labels invalidation.
  * @param {anychart.SignalEvent} event Invalidation event.
  * @private
