@@ -70,23 +70,24 @@ anychart.core.ChartWithSeries = function() {
 
   var normalDescriptorsMeta = {};
   anychart.core.settings.createDescriptorsMeta(normalDescriptorsMeta, [
-    ['labels', 0, 0, 0, this.labelsInvalidated_, this]
+    ['labels', 0, 0]
   ]);
   this.normal_ = new anychart.core.StateSettings(this, normalDescriptorsMeta, anychart.PointState.NORMAL);
-  this.normal_.setOption('labelsFactoryConstructor', anychart.core.ui.LabelsFactory);
+  this.normal_.setOption(anychart.core.StateSettings.DEFAULT_LABELS_AFTER_INIT_CALLBACK, /** @this {anychart.core.ChartWithSeries} */function(factory) {
+    factory.markConsistent(anychart.ConsistencyState.ALL);
+    factory.listenSignals(this.labelsInvalidated_, this);
+  });
 
   var descriptorsMeta = {};
   anychart.core.settings.createDescriptorsMeta(descriptorsMeta, [
     ['labels', 0, 0]
   ]);
   this.hovered_ = new anychart.core.StateSettings(this, descriptorsMeta, anychart.PointState.HOVER);
-  this.hovered_.setOption('labelsFactoryConstructor', anychart.core.ui.LabelsFactory);
 
   anychart.core.settings.createDescriptorsMeta(descriptorsMeta, [
     ['labels', 0, 0]
   ]);
   this.selected_ = new anychart.core.StateSettings(this, descriptorsMeta, anychart.PointState.SELECT);
-  this.selected_.setOption('labelsFactoryConstructor', anychart.core.ui.LabelsFactory);
 
   anychart.core.settings.createDescriptorsMeta(this.descriptorsMeta, [
     ['defaultSeriesType', 0, 0]
