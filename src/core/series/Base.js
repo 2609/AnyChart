@@ -769,22 +769,32 @@ anychart.core.series.Base.prototype.recreateShapeManager = function() {
  * @param {boolean=} opt_reapplyClip
  */
 anychart.core.series.Base.prototype.applyDefaultsToElements = function(defaults, opt_resetLegendItem, opt_default, opt_reapplyClip) {
-  if (this.supportsLabels()) {
-    this.normal_.labels().setupInternal(!!opt_default, defaults['normal']['labels']);
-    this.hovered_.labels().setupInternal(!!opt_default, defaults['hovered']['labels']);
-    this.selected_.labels().setupInternal(!!opt_default, defaults['selected']['labels']);
+  var normal = defaults['normal'];
+  var hovered = defaults['hovered'];
+  var selected = defaults['selected'];
+  if (normal) {
+    if (this.supportsLabels())
+      this.normal_.labels().setupInternal(!!opt_default, normal['labels']);
+    if (this.supportsMarkers())
+      this.normal_.markers().setup(normal['markers']);
+    if (this.supportsOutliers())
+      this.normal_.outlierMarkers().setup(normal['outlierMarkers']);
   }
-
-  if (this.supportsMarkers()) {
-    this.normal_.markers().setup(defaults['normal']['markers']);
-    this.hovered_.markers().setup(defaults['hovered']['markers']);
-    this.selected_.markers().setup(defaults['selected']['markers']);
+  if (hovered) {
+    if (this.supportsLabels())
+      this.hovered_.labels().setupInternal(!!opt_default, hovered['labels']);
+    if (this.supportsMarkers())
+      this.hovered_.markers().setup(hovered['markers']);
+    if (this.supportsOutliers())
+      this.hovered_.outlierMarkers().setup(hovered['outlierMarkers']);
   }
-
-  if (this.supportsOutliers()) {
-    this.normal_.outlierMarkers().setup(defaults['normal']['outlierMarkers']);
-    this.hovered_.outlierMarkers().setup(defaults['hovered']['outlierMarkers']);
-    this.selected_.outlierMarkers().setup(defaults['selected']['outlierMarkers']);
+  if (selected) {
+    if (this.supportsLabels())
+      this.selected_.labels().setupInternal(!!opt_default, selected['labels']);
+    if (this.supportsMarkers())
+      this.selected_.markers().setup(selected['markers']);
+    if (this.supportsOutliers())
+      this.selected_.outlierMarkers().setup(selected['outlierMarkers']);
   }
 
   if (this.supportsError())
