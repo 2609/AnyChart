@@ -500,6 +500,7 @@ anychart.stockModule.scales.Scatter.prototype.ticks = function(opt_value) {
     }
     if (!same) {
       this.ranges_ = value;
+      this.consistent = false;
       this.dispatchSignal(anychart.Signal.NEED_UPDATE_TICK_DEPENDENT);
     }
     return this;
@@ -615,15 +616,19 @@ anychart.stockModule.scales.Scatter.DEFAULT_TICKS_ = [
   {'minor': {'unit': anychart.enums.Interval.QUARTER, 'count': 1}, 'major': {'unit': anychart.enums.Interval.SEMESTER, 'count': 1}},
   {'minor': {'unit': anychart.enums.Interval.SEMESTER, 'count': 1}, 'major': {'unit': anychart.enums.Interval.YEAR, 'count': 1}},
   {'minor': {'unit': anychart.enums.Interval.YEAR, 'count': 1}, 'major': {'unit': anychart.enums.Interval.YEAR, 'count': 2}},
-  {'minor': {'unit': anychart.enums.Interval.YEAR, 'count': 2}, 'major': {'unit': anychart.enums.Interval.YEAR, 'count': 4}}
+  {'minor': {'unit': anychart.enums.Interval.YEAR, 'count': 2}, 'major': {'unit': anychart.enums.Interval.YEAR, 'count': 4}},
+  {'minor': {'unit': anychart.enums.Interval.YEAR, 'count': 3}, 'major': {'unit': anychart.enums.Interval.YEAR, 'count': 6}},
+  {'minor': {'unit': anychart.enums.Interval.YEAR, 'count': 4}, 'major': {'unit': anychart.enums.Interval.YEAR, 'count': 8}},
+  {'minor': {'unit': anychart.enums.Interval.YEAR, 'count': 5}, 'major': {'unit': anychart.enums.Interval.YEAR, 'count': 10}},
+  {'minor': {'unit': anychart.enums.Interval.YEAR, 'count': 6}, 'major': {'unit': anychart.enums.Interval.YEAR, 'count': 12}},
+  {'minor': {'unit': anychart.enums.Interval.YEAR, 'count': 7}, 'major': {'unit': anychart.enums.Interval.YEAR, 'count': 14}},
+  {'minor': {'unit': anychart.enums.Interval.YEAR, 'count': 8}, 'major': {'unit': anychart.enums.Interval.YEAR, 'count': 16}},
+  {'minor': {'unit': anychart.enums.Interval.YEAR, 'count': 9}, 'major': {'unit': anychart.enums.Interval.YEAR, 'count': 18}},
+  {'minor': {'unit': anychart.enums.Interval.YEAR, 'count': 10}, 'major': {'unit': anychart.enums.Interval.YEAR, 'count': 20}},
+  {'minor': {'unit': anychart.enums.Interval.YEAR, 'count': 20}, 'major': {'unit': anychart.enums.Interval.YEAR, 'count': 40}},
+  {'minor': {'unit': anychart.enums.Interval.YEAR, 'count': 25}, 'major': {'unit': anychart.enums.Interval.YEAR, 'count': 100}},
+  {'minor': {'unit': anychart.enums.Interval.YEAR, 'count': 100}, 'major': {'unit': anychart.enums.Interval.YEAR, 'count': 500}}
 ];
-
-
-//proto['getTicks'] = proto.getTicks;
-//proto['getMajorIntervalUnit'] = proto.getMajorIntervalUnit;
-//proto['getMajorIntervalUnitCount'] = proto.getMajorIntervalUnitCount;
-//proto['getMinorIntervalUnit'] = proto.getMinorIntervalUnit;
-//proto['getMinorIntervalUnitCount'] = proto.getMinorIntervalUnitCount;
 
 
 
