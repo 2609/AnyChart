@@ -73,7 +73,7 @@ anychart.core.ChartWithSeries = function() {
     ['labels', 0, 0]
   ]);
   this.normal_ = new anychart.core.StateSettings(this, normalDescriptorsMeta, anychart.PointState.NORMAL);
-  this.normal_.setOption(anychart.core.StateSettings.DEFAULT_LABELS_AFTER_INIT_CALLBACK, /** @this {anychart.core.ChartWithSeries} */function(factory) {
+  this.normal_.setOption(anychart.core.StateSettings.LABELS_AFTER_INIT_CALLBACK, /** @this {anychart.core.ChartWithSeries} */ function(factory) {
     factory.markConsistent(anychart.ConsistencyState.ALL);
     factory.listenSignals(this.labelsInvalidated_, this);
   });
