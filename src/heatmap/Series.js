@@ -36,31 +36,13 @@ anychart.heatmapModule.Series = function(chart, plot, type, config, sortedMode) 
   this.strokeResolver_ = /** @type {function(anychart.core.series.Base, number, boolean=, boolean=):acgraph.vector.Stroke} */(
       anychart.color.getColorResolver2(
       ['stroke', 'hoverStroke', 'selectStroke'], anychart.enums.ColorType.STROKE));
-  anychart.core.settings.createDescriptorsMeta(this.descriptorsMeta, [
-    ['stroke',
-      anychart.ConsistencyState.SERIES_POINTS,
-      anychart.Signal.NEEDS_REDRAW | anychart.Signal.NEED_UPDATE_LEGEND,
-      anychart.core.series.Capabilities.ANY]
+  this.normal_.setMeta('stroke', [
+    anychart.ConsistencyState.SERIES_POINTS,
+    anychart.Signal.NEEDS_REDRAW | anychart.Signal.NEED_UPDATE_LEGEND,
+    anychart.core.series.Capabilities.ANY
   ]);
 };
 goog.inherits(anychart.heatmapModule.Series, anychart.core.series.Cartesian);
-
-
-/**
- * Properties that should be defined in series.Base prototype.
- * @type {!Object.<string, anychart.core.settings.PropertyDescriptor>}
- */
-anychart.heatmapModule.Series.PROPERTY_DESCRIPTORS = (function() {
-  var map = {};
-  anychart.core.settings.createDescriptor(
-      map,
-      anychart.enums.PropertyHandlerType.MULTI_ARG,
-      'stroke',
-      anychart.core.settings.strokeOrFunctionNormalizer);
-  return map;
-})();
-// populating series base prototype with properties
-anychart.core.settings.populate(anychart.heatmapModule.Series, anychart.heatmapModule.Series.PROPERTY_DESCRIPTORS);
 
 
 /**
@@ -490,21 +472,6 @@ anychart.heatmapModule.Series.prototype.getColorResolutionContext = function(opt
   var result = anychart.heatmapModule.Series.base(this, 'getColorResolutionContext', opt_baseColor, opt_ignorePointSettings, opt_ignoreColorScale);
   result['colorScale'] = (/** @type {anychart.heatmapModule.Chart} */(this.getChart())).colorScale();
   return result;
-};
-
-
-/** @inheritDoc */
-anychart.heatmapModule.Series.prototype.serialize = function() {
-  var json = anychart.heatmapModule.Series.base(this, 'serialize');
-  anychart.core.settings.serialize(this, anychart.heatmapModule.Series.PROPERTY_DESCRIPTORS, json);
-  return json;
-};
-
-
-/** @inheritDoc */
-anychart.heatmapModule.Series.prototype.setupByJSON = function(config, opt_default) {
-  anychart.core.settings.deserialize(this, anychart.heatmapModule.Series.PROPERTY_DESCRIPTORS, config);
-  anychart.heatmapModule.Series.base(this, 'setupByJSON', config, opt_default);
 };
 
 

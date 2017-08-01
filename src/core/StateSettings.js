@@ -143,7 +143,7 @@ anychart.core.StateSettings.prototype.setupByJSON = function(config, opt_default
 
 
 //endregion
-//region --- Descriptors
+//region --- Descriptors & Meta
 /**
  * @type {!Object.<string, anychart.core.settings.PropertyDescriptor>}
  */
@@ -189,6 +189,20 @@ anychart.core.StateSettings.PROPERTY_DESCRIPTORS = (function() {
   return map;
 })();
 anychart.core.settings.populate(anychart.core.StateSettings, anychart.core.StateSettings.PROPERTY_DESCRIPTORS);
+
+
+/**
+ * Sets meta for field name.
+ * @param {string} fieldName
+ * @param {Array|anychart.core.settings.PropertyDescriptorMeta} meta
+ */
+anychart.core.StateSettings.prototype.setMeta = function(fieldName, meta) {
+  if (goog.isArray(meta)) {
+    anychart.core.settings.createDescriptorMeta.apply(null, goog.array.concat(this.descriptorsMeta, fieldName, meta));
+  } else if (goog.isObject(meta)) {
+    this.descriptorsMeta[fieldName] = meta;
+  }
+};
 
 
 //endregion
