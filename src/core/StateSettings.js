@@ -109,6 +109,12 @@ anychart.core.StateSettings.prototype.invalidate = function(state, opt_signal) {
 };
 
 
+/** @inheritDoc */
+anychart.core.StateSettings.prototype.dispatchSignal = function(signal, opt_force) {
+  return this.stateHolder.dispatchSignal(signal, opt_force);
+};
+
+
 //region --- Setup / Serialize / Dispose
 /** @inheritDoc */
 anychart.core.StateSettings.prototype.disposeInternal = function() {
