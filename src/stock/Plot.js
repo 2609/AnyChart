@@ -2027,7 +2027,6 @@ anychart.stockModule.Plot.prototype.handlePlotMouseDown_ = function(e) {
 anychart.stockModule.Plot.prototype.crosshair = function(opt_value) {
   if (!this.crosshair_) {
     this.crosshair_ = new anychart.core.ui.Crosshair();
-    this.crosshair_.enabled(true);
     this.registerDisposable(this.crosshair_);
     this.crosshair_.listenSignals(this.onCrosshairSignal_, this);
     this.invalidate(anychart.ConsistencyState.AXES_CHART_CROSSHAIR, anychart.Signal.NEEDS_REDRAW);

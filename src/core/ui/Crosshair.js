@@ -909,21 +909,25 @@ anychart.core.ui.Crosshair.prototype.drawYLabel_ = function(mouseX, mouseY) {
  * @param {number=} opt_y - .
  */
 anychart.core.ui.Crosshair.prototype.autoHighlightX = function(x, opt_showXLabel, opt_hideY, opt_y) {
-  if (opt_hideY) {
-    this.hideY();
-  } else {
-    if (goog.isDef(opt_y)) {
-      this.drawYLine_(x, opt_y);
-      this.drawYLabel_(x, opt_y);
+  if (this.enabled()) {
+    if (opt_hideY) {
+      this.hideY();
+    } else {
+      if (goog.isDef(opt_y)) {
+        var chartOffset = this.container().getStage().getClientPosition();
+        opt_y = opt_y - chartOffset.y;
+        this.drawYLine_(x, opt_y);
+        this.drawYLabel_(x, opt_y);
+      }
     }
-  }
 
-  if (opt_showXLabel || (this.xLabel_.hasOwnOption('enabled') && this.xLabel_.ownSettings['enabled'])) {
-    this.drawXLabel_(x, opt_y || 0);
-  } else {
-    this.xLabel_.container(null).remove();
+    if (opt_showXLabel || (this.xLabel_.hasOwnOption('enabled') && this.xLabel_.ownSettings['enabled'])) {
+      this.drawXLabel_(x, opt_y || 0);
+    } else {
+      this.xLabel_.container(null).remove();
+    }
+    this.drawXLine_(x, opt_y || 0);
   }
-  this.drawXLine_(x, opt_y || 0);
 };
 
 
@@ -1138,6 +1142,31 @@ anychart.core.ui.Crosshair.prototype.disposeInternal = function() {
 
 //endregion
 //region -- Serialize/Deserialize.
+/** @inheritDoc */
+anychart.core.ui.Crosshair.prototype.enabled = function(opt_value) {
+  if (goog.isDef(opt_value)) {
+    if (this.ownSettings['enabled'] != opt_value) {
+      this.ownSettings['enabled'] = opt_value;
+      this.invalidate(anychart.ConsistencyState.ENABLED,
+          anychart.Signal.NEEDS_REDRAW | anychart.Signal.BOUNDS_CHANGED | anychart.Signal.ENABLED_STATE_CHANGED);
+      if (this.ownSettings['enabled']) {
+        this.doubleSuspension = false;
+        this.resumeSignalsDispatching(true);
+      } else {
+        if (isNaN(this.suspendedDispatching)) {
+          this.suspendSignalsDispatching();
+        } else {
+          this.doubleSuspension = true;
+        }
+      }
+    }
+    return this;
+  } else {
+    return /** @type {boolean} */(this.getOption('enabled'));
+  }
+};
+
+
 /** @inheritDoc */
 anychart.core.ui.Crosshair.prototype.serialize = function() {
   var json = anychart.core.ui.Crosshair.base(this, 'serialize');
