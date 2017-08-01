@@ -2216,8 +2216,9 @@ anychart.core.series.Base.prototype.drawFactoryElement = function(seriesFactoryG
     var statePointOverrideEnabled = statePointOverride && goog.isDef(statePointOverride['enabled']) ? statePointOverride['enabled'] : null;
 
     var stateObject = state == 0 ? this.normal_ : state == 1 ? this.hovered_ : this.selected_;
+    var chartStateObject = state == 0 ? this.chart.normal_ : state == 1 ? this.chart.hovered_ : this.chart.selected_;
     seriesStateFactory = (state == anychart.PointState.NORMAL) ? null : seriesFactoryGetters[state].call(stateObject);
-    chartStateFactory = (state == anychart.PointState.NORMAL || !chartFactoryGetters) ? null : chartFactoryGetters[state].call(this.chart);
+    chartStateFactory = (state == anychart.PointState.NORMAL || !chartFactoryGetters) ? null : chartFactoryGetters[state].call(chartStateObject);
 
     isDraw = goog.isNull(statePointOverrideEnabled) ? // has no state marker or null "enabled" in it ?
         (!seriesStateFactory || goog.isNull(seriesStateFactory.enabled()) || !goog.isDef(seriesStateFactory.enabled())) ? // has no state stateFactory or null "enabled" in it ?
