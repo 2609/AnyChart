@@ -630,15 +630,12 @@ anychart.themes.merging.mergingMap_ = [
       'defaultAxis.labels',
       'defaultAxis.minorLabels',
       'chart.defaultAnnotationSettings.base.labels',
-      'chart.defaultSeriesSettings.base.labels',
       'chart.defaultSeriesSettings.base.normal.labels',
-      'pieFunnelPyramidBase.labels',
       'pieFunnelPyramidBase.normal.labels',
       'defaultTimeline.labels',
       'defaultDataGrid.defaultColumnSettings.cellTextSettings',
       'standalones.labelsFactory',
-      'heatMap.labels',
-      'map.defaultSeriesSettings.base.labels',
+      'heatMap.normal.labels',
       'map.defaultSeriesSettings.base.normal.labels',
       'map.axesSettings.labels',
       'map.axesSettings.minorLabels',
@@ -653,7 +650,7 @@ anychart.themes.merging.mergingMap_ = [
       'defaultTimeline.header.lowLevel.labels',
       'resource.activities.labels',
       'resource.conflicts.labels',
-      'venn.labels'
+      'venn.normal.labels'
     ]
   },
   {
@@ -679,18 +676,14 @@ anychart.themes.merging.mergingMap_ = [
     defaultObj: 'defaultMarkerFactory',
     targets: [
       'chart.defaultAnnotationSettings.base.markers',
-      'chart.defaultSeriesSettings.base.markers',
       'chart.defaultSeriesSettings.base.normal.markers',
-      'pieFunnelPyramidBase.markers',
       'pieFunnelPyramidBase.normal.markers',
       'defaultTimeline.markers',
       'standalones.markersFactory',
-      'heatMap.markers',
       'heatMap.normal.markers',
-      'map.defaultSeriesSettings.base.markers',
       'map.defaultSeriesSettings.base.normal.markers',
       'treeMap.markers',
-      'venn.markers'
+      'venn.normal.markers'
     ]
   },
   {

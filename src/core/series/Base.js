@@ -2193,7 +2193,7 @@ anychart.core.series.Base.prototype.drawFactoryElement = function(seriesFactoryG
       indexes = this.indexToMarkerIndexes_[index] = [];
   }
   var mainFactory = seriesFactoryGetters[0].call(this.normal_);
-  var chartNormalFactory = chartFactoryGetters ? chartFactoryGetters[0].call(this.chart) : null;
+  var chartNormalFactory = chartFactoryGetters ? chartFactoryGetters[0].call(this.chart.normal_) : null;
 
   var pointOverride, statePointOverride, seriesStateFactory, chartStateFactory;
   if (point.meta('missing')) {
