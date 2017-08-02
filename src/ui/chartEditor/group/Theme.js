@@ -75,7 +75,7 @@ anychart.ui.chartEditor.group.Theme.parseThemes_ = function() {
   if (!anychart.ui.chartEditor.group.Theme.themes) {
     anychart.ui.chartEditor.group.Theme.themes = [];
     var name, theme;
-    var ns = window['anychart']['themes'];
+    var ns = goog.global['anychart']['themes'];
     for (var i in ns) {
       theme = ns[i];
       if (i == 'merging' || !theme['chart']) continue;
@@ -90,7 +90,7 @@ anychart.ui.chartEditor.group.Theme.parseThemes_ = function() {
 anychart.ui.chartEditor.group.Theme.parsePalettes_ = function() {
   if (!anychart.ui.chartEditor.group.Theme.palettes) {
     anychart.ui.chartEditor.group.Theme.palettes = [];
-    var ns = window['anychart']['palettes'];
+    var ns = goog.global['anychart']['palettes'];
     var name, palette;
     for (var i in ns) {
       palette = ns[i];

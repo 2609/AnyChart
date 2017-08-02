@@ -441,7 +441,7 @@ anychart.detachDomEvents_ = function() {
 anychart.completed_ = function(event) {
   var document = goog.global['document'];
   // readyState === "complete" is good enough for us to call the dom ready in oldIE
-  if (document.addEventListener || window['event']['type'] === 'load' || document['readyState'] === 'complete') {
+  if (document.addEventListener || goog.global['event']['type'] === 'load' || document['readyState'] === 'complete') {
     anychart.detachDomEvents_();
     anychart.ready_(event);
   }
@@ -670,7 +670,7 @@ anychart.getFullTheme = function(root) {
  */
 anychart.getFeatureOrError = function(modulePath, featureName) {
   var path = modulePath.split('.');
-  var target = window;
+  var target = goog.global;
   for (var i = 0; i < path.length; i++) {
     target = target[path[i]];
     if (!target)

@@ -17,7 +17,7 @@ anychart.ui.chartEditor.group.Credits = function(model) {
   this.useEnabledButton(true);
   this.setKey('chart.credits()');
 
-  this.setEnabled(window['anychart']['utils']['printUtilsBoolean']());
+  this.setEnabled(goog.global['anychart']['utils']['printUtilsBoolean']());
 };
 goog.inherits(anychart.ui.chartEditor.group.Credits, anychart.ui.chartEditor.group.Base);
 

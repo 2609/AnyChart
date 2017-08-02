@@ -21,7 +21,7 @@ goog.require('goog.events');
  */
 anychart.ui.binding.exec = function(targetOrPath, pathOrValue, opt_valueOrPathArgs, var_args) {
   if (goog.isString(targetOrPath)) {
-    var args = [window];
+    var args = [goog.global];
     for (var i = 0; i < arguments.length; i++) {
       args.push(arguments[i]);
     }
@@ -179,7 +179,7 @@ anychart.ui.binding.init = function(opt_value) {
     goog.events.listen(element, event, anychart.ui.binding.onElementChange_, false, anychart.ui.binding);
 
     var chartId = element.getAttribute('ac-chart-id');
-    var chart = window['anychart']['getChartById'](chartId);
+    var chart = goog.global['anychart']['getChartById'](chartId);
     goog.events.listen(chart, 'chartdraw',
         function() {
           anychart.ui.binding.setRealValue_(element);
@@ -208,7 +208,7 @@ anychart.ui.binding.onElementChange_ = function(event) {
 
   var element = /** @type {!HTMLInputElement} */(event.target);
   var chartId = event.target.getAttribute('ac-chart-id');
-  var chart = window['anychart']['getChartById'](chartId);
+  var chart = goog.global['anychart']['getChartById'](chartId);
   var key = event.target.getAttribute('ac-key');
 
   if (chartId && chart && key) {
@@ -222,7 +222,7 @@ anychart.ui.binding.onElementChange_ = function(event) {
         value = !!value;
         break;
       case goog.dom.InputType.DATE:
-        value = window['anychart']['format']['parseDateTime'](value, 'yyyy-MM-dd');
+        value = goog.global['anychart']['format']['parseDateTime'](value, 'yyyy-MM-dd');
         break;
     }
 
@@ -242,7 +242,7 @@ anychart.ui.binding.setRealValue_ = function(element) {
   type = type.toLowerCase();
 
   var chartId = element.getAttribute('ac-chart-id');
-  var chart = window['anychart']['getChartById'](chartId);
+  var chart = goog.global['anychart']['getChartById'](chartId);
   var key = element.getAttribute('ac-key');
 
   if (chartId && chart && key) {
@@ -268,7 +268,7 @@ anychart.ui.binding.setRealValue_ = function(element) {
           }
           break;
         case goog.dom.InputType.DATE:
-          value = window['anychart']['format']['dateTime'](value, 'yyyy-MM-dd');
+          value = goog.global['anychart']['format']['dateTime'](value, 'yyyy-MM-dd');
           break;
         default:
           value = goog.isBoolean(value) ? value : String(value);

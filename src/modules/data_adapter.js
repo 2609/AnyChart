@@ -393,7 +393,7 @@ anychart.modules.data_adapter.processAsJson_ = function(xhr) {
  */
 anychart.modules.data_adapter.processAsXml_ = function(xhr) {
   var xml = xhr.getResponseXml();
-  var json = window['anychart']['utils']['xml2json'](xml);
+  var json = goog.global['anychart']['utils']['xml2json'](xml);
   return [json['data']];
 };
 

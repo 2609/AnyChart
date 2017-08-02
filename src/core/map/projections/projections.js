@@ -122,7 +122,7 @@ anychart.core.map.projections.getProjection = function(projection) {
       break;
     default:
       try {
-        if (window['proj4']) {
+        if (goog.global['proj4']) {
           projection_ = new anychart.core.map.projections.Proj4Wrapper(/** @type {string} */(projection));
         } else {
           projection_ = new anychart.core.map.projections.Base();
@@ -168,6 +168,6 @@ anychart.core.map.projections.isBaseProjection = function(projectionStr) {
     case anychart.enums.MapProjections.AUGUST:
       return false;
     default:
-      return !window['proj4'];
+      return !goog.global['proj4'];
   }
 };

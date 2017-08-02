@@ -2081,12 +2081,12 @@ anychart.core.ui.BaseGrid.prototype.initMouseFeatures = function() {
       var mouseWheelEvent = goog.events.MouseWheelHandler.EventType.MOUSEWHEEL;
       goog.events.listen(this.mwh_, mouseWheelEvent, this.mouseWheelHandler_, false, this);
 
-      goog.events.listen(window, 'unload', function(e) {
+      goog.events.listen(goog.global, 'unload', function(e) {
         goog.events.unlisten(ths.mwh_, mouseWheelEvent, ths.mouseWheelHandler_, false, this);
       });
     }
 
-    goog.events.listen(document, goog.events.EventType.MOUSEMOVE, this.docMouseMoveListener_, false, this);
+    goog.events.listen(goog.global['document'], goog.events.EventType.MOUSEMOVE, this.docMouseMoveListener_, false, this);
   }
 };
 
