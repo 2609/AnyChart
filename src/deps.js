@@ -529,7 +529,7 @@ goog.addDependency('../../../../src/ui/button/Primary.js', ['anychart.ui.button.
 goog.addDependency('../../../../src/ui/button/Secondary.js', ['anychart.ui.button.Secondary'], ['anychart.ui.button.Base'], false);
 goog.addDependency('../../../../src/ui/button/Toggle.js', ['anychart.ui.button.Toggle'], ['anychart.ui.button.Base', 'goog.ui.Component.State'], false);
 goog.addDependency('../../../../src/ui/menu/Item.js', ['anychart.ui.menu.Item'], ['goog.ui.MenuItem'], false);
-goog.addDependency('../../../../src/ui/menu/Menu.js', ['anychart.ui.menu.Menu'], ['goog.ui.Menu'], false);
+goog.addDependency('../../../../src/ui/menu/Menu.js', ['anychart.ui.menu.Menu'], ['goog.dom', 'goog.ui.Menu'], false);
 goog.addDependency('../../../../src/ui/menu/SubMenu.js', ['anychart.ui.menu.SubMenu'], ['anychart.ui.menu.Menu', 'anychart.ui.menu.SubMenuRenderer', 'goog.Timer', 'goog.asserts', 'goog.dom', 'goog.dom.classlist', 'goog.events.KeyCodes', 'goog.positioning.AnchoredViewportPosition', 'goog.positioning.Corner', 'goog.style', 'goog.ui.Component', 'goog.ui.Menu', 'goog.ui.MenuItem'], false);
 goog.addDependency('../../../../src/ui/menu/SubMenuRenderer.js', ['anychart.ui.menu.SubMenuRenderer'], ['anychart.ui.menu.Menu', 'goog.a11y.aria', 'goog.a11y.aria.State', 'goog.asserts', 'goog.dom', 'goog.dom.classlist', 'goog.style', 'goog.ui.MenuItemRenderer', 'goog.ui.SubMenu'], false);
 goog.addDependency('../../../../src/ui/toolbar/MenuButton.js', ['anychart.ui.toolbar.MenuButton'], ['anychart.ui.toolbar.MenuButtonRenderer', 'goog.ui.ToolbarMenuButton'], false);
@@ -567,7 +567,7 @@ goog.addDependency('../../../graphicsjs/src/vector/Element.js', ['acgraph.vector
 goog.addDependency('../../../graphicsjs/src/vector/Ellipse.js', ['acgraph.vector.Ellipse'], ['acgraph.utils.IdGenerator', 'acgraph.vector.Shape', 'goog.math.Coordinate', 'goog.math.Rect'], false);
 goog.addDependency('../../../graphicsjs/src/vector/HatchFill.js', ['acgraph.vector.HatchFill'], ['acgraph.utils.IdGenerator', 'acgraph.vector.Path', 'acgraph.vector.PatternFill', 'goog.math.Rect'], false);
 goog.addDependency('../../../graphicsjs/src/vector/Image.js', ['acgraph.vector.Image'], ['acgraph.utils.IdGenerator', 'acgraph.vector.Element', 'goog.math.Rect'], false);
-goog.addDependency('../../../graphicsjs/src/vector/Layer.js', ['acgraph.vector.Layer'], ['acgraph.error', 'acgraph.utils.IdGenerator', 'acgraph.vector.Element', 'acgraph.vector.ILayer', 'goog.math.Rect'], false);
+goog.addDependency('../../../graphicsjs/src/vector/Layer.js', ['acgraph.vector.Layer'], ['acgraph.error', 'acgraph.utils.IdGenerator', 'acgraph.vector.Element', 'acgraph.vector.ILayer', 'goog.dom', 'goog.math.Rect'], false);
 goog.addDependency('../../../graphicsjs/src/vector/LinearGradient.js', ['acgraph.vector.LinearGradient'], ['acgraph.utils.IdGenerator', 'goog.Disposable'], false);
 goog.addDependency('../../../graphicsjs/src/vector/Path.js', ['acgraph.vector.Path'], ['acgraph.vector.PathBase'], false);
 goog.addDependency('../../../graphicsjs/src/vector/PathBase.js', ['acgraph.vector.PathBase'], ['acgraph.error', 'acgraph.math', 'acgraph.utils.IdGenerator', 'acgraph.vector.Shape', 'goog.array', 'goog.math', 'goog.math.AffineTransform', 'goog.math.Coordinate'], false);
