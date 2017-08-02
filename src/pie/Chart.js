@@ -795,7 +795,7 @@ anychart.pieModule.Chart.prototype.resolveOption = function(names, state, point,
     val = anychart.utils.getFirstDefinedValue(
         goog.isDef(pointStateObject) ? pointStateObject[names[0]] : void 0,
         point.get(names[state]),
-        stateObject.getOption(names[0]));
+        stateValue);
   }
   if (goog.isDef(val))
     val = normalizer(val);

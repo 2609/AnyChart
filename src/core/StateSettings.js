@@ -42,6 +42,7 @@ anychart.core.StateSettings = function(stateHolder, descriptorsMeta, stateType, 
 goog.inherits(anychart.core.StateSettings, anychart.core.Base);
 
 
+//region --- Constants and static
 /**
  * Option name for labels factory constructor.
  * @type {string}
@@ -54,6 +55,13 @@ anychart.core.StateSettings.LABELS_FACTORY_CONSTRUCTOR = 'labelsFactoryConstruct
  * @type {string}
  */
 anychart.core.StateSettings.LABELS_AFTER_INIT_CALLBACK = 'labelsAfterInitCallback';
+
+
+/**
+ * Option name for headers factory after init callback.
+ * @type {string}
+ */
+anychart.core.StateSettings.HEADERS_AFTER_INIT_CALLBACK = 'headersAfterInitCallback';
 
 
 /**
@@ -83,6 +91,17 @@ anychart.core.StateSettings.DEFAULT_LABELS_AFTER_INIT_CALLBACK = function(factor
 
 /**
  * Default labels factory after init callback.
+ * @param {anychart.core.ui.LabelsFactory} factory
+ * @this {*}
+ */
+anychart.core.StateSettings.DEFAULT_HEADERS_AFTER_INIT_CALLBACK = function(factory) {
+  factory.listenSignals(this.headersInvalidated_, this);
+  factory.setParentEventTarget(/** @type {goog.events.EventTarget} */ (this));
+};
+
+
+/**
+ * Default labels factory after init callback.
  * @param {anychart.core.ui.MarkersFactory} factory
  * @this {*}
  */
@@ -103,6 +122,8 @@ anychart.core.StateSettings.DEFAULT_OUTLIER_MARKERS_AFTER_INIT_CALLBACK = functi
 };
 
 
+//endregion
+//region --- Overrides
 /** @inheritDoc */
 anychart.core.StateSettings.prototype.invalidate = function(state, opt_signal) {
   return this.stateHolder.invalidate(state, opt_signal);
@@ -115,41 +136,8 @@ anychart.core.StateSettings.prototype.dispatchSignal = function(signal, opt_forc
 };
 
 
-//region --- Setup / Serialize / Dispose
-/** @inheritDoc */
-anychart.core.StateSettings.prototype.disposeInternal = function() {
-  goog.disposeAll(this.labels_, this.markers_, this.outlierMarkers_);
-  anychart.core.StateSettings.base(this, 'disposeInternal');
-};
-
-
-/** @inheritDoc */
-anychart.core.StateSettings.prototype.serialize = function() {
-  var json = anychart.core.StateSettings.base(this, 'serialize');
-  anychart.core.settings.serialize(this, anychart.core.StateSettings.PROPERTY_DESCRIPTORS, json, 'State settings', this.descriptorsMeta);
-  if (this.descriptorsMeta['labels'])
-    json['labels'] = this.labels().serialize();
-  if (this.descriptorsMeta['markers'])
-    json['markers'] = this.markers().serialize();
-  if (this.descriptorsMeta['outlierMarkers'])
-    json['outlierMarkers'] = this.markers().serialize();
-  return json;
-};
-
-
-/** @inheritDoc */
-anychart.core.StateSettings.prototype.setupByJSON = function(config, opt_default) {
-  anychart.core.StateSettings.base(this, 'setupByJSON', config, opt_default);
-  anychart.core.settings.deserialize(this, anychart.core.StateSettings.PROPERTY_DESCRIPTORS, config);
-  if (goog.isDef(this.descriptorsMeta['labels']))
-    this.labels().setupInternal(!!opt_default, config['labels']);
-  if (goog.isDef(this.descriptorsMeta['markers']))
-    this.markers().setupInternal(!!opt_default, config['markers']);
-};
-
-
 //endregion
-//region --- Descriptors & Meta
+//region --- Descriptors
 /**
  * @type {!Object.<string, anychart.core.settings.PropertyDescriptor>}
  */
@@ -197,6 +185,8 @@ anychart.core.StateSettings.PROPERTY_DESCRIPTORS = (function() {
 anychart.core.settings.populate(anychart.core.StateSettings, anychart.core.StateSettings.PROPERTY_DESCRIPTORS);
 
 
+//endregion
+//region --- Own API
 /**
  * Sets meta for field name.
  * @param {string} fieldName
@@ -233,6 +223,28 @@ anychart.core.StateSettings.prototype.labels = function(opt_value) {
     return this;
   }
   return this.labels_;
+};
+
+
+/**
+ * Header labels (TreeMap).
+ * @param {(Object|boolean|null)=} opt_value
+ * @return {anychart.core.StateSettings|anychart.core.ui.LabelsFactory}
+ */
+anychart.core.StateSettings.prototype.headers = function(opt_value) {
+  if (!this.headers_) {
+    var afterInitCallback = /** @type {Function} */ (this.getOption(anychart.core.StateSettings.HEADERS_AFTER_INIT_CALLBACK)) || anychart.core.StateSettings.DEFAULT_HEADERS_AFTER_INIT_CALLBACK;
+    this.headers_ = new anychart.core.ui.LabelsFactory();
+    afterInitCallback.call(this.stateHolder, this.headers_);
+  }
+
+  if (goog.isDef(opt_value)) {
+    if (goog.isObject(opt_value) && !('enabled' in opt_value))
+      opt_value['enabled'] = true;
+    this.headers_.setup(opt_value);
+    return this;
+  }
+  return this.headers_;
 };
 
 
@@ -316,10 +328,51 @@ anychart.core.StateSettings.prototype.selected = function(opt_value) {
 
 
 //endregion
+//region --- Setup / Serialize / Dispose
+/** @inheritDoc */
+anychart.core.StateSettings.prototype.serialize = function() {
+  var json = anychart.core.StateSettings.base(this, 'serialize');
+  anychart.core.settings.serialize(this, anychart.core.StateSettings.PROPERTY_DESCRIPTORS, json, 'State settings', this.descriptorsMeta);
+  if (this.descriptorsMeta['labels'])
+    json['labels'] = this.labels().serialize();
+  if (this.descriptorsMeta['headers'])
+    json['headers'] = this.headers().serialize();
+  if (this.descriptorsMeta['markers'])
+    json['markers'] = this.markers().serialize();
+  if (this.descriptorsMeta['outlierMarkers'])
+    json['outlierMarkers'] = this.markers().serialize();
+  return json;
+};
+
+
+/** @inheritDoc */
+anychart.core.StateSettings.prototype.setupByJSON = function(config, opt_default) {
+  anychart.core.StateSettings.base(this, 'setupByJSON', config, opt_default);
+  anychart.core.settings.deserialize(this, anychart.core.StateSettings.PROPERTY_DESCRIPTORS, config);
+  if (goog.isDef(this.descriptorsMeta['labels']))
+    this.labels().setupInternal(!!opt_default, config['labels']);
+  if (goog.isDef(this.descriptorsMeta['headers']))
+    this.headers().setupInternal(!!opt_default, config['headers']);
+  if (goog.isDef(this.descriptorsMeta['markers']))
+    this.markers().setupInternal(!!opt_default, config['markers']);
+  if (goog.isDef(this.descriptorsMeta['outlierMarkers']))
+    this.outlierMarkers().setupInternal(!!opt_default, config['outlierMarkers']);
+};
+
+
+/** @inheritDoc */
+anychart.core.StateSettings.prototype.disposeInternal = function() {
+  goog.disposeAll(this.labels_, this.headers_, this.markers_, this.outlierMarkers_);
+  anychart.core.StateSettings.base(this, 'disposeInternal');
+};
+
+
+//endregion
 //region --- Exports
 (function() {
   var proto = anychart.core.StateSettings.prototype;
   proto['labels'] = proto.labels;
+  proto['headers'] = proto.headers;
   proto['markers'] = proto.markers;
   proto['outlierMarkers'] = proto.outlierMarkers;
   proto['normal'] = proto.normal;

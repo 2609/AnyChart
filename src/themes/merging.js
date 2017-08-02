@@ -639,8 +639,8 @@ anychart.themes.merging.mergingMap_ = [
       'map.defaultSeriesSettings.base.normal.labels',
       'map.axesSettings.labels',
       'map.axesSettings.minorLabels',
-      'treeMap.headers',
-      'treeMap.labels',
+      'treeMap.normal.headers',
+      'treeMap.normal.labels',
       'linearGauge.defaultPointerSettings.base.label',
       'pert.milestones.labels',
       'pert.tasks.upperLabels',
@@ -682,7 +682,7 @@ anychart.themes.merging.mergingMap_ = [
       'standalones.markersFactory',
       'heatMap.normal.markers',
       'map.defaultSeriesSettings.base.normal.markers',
-      'treeMap.markers',
+      'treeMap.normal.markers',
       'venn.normal.markers'
     ]
   },

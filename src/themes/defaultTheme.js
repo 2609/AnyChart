@@ -4003,82 +4003,88 @@ goog.provide('anychart.themes.defaultTheme');
       'hintDepth': 0,
       'hintOpacity': 0.4,
       'maxHeadersHeight': '25',
-      'headers': {
-        'enabled': true,
-        'hAlign': 'center',
-        'vAlign': 'middle',
-        'position': 'left-top',
-        'anchor': 'left-top',
-        'background': {
-          'enabled': true,
-          'fill': '#F7F7F7',
-          'stroke': '#e0e0e0'
+      'normal': {
+        /**
+         * @this {*}
+         * @return {*}
+         */
+        'fill': function() {
+          var color;
+          if (this['colorScale']) {
+            color = this['colorScale']['valueToColor'](this['value']);
+          } else {
+            color = setOpacity(this['sourceColor'], 0.85, true);
+          }
+          return color;
         },
-        'format': returnName
-      },
-      'hoverHeaders': {
-        'enabled': true,
-        'fontColor': defaultSelectColor,
-        'background': {
-          'fill': '#e0e0e0',
-          'stroke': '#e0e0e0'
+        'stroke': '#e0e0e0',
+        'hatchFill': false,
+        'labels': {
+          'enabled': true,
+          'hAlign': 'center',
+          'vAlign': 'middle',
+          'position': 'left-top',
+          'anchor': 'left-top',
+          'fontColor': fontColorDark,
+          'format': returnNameWithValue
+        },
+        'markers': {
+          'enabled': false,
+          'position': 'center',
+          'size': 6,
+          'fill': '#dd2c00',
+          'type': 'circle'
+        },
+        'headers': {
+          'enabled': true,
+          'hAlign': 'center',
+          'vAlign': 'middle',
+          'position': 'left-top',
+          'anchor': 'left-top',
+          'background': {
+            'enabled': true,
+            'fill': '#F7F7F7',
+            'stroke': '#e0e0e0'
+          },
+          'format': returnName
         }
       },
-      'labels': {
-        'enabled': true,
-        'hAlign': 'center',
-        'vAlign': 'middle',
-        'position': 'left-top',
-        'anchor': 'left-top',
-        'fontColor': fontColorDark,
-        'format': returnNameWithValue
+      'hovered': {
+        'fill': returnLightenSourceColor,
+        'stroke': returnDarkenSourceColor,
+        'hatchFill': false,
+        'labels': {
+          'enabled': null,
+          'fontWeight': 'bold'
+        },
+        'markers': {
+          'enabled': null,
+          'size': 8
+        },
+        'headers': {
+          'enabled': true,
+          'fontColor': defaultSelectColor,
+          'background': {
+            'fill': '#e0e0e0',
+            'stroke': '#e0e0e0'
+          }
+        }
       },
-      'hoverLabels': {
-        'enabled': null,
-        'fontWeight': 'bold'
-      },
-      'selectLabels': {
-        'enabled': null,
-        'fontColor': '#fafafa'
-      },
-      'markers': {
-        'enabled': false,
-        'position': 'center',
-        'size': 6,
-        'fill': '#dd2c00',
-        'type': 'circle'
-      },
-      'hoverMarkers': {
-        'enabled': null,
-        'size': 8
-      },
-      'selectMarkers': {
-        'enabled': null,
-        'size': 8,
+      'selected': {
         'fill': defaultSelectColor,
-        'stroke': defaultSelectStroke
-      },
-      /**
-       * @this {*}
-       * @return {*}
-       */
-      'fill': function() {
-        var color;
-        if (this['colorScale']) {
-          color = this['colorScale']['valueToColor'](this['value']);
-        } else {
-          color = setOpacity(this['sourceColor'], 0.85, true);
+        'stroke': defaultSelectStroke,
+        'hatchFill': false,
+        'labels': {
+          'enabled': null,
+          'fontColor': '#fafafa'
+        },
+        'markers': {
+          'enabled': null,
+          'size': 8,
+          'fill': defaultSelectColor,
+          'stroke': defaultSelectStroke
         }
-        return color;
-      },
-      'stroke': '#e0e0e0',
-      'hoverFill': returnLightenSourceColor,
-      'hoverStroke': returnDarkenSourceColor,
-      'selectFill': defaultSelectColor,
-      'selectStroke': defaultSelectStroke,
-      'hatchFill': false,
-      'hoverHatchFill': false,
-      'selectHatchFill': false
+      }
     },
 
     'defaultScrollBar': {
