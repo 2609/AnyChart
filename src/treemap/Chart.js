@@ -194,11 +194,7 @@ anychart.treemapModule.Chart.PROPERTY_DESCRIPTORS = (function() {
     [anychart.enums.PropertyHandlerType.SINGLE_ARG, 'maxHeadersHeight', anychart.core.settings.asIsNormalizer],
     [anychart.enums.PropertyHandlerType.SINGLE_ARG, 'sort', sortNormalizer],
     [anychart.enums.PropertyHandlerType.SINGLE_ARG, 'headersDisplayMode', anychart.enums.normalizeLabelsDisplayMode],
-    [anychart.enums.PropertyHandlerType.SINGLE_ARG, 'labelsDisplayMode', anychart.enums.normalizeLabelsDisplayMode],
-    // color properties
-    [anychart.enums.PropertyHandlerType.MULTI_ARG, 'fill', anychart.core.settings.fillOrFunctionNormalizer],
-    [anychart.enums.PropertyHandlerType.MULTI_ARG, 'stroke', anychart.core.settings.strokeOrFunctionNormalizer],
-    [anychart.enums.PropertyHandlerType.MULTI_ARG, 'hatchFill', anychart.core.settings.hatchFillOrFunctionNormalizer]
+    [anychart.enums.PropertyHandlerType.SINGLE_ARG, 'labelsDisplayMode', anychart.enums.normalizeLabelsDisplayMode]
   ]);
 
   return map;
@@ -1464,9 +1460,9 @@ anychart.treemapModule.Chart.prototype.getLabelsAnchor = function(pointState, is
   var pointSelectedLabel = node.get('selected');
   pointSelectedLabel = goog.isDef(pointSelectedLabel) ? (isHeader ? void 0 : pointSelectedLabel[labelType]) : void 0;
 
-  var pointLabel = anychart.utils.getFirstDefinedValue(pointNormalLabel, node.get(labelType), null);
-  var hoverPointLabel = anychart.utils.getFirstDefinedValue(pointHoveredLabel, node.get(hoverLabelType), null);
-  var selectPointLabel = anychart.utils.getFirstDefinedValue(pointSelectedLabel, node.get(selectLabelType), null);
+  var pointLabel = anychart.utils.getFirstDefinedValue(pointNormalLabel, node.get(labelType));
+  var hoverPointLabel = hovered ? anychart.utils.getFirstDefinedValue(pointHoveredLabel, node.get(hoverLabelType)) : null;
+  var selectPointLabel = selected ? anychart.utils.getFirstDefinedValue(pointSelectedLabel, node.get(selectLabelType)) : null;
 
   var labelAnchor = pointLabel && pointLabel['anchor'] ? pointLabel['anchor'] : null;
   var labelHoverAnchor = hoverPointLabel && hoverPointLabel['anchor'] ? hoverPointLabel['anchor'] : null;
@@ -1582,9 +1578,9 @@ anychart.treemapModule.Chart.prototype.drawMarker_ = function(pointState) {
   var pointSelectedMarker = node.get('selected');
   pointSelectedMarker = goog.isDef(pointSelectedMarker) ? pointSelectedMarker[markerType] : void 0;
 
-  var pointMarker = anychart.utils.getFirstDefinedValue(pointNormalMarker, node.get(markerType), null);
-  var hoverPointMarker = anychart.utils.getFirstDefinedValue(pointHoveredMarker, node.get(hoverMarkerType), null);
-  var selectPointMarker = anychart.utils.getFirstDefinedValue(pointSelectedMarker, node.get(selectMarkerType), null);
+  var pointMarker = anychart.utils.getFirstDefinedValue(pointNormalMarker, node.get(markerType));
+  var hoverPointMarker = anychart.utils.getFirstDefinedValue(pointHoveredMarker, node.get(hoverMarkerType));
+  var selectPointMarker = anychart.utils.getFirstDefinedValue(pointSelectedMarker, node.get(selectMarkerType));
 
   var marker = markers.getMarker(index);
 
@@ -1704,9 +1700,9 @@ anychart.treemapModule.Chart.prototype.configureLabel = function(pointState, isH
   var pointSelectedLabel = node.get('selected');
   pointSelectedLabel = goog.isDef(pointSelectedLabel) ? (isHeader ? void 0 : pointSelectedLabel[labelType]) : void 0;
 
-  var pointLabel = anychart.utils.getFirstDefinedValue(pointNormalLabel, node.get(labelType), null);
-  var hoverPointLabel = anychart.utils.getFirstDefinedValue(pointHoveredLabel, node.get(hoverLabelType), null);
-  var selectPointLabel = anychart.utils.getFirstDefinedValue(pointSelectedLabel, node.get(selectLabelType), null);
+  var pointLabel = anychart.utils.getFirstDefinedValue(pointNormalLabel, node.get(labelType));
+  var hoverPointLabel = hovered ? anychart.utils.getFirstDefinedValue(pointHoveredLabel, node.get(hoverLabelType)) : null;
+  var selectPointLabel = selected ? anychart.utils.getFirstDefinedValue(pointSelectedLabel, node.get(selectLabelType)) : null;
 
   var labelEnabledState = pointLabel && goog.isDef(pointLabel['enabled']) ? pointLabel['enabled'] : null;
   var labelSelectEnabledState = selectPointLabel && goog.isDef(selectPointLabel['enabled']) ? selectPointLabel['enabled'] : null;

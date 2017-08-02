@@ -352,7 +352,7 @@ anychart.core.StateSettings.prototype.setupByJSON = function(config, opt_default
   if (goog.isDef(this.descriptorsMeta['labels']))
     this.labels().setupInternal(!!opt_default, config['labels']);
   if (goog.isDef(this.descriptorsMeta['headers']))
-    this.headers().setupInternal(!!opt_default, config['headers']);
+    this.headers().setup(config['headers']);
   if (goog.isDef(this.descriptorsMeta['markers']))
     this.markers().setupInternal(!!opt_default, config['markers']);
   if (goog.isDef(this.descriptorsMeta['outlierMarkers']))
