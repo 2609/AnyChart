@@ -3701,6 +3701,7 @@ goog.provide('anychart.themes.defaultTheme');
           'normal': {
             'stroke': returnStrokeSourceColor,
             'fill': returnSourceColor,
+            'hatchFill': null,
             'labels': {
               'zIndex': 0,
               'position': 'center-top'

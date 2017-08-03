@@ -457,7 +457,7 @@ anychart.linearGaugeModule.pointers.Base.prototype.getColorResolutionContext = f
   return {
     'index': index,
     'isVertical': isVertical,
-    'sourceHatchFill': sourceColor
+    'sourceColor': sourceColor
   };
 };
 
@@ -1390,18 +1390,9 @@ anychart.linearGaugeModule.pointers.Base.prototype.disposeInternal = function() 
   proto['getGauge'] = proto.getGauge;
   proto['color'] = proto.color;
 
-  //proto['fill'] = proto.fill;
-  //proto['hoverFill'] = proto.hoverFill;
-  //proto['selectFill'] = proto.selectFill;
-  //proto['stroke'] = proto.stroke;
-  //proto['hoverStroke'] = proto.hoverStroke;
-  //proto['selectStroke'] = proto.selectStroke;
-  //proto['hatchFill'] = proto.hatchFill;
-  //proto['hoverHatchFill'] = proto.hoverHatchFill;
-  //proto['selectHatchFill'] = proto.selectHatchFill;
-  //proto['label'] = proto.label;
-  //proto['hoverLabel'] = proto.hoverLabel;
-  //proto['selectLabel'] = proto.selectLabel;
+  proto['normal'] = proto.normal;
+  proto['hovered'] = proto.hovered;
+  proto['selected'] = proto.selected;
 
   proto['width'] = proto.width;
   proto['offset'] = proto.offset;
