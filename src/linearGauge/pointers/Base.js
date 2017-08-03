@@ -96,6 +96,7 @@ anychart.linearGaugeModule.pointers.Base = function(gauge, dataIndex) {
   this.hatchFillResolver = anychart.color.getColorResolver2(['hatchFill', 'hoverHatchFill', 'selectHatchFill'], anychart.enums.ColorType.HATCH_FILL);
 };
 goog.inherits(anychart.linearGaugeModule.pointers.Base, anychart.core.VisualBase);
+anychart.core.settings.populateAliases(anychart.linearGaugeModule.pointers.Base, ['fill', 'stroke', 'hatchFill', 'labels'], 'normal');
 
 
 //region --- STATES / SIGNALS ---

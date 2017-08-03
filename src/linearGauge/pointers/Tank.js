@@ -88,6 +88,7 @@ anychart.linearGaugeModule.pointers.Tank = function(gauge, dataIndex) {
   this.emptyHatchFillResolver = anychart.color.getColorResolver2(['emptyHatchFill', 'hoverEmptyHatchFill', 'selectEmptyHatchFill'], anychart.enums.ColorType.HATCH_FILL);
 };
 goog.inherits(anychart.linearGaugeModule.pointers.Tank, anychart.linearGaugeModule.pointers.Base);
+anychart.core.settings.populateAliases(anychart.linearGaugeModule.pointers.Tank, ['emptyFill', 'emptyHatchFill'], 'normal');
 
 
 //region --- PROPERTIES ---
