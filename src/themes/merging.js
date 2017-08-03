@@ -641,7 +641,7 @@ anychart.themes.merging.mergingMap_ = [
       'map.axesSettings.minorLabels',
       'treeMap.normal.headers',
       'treeMap.normal.labels',
-      'linearGauge.defaultPointerSettings.base.label',
+      'linearGauge.defaultPointerSettings.base.normal.labels',
       'pert.milestones.labels',
       'pert.tasks.upperLabels',
       'pert.tasks.lowerLabels',

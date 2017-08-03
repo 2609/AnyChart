@@ -102,8 +102,8 @@ anychart.treemapModule.Chart = function(opt_data, opt_fillMethod) {
     factory.listenSignals(this.markersInvalidated_, this);
   });
 
-  var hoverSelectDescriptorsMeta = {};
-  anychart.core.settings.createDescriptorsMeta(hoverSelectDescriptorsMeta, [
+  var hoveredSelectedDescriptorsMeta = {};
+  anychart.core.settings.createDescriptorsMeta(hoveredSelectedDescriptorsMeta, [
     ['fill', anychart.ConsistencyState.APPEARANCE, anychart.Signal.NEEDS_REDRAW | anychart.Signal.NEED_UPDATE_LEGEND],
     ['stroke', anychart.ConsistencyState.APPEARANCE, anychart.Signal.NEEDS_REDRAW | anychart.Signal.NEED_UPDATE_LEGEND],
     ['hatchFill', anychart.ConsistencyState.APPEARANCE, anychart.Signal.NEEDS_REDRAW | anychart.Signal.NEED_UPDATE_LEGEND],
@@ -111,13 +111,13 @@ anychart.treemapModule.Chart = function(opt_data, opt_fillMethod) {
     ['markers', 0, 0]
   ]);
 
-  this.selected_ = new anychart.core.StateSettings(this, hoverSelectDescriptorsMeta, anychart.PointState.SELECT);
+  this.selected_ = new anychart.core.StateSettings(this, hoveredSelectedDescriptorsMeta, anychart.PointState.SELECT);
   function factoryEnabledNull(factory) {
     factory.enabled(null);
   }
   this.selected_.setOption(anychart.core.StateSettings.LABELS_AFTER_INIT_CALLBACK, factoryEnabledNull);
 
-  this.hovered_ = new anychart.core.StateSettings(this, hoverSelectDescriptorsMeta, anychart.PointState.HOVER);
+  this.hovered_ = new anychart.core.StateSettings(this, hoveredSelectedDescriptorsMeta, anychart.PointState.HOVER);
   this.hovered_.setMeta('headers', [0, 0]);
   this.hovered_.setOption(anychart.core.StateSettings.LABELS_AFTER_INIT_CALLBACK, factoryEnabledNull);
 

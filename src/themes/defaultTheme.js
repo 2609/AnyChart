@@ -3698,60 +3698,76 @@ goog.provide('anychart.themes.defaultTheme');
           'legendItem': {
             'enabled': true
           },
-          'label': {
-            'zIndex': 0,
-            'position': 'center-top'
+          'normal': {
+            'stroke': returnStrokeSourceColor,
+            'fill': returnSourceColor,
+            'labels': {
+              'zIndex': 0,
+              'position': 'center-top'
+            }
           },
-          'hoverLabel': {
-            'enabled': null
+          'hovered': {
+            'stroke': returnLightenStrokeSourceColor,
+            'fill': returnLightenSourceColor,
+            'labels': {
+              'enabled': null
+            }
           },
-          'selectLabel': {
-            'enabled': null
-          },
-          'stroke': returnStrokeSourceColor,
-          'hoverStroke': returnLightenStrokeSourceColor,
-          'selectStroke': returnDarkenSourceColor,
-          'fill': returnSourceColor,
-          'hoverFill': returnLightenSourceColor,
-          'selectFill': returnDarkenSourceColor
+          'selected': {
+            'stroke': returnDarkenSourceColor,
+            'fill': returnDarkenSourceColor,
+            'labels': {
+              'enabled': null
+            }
+          }
         },
         'bar': {},
         'rangeBar': {
-          'label': {
-            'format': function() {
-              return locNum(this['high']);
+          'normal': {
+            'labels': {
+              'format': function() {
+                return locNum(this['high']);
+              }
             }
           }
         },
         'marker': {'width': '3%'},
         'tank': {
-          'emptyFill': '#fff 0.3',
-          'hoverEmptyFill': returnSourceColor,
-          'selectEmptyFill': returnSourceColor,
-          'emptyHatchFill': null
+          'normal': {
+            'emptyFill': '#fff 0.3',
+            'emptyHatchFill': null
+          },
+          'hovered': {
+            'emptyFill': returnSourceColor
+          },
+          'selected': {
+            'emptyFill': returnSourceColor
+          }
         },
         'thermometer': {
-          /**
-           * @this {*}
-           * @return {*}
-           */
-          'fill': function() {
-            var sourceColor = this['sourceColor'];
-            var dark = darken(sourceColor);
-            var key1 = {
-              'color': dark
-            };
-            var key2 = {
-              'color': sourceColor
-            };
-            var key3 = {
-              'color': dark
-            };
-            var isVertical = this['isVertical'];
-            return {
-              'angle': isVertical ? 0 : 90,
-              'keys': [key1, key2, key3]
-            };
+          'normal': {
+            /**
+             * @this {*}
+             * @return {*}
+             */
+            'fill': function() {
+              var sourceColor = this['sourceColor'];
+              var dark = darken(sourceColor);
+              var key1 = {
+                'color': dark
+              };
+              var key2 = {
+                'color': sourceColor
+              };
+              var key3 = {
+                'color': dark
+              };
+              var isVertical = this['isVertical'];
+              return {
+                'angle': isVertical ? 0 : 90,
+                'keys': [key1, key2, key3]
+              };
+            }
           },
           'width': '3%',
           'bulbRadius': '120%',

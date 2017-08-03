@@ -239,7 +239,7 @@ anychart.ConsistencyState = {
   GAUGE_PALETTE: 1 << 21,
   GAUGE_HATCH_FILL_PALETTE: 1 << 22,
   GAUGE_SCALE_BAR: 1 << 23,
-  GAUGE_POINTER_LABEL: 1 << 13, // reset knob state for linear gauge, cause it doesn't need it
+  GAUGE_POINTER_LABELS: 1 << 13, // reset knob state for linear gauge, cause it doesn't need it
   //---------------------------------- TABLE (VB) ---------------------------------------------
   TABLE_CELL_BOUNDS: 1 << 6,
   TABLE_OVERLAP: 1 << 7,
