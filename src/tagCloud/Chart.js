@@ -116,6 +116,8 @@ anychart.tagCloudModule.Chart = function(opt_data, opt_settings) {
   ]);
 };
 goog.inherits(anychart.tagCloudModule.Chart, anychart.core.SeparateChart);
+anychart.core.settings.populateAliases(anychart.tagCloudModule.Chart, [
+  'fill', 'fontFamily', 'fontStyle', 'fontVariant', 'fontWeight', 'fontSize'], 'normal');
 
 
 /**
