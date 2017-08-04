@@ -177,7 +177,13 @@ anychart.core.StateSettings.PROPERTY_DESCRIPTORS = (function() {
     descriptors.GRID,
     // linear gauge tank pointer
     descriptors.EMPTY_FILL,
-    descriptors.EMPTY_HATCH_FILL
+    descriptors.EMPTY_HATCH_FILL,
+    // tag cloud
+    descriptors.FONT_FAMILY,
+    descriptors.FONT_STYLE,
+    descriptors.FONT_VARIANT,
+    descriptors.FONT_WEIGHT,
+    descriptors.FONT_SIZE
   ]);
 
   return map;
