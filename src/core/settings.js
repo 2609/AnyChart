@@ -864,6 +864,8 @@ anychart.core.settings.arrayNormalizer = function(args) {
 anychart.core.settings.functionNormalizer = function(val) {
   return goog.isFunction(val) ? val : null;
 };
+
+
 //endregion
 //region Descriptors
 /**
@@ -898,6 +900,7 @@ anychart.core.settings.descriptors = (function() {
   map.RISING_HATCH_FILL = [anychart.enums.PropertyHandlerType.MULTI_ARG, 'risingHatchFill', anychart.core.settings.hatchFillOrFunctionNormalizer];
   map.FALLING_HATCH_FILL = [anychart.enums.PropertyHandlerType.MULTI_ARG, 'fallingHatchFill', anychart.core.settings.hatchFillOrFunctionNormalizer];
 
+  // box series
   map.WHISKER_WIDTH = [anychart.enums.PropertyHandlerType.SINGLE_ARG, 'whiskerWidth', anychart.core.settings.numberOrPercentNormalizer];
 
   // marker series
@@ -911,6 +914,13 @@ anychart.core.settings.descriptors = (function() {
   // linear gauge tank pointer
   map.EMPTY_FILL = [anychart.enums.PropertyHandlerType.MULTI_ARG, 'emptyFill', anychart.core.settings.fillOrFunctionNormalizer];
   map.EMPTY_HATCH_FILL = [anychart.enums.PropertyHandlerType.MULTI_ARG, 'emptyHatchFill', anychart.core.settings.hatchFillOrFunctionNormalizer];
+
+  // tag cloud state descriptors
+  map.FONT_FAMILY = [anychart.enums.PropertyHandlerType.SINGLE_ARG, 'fontFamily', anychart.core.settings.stringNormalizer];
+  map.FONT_STYLE = [anychart.enums.PropertyHandlerType.SINGLE_ARG, 'fontStyle', anychart.enums.normalizeFontStyle];
+  map.FONT_VARIANT = [anychart.enums.PropertyHandlerType.SINGLE_ARG, 'fontVariant', anychart.enums.normalizeFontVariant];
+  map.FONT_WEIGHT = [anychart.enums.PropertyHandlerType.SINGLE_ARG, 'fontWeight', anychart.core.settings.numberOrStringNormalizer];
+  map.FONT_SIZE = [anychart.enums.PropertyHandlerType.SINGLE_ARG, 'fontSize', anychart.core.settings.numberOrPercentOrNullOrFunctionNormalizer];
 
   return map;
 })();

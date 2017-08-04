@@ -4,13 +4,13 @@ goog.require('acgraph.vector.SimpleText');
 goog.require('anychart.colorScalesModule.ui.ColorRange');
 goog.require('anychart.core.Point');
 goog.require('anychart.core.SeparateChart');
+goog.require('anychart.core.StateSettings');
 goog.require('anychart.core.settings');
 goog.require('anychart.core.utils.IInteractiveSeries');
 goog.require('anychart.core.utils.InteractivityState');
 goog.require('anychart.data.Set');
 goog.require('anychart.enums');
 goog.require('anychart.format.Context');
-goog.require('anychart.tagCloudModule.StateSettings');
 //endregion
 
 
@@ -61,26 +61,31 @@ anychart.tagCloudModule.Chart = function(opt_data, opt_settings) {
    */
   this.maxFontSize = NaN;
 
-  /**
-   * @type {anychart.tagCloudModule.StateSettings}
-   * @private
-   */
-  this.normal_ = new anychart.tagCloudModule.StateSettings();
-  this.normal_.listenSignals(this.normalStateListener_, this);
+  var descriptorsOverride = [anychart.core.settings.descriptors.FILL_FUNCTION_SIMPLE];
 
-  /**
-   * @type {anychart.tagCloudModule.StateSettings}
-   * @private
-   */
-  this.hovered_ = new anychart.tagCloudModule.StateSettings();
-  this.hovered_.listenSignals(this.normalStateListener_, this);
+  var normalDescriptorsMeta = {};
+  anychart.core.settings.createDescriptorsMeta(normalDescriptorsMeta, [
+    ['fill', anychart.ConsistencyState.APPEARANCE, anychart.Signal.NEEDS_REDRAW],
+    ['fontFamily', anychart.ConsistencyState.TAG_CLOUD_TAGS | anychart.ConsistencyState.BOUNDS, anychart.Signal.NEEDS_REDRAW],
+    ['fontStyle', anychart.ConsistencyState.TAG_CLOUD_TAGS | anychart.ConsistencyState.BOUNDS, anychart.Signal.NEEDS_REDRAW],
+    ['fontVariant', anychart.ConsistencyState.TAG_CLOUD_TAGS | anychart.ConsistencyState.BOUNDS, anychart.Signal.NEEDS_REDRAW],
+    ['fontWeight', anychart.ConsistencyState.TAG_CLOUD_TAGS | anychart.ConsistencyState.BOUNDS, anychart.Signal.NEEDS_REDRAW],
+    ['fontSize', anychart.ConsistencyState.TAG_CLOUD_TAGS | anychart.ConsistencyState.BOUNDS, anychart.Signal.NEEDS_REDRAW]
+  ]);
 
-  /**
-   * @type {anychart.tagCloudModule.StateSettings}
-   * @private
-   */
-  this.selected_ = new anychart.tagCloudModule.StateSettings();
-  this.selected_.listenSignals(this.normalStateListener_, this);
+  var hoveredSelectedDescriptorsMeta = {};
+  anychart.core.settings.createDescriptorsMeta(hoveredSelectedDescriptorsMeta, [
+    ['fill', 0, 0],
+    ['fontFamily', 0, 0],
+    ['fontStyle', 0, 0],
+    ['fontVariant', 0, 0],
+    ['fontWeight', 0, 0],
+    ['fontSize', 0, 0]
+  ]);
+
+  this.normal_ = new anychart.core.StateSettings(this, normalDescriptorsMeta, anychart.PointState.NORMAL, descriptorsOverride);
+  this.hovered_ = new anychart.core.StateSettings(this, hoveredSelectedDescriptorsMeta, anychart.PointState.HOVER, descriptorsOverride);
+  this.selected_ = new anychart.core.StateSettings(this, hoveredSelectedDescriptorsMeta, anychart.PointState.SELECT, descriptorsOverride);
 
   /**
    * Scale.
@@ -170,35 +175,13 @@ anychart.tagCloudModule.Chart.prototype.SIMPLE_PROPS_DESCRIPTORS = (function() {
   /** @type {!Object.<string, anychart.core.settings.PropertyDescriptor>} */
   var map = {};
 
-  anychart.core.settings.createDescriptor(
-      map,
-      anychart.enums.PropertyHandlerType.SINGLE_ARG,
-      'mode',
-      anychart.enums.normalizeTagCloudMode);
-
-  anychart.core.settings.createDescriptor(
-      map,
-      anychart.enums.PropertyHandlerType.SINGLE_ARG,
-      'fromAngle',
-      anychart.core.settings.numberNormalizer);
-
-  anychart.core.settings.createDescriptor(
-      map,
-      anychart.enums.PropertyHandlerType.SINGLE_ARG,
-      'toAngle',
-      anychart.core.settings.numberNormalizer);
-
-  anychart.core.settings.createDescriptor(
-      map,
-      anychart.enums.PropertyHandlerType.SINGLE_ARG,
-      'anglesCount',
-      anychart.core.settings.numberNormalizer);
-
-  anychart.core.settings.createDescriptor(
-      map,
-      anychart.enums.PropertyHandlerType.SINGLE_ARG,
-      'textSpacing',
-      anychart.core.settings.numberNormalizer);
+  anychart.core.settings.createDescriptors(map, [
+    [anychart.enums.PropertyHandlerType.SINGLE_ARG, 'mode', anychart.enums.normalizeTagCloudMode],
+    [anychart.enums.PropertyHandlerType.SINGLE_ARG, 'fromAngle', anychart.core.settings.numberNormalizer],
+    [anychart.enums.PropertyHandlerType.SINGLE_ARG, 'toAngle', anychart.core.settings.numberNormalizer],
+    [anychart.enums.PropertyHandlerType.SINGLE_ARG, 'anglesCount', anychart.core.settings.numberNormalizer],
+    [anychart.enums.PropertyHandlerType.SINGLE_ARG, 'textSpacing', anychart.core.settings.numberNormalizer]
+  ]);
 
   return map;
 })();
@@ -1064,7 +1047,7 @@ anychart.tagCloudModule.Chart.prototype.colorScaleInvalidated_ = function(event)
 /**
  * Normal state settings.
  * @param {!Object=} opt_value .
- * @return {anychart.tagCloudModule.StateSettings|anychart.tagCloudModule.Chart}
+ * @return {anychart.core.StateSettings|anychart.tagCloudModule.Chart}
  */
 anychart.tagCloudModule.Chart.prototype.normal = function(opt_value) {
   if (goog.isDef(opt_value)) {
@@ -1076,28 +1059,9 @@ anychart.tagCloudModule.Chart.prototype.normal = function(opt_value) {
 
 
 /**
- * Internal normal state invalidation handler.
- * @param {anychart.SignalEvent} e Event object.
- * @private
- */
-anychart.tagCloudModule.Chart.prototype.normalStateListener_ = function(e) {
-  var state = 0;
-  var signal = anychart.Signal.NEEDS_REDRAW;
-
-  if (e.hasSignal(anychart.Signal.BOUNDS_CHANGED))
-    state |= anychart.ConsistencyState.TAG_CLOUD_TAGS | anychart.ConsistencyState.BOUNDS;
-
-  if (e.hasSignal(anychart.Signal.NEEDS_REDRAW_APPEARANCE))
-    state |= anychart.ConsistencyState.APPEARANCE;
-
-  this.invalidate(state, signal);
-};
-
-
-/**
  * Hovered state settings.
  * @param {!Object=} opt_value .
- * @return {anychart.tagCloudModule.StateSettings|anychart.tagCloudModule.Chart}
+ * @return {anychart.core.StateSettings|anychart.tagCloudModule.Chart}
  */
 anychart.tagCloudModule.Chart.prototype.hovered = function(opt_value) {
   if (goog.isDef(opt_value)) {
@@ -1111,7 +1075,7 @@ anychart.tagCloudModule.Chart.prototype.hovered = function(opt_value) {
 /**
  * Selected state settings.
  * @param {!Object=} opt_value .
- * @return {anychart.tagCloudModule.StateSettings|anychart.tagCloudModule.Chart}
+ * @return {anychart.core.StateSettings|anychart.tagCloudModule.Chart}
  */
 anychart.tagCloudModule.Chart.prototype.selected = function(opt_value) {
   if (goog.isDef(opt_value)) {
