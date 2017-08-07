@@ -1699,6 +1699,12 @@ anychart.stockModule.Chart.prototype.defaultAnnotationSettings = function(opt_va
 //endregion
 //region Interactivity
 /**
+ * @inheritDoc
+ */
+anychart.stockModule.Chart.prototype.onInteractivitySignal = goog.nullFunction;
+
+
+/**
  * Highlights points on all charts by ratio of current selected range. Used by plots.
  * @param {number} ratio
  * @param {number} clientX
