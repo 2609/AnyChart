@@ -95,19 +95,26 @@ anychart.core.ui.Paginator = function() {
 
   this.previousButton_ = new anychart.core.ui.PaginatorButton();
   this.previousButton_.padding(null);
+  this.previousButton_.enabled(true);
   this.previousButton_.setOnClickListener(goog.bind(anychart.core.ui.Paginator.onClick_, this));
   this.registerDisposable(this.previousButton_);
   this.previousButton_.listenSignals(anychart.core.ui.Paginator.buttonInvalidated_, this.previousButton_);
 
   this.nextButton_ = new anychart.core.ui.PaginatorButton();
   this.nextButton_.padding(null);
+  this.nextButton_.enabled(true);
   this.nextButton_.setOnClickListener(goog.bind(anychart.core.ui.Paginator.onClick_, this));
   this.registerDisposable(this.nextButton_);
   this.nextButton_.listenSignals(anychart.core.ui.Paginator.buttonInvalidated_, this.nextButton_);
 
   this.layout('horizontal');
+
+  anychart.core.settings.createDescriptorsMeta(this.descriptorsMeta, [
+    ['text', anychart.ConsistencyState.APPEARANCE | anychart.ConsistencyState.BOUNDS, anychart.Signal.NEEDS_REDRAW | anychart.Signal.BOUNDS_CHANGED]
+  ]);
 };
 goog.inherits(anychart.core.ui.Paginator, anychart.core.Text);
+anychart.core.settings.populate(anychart.core.ui.Paginator, anychart.core.Text.TEXT_DESCRIPTORS);
 
 
 /**
@@ -460,7 +467,7 @@ anychart.core.ui.Paginator.prototype.draw = function() {
 
   if (this.hasInvalidationState(anychart.ConsistencyState.APPEARANCE)) {
     this.suspendSignalsDispatching();
-    this.textSettings('text', this.createTextString_());
+    this.setOption('text', this.createTextString_());
     this.resumeSignalsDispatching(false);
     this.applyTextSettings(this.text_, isInitial);
     this.invalidate(anychart.ConsistencyState.BOUNDS);
