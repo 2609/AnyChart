@@ -1187,7 +1187,6 @@ anychart.stockModule.Plot.prototype.legend = function(opt_value) {
   if (!this.legend_) {
     this.legend_ = new anychart.core.ui.Legend();
     this.registerDisposable(this.legend_);
-    this.legend_.zIndex(200);
     this.legend_.listenSignals(this.onLegendSignal_, this);
     this.legend_.listen(anychart.enums.EventType.DRAG_START, function(e) {
       this.chart_.preventHighlight();

@@ -1778,7 +1778,8 @@ anychart.stockModule.Chart.prototype.refreshHighlight_ = function() {
  */
 anychart.stockModule.Chart.prototype.highlightAtRatio_ = function(ratio, clientX, clientY, sourcePlot) {
   if (this.highlightPrevented_ || ratio < 0 || ratio > 1) return;
-  var value = this.dataController_.alignHighlight(this.xScale().inverseTransform(ratio));
+  var actualValue = this.xScale().inverseTransform(ratio);
+  var value = this.dataController_.alignHighlight(actualValue);
   if (isNaN(value)) return;
 
   var i;
@@ -1792,11 +1793,13 @@ anychart.stockModule.Chart.prototype.highlightAtRatio_ = function(ratio, clientX
     }),
     'hoveredDate': value
   };
-  //if (this.dispatchEvent(eventInfo)) {
+
   for (i = 0; i < this.plots_.length; i++) {
     if (this.plots_[i]) {
+      var plot = this.plots_[i];
       var lastPlot = i == this.plots_.length - 1;
-      this.plots_[i].highlight(value, lastPlot, sourcePlot, clientY);
+      var sticky = plot.crosshair().getOption('displayMode') == anychart.enums.CrosshairDisplayMode.STICKY;
+      plot.highlight(sticky ? value : actualValue, lastPlot, sourcePlot, clientY);
     }
   }
   this.highlighted_ = true;

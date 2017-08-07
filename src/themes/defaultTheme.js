@@ -4664,7 +4664,7 @@ goog.provide('anychart.themes.defaultTheme');
         'zIndex': 10,
         'yAxes': [{}],
         'crosshair': {
-          'zIndex': 41,
+          'zIndex': 201,
           'enabled': null
         }
       },
@@ -4797,10 +4797,9 @@ goog.provide('anychart.themes.defaultTheme');
       },
       'crosshair': {
         'enabled': true,
-        'displayMode': 'float',
+        'displayMode': 'sticky',
         'xStroke': colorStrokeExtraBright,
-        'yStroke': colorStrokeExtraBright,
-        'zIndex': 41
+        'yStroke': colorStrokeExtraBright
       }
     },
 
