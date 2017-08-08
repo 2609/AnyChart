@@ -387,9 +387,12 @@ anychart.core.ui.StageCredits.prototype.render = function() {
   }
 
   if (this.hasInvalidationState(anychart.core.ui.StageCredits.States.URL_ALT)) {
+    var version = anychart.VERSION ?
+        goog.string.subs.apply(null, [', v%s.%s.%s.%s'].concat(anychart.VERSION.split('.'))) :
+        '';
     goog.dom.setProperties(this.a_, {
       'href': valid ? this.url() : 'https://www.anychart.com/?utm_source=trial',
-      'title': valid ? this.alt() : 'AnyChart - JavaScript Charts designed to be embedded and integrated',
+      'title': valid ? this.alt() : 'AnyChart - JavaScript Charts designed to be embedded and integrated' + version,
       'target': '_blank'
     });
     goog.dom.setProperties(this.image_, {

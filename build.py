@@ -222,9 +222,18 @@ def __get_version():
 
 @memoize
 def __get_build_version():
+    # get current branch name
+    name_p = subprocess.Popen(
+        ['git', 'rev-parse', '--abbrev-ref', 'HEAD'],
+        stdout=subprocess.PIPE,
+        stderr=subprocess.STDOUT,
+        cwd=PROJECT_PATH)
+    (name_output, name_err) = name_p.communicate()
+    origin_name = 'origin/%s' % (name_output.strip())
+
     # get commits count from git repo
     p = subprocess.Popen(
-        ['git', 'rev-list', 'HEAD', '--count'],
+        ['git', 'rev-list', origin_name, '--count'],
         stdout=subprocess.PIPE,
         stderr=subprocess.STDOUT,
         cwd=PROJECT_PATH)
