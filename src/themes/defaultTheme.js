@@ -1580,43 +1580,49 @@ goog.provide('anychart.themes.defaultTheme');
       'defaultAnnotationSettings': {
         'base': {
           'enabled': true,
-          'fill': returnSourceColor50,
-          'stroke': returnSourceColor,
-          'hatchFill': null,
-          'hoverFill': returnSourceColor70,
-          'hoverStroke': returnDarkenSourceColor,
-          'selectFill': returnSourceColor70,
-          'selectStroke': returnDarkenSourceColor,
-          'markers': {
-            'enabled': false,
-            'size': 5,
-            'type': 'square',
-            'fill': '#ffff66',
-            'stroke': '#333333'
-          },
-          'hoverMarkers': {
-            'enabled': null
-          },
-          'selectMarkers': {
-            'enabled': true
-          },
-          'labels': {
-            'enabled': true,
-            'position': 'center-top',
-            'anchor': 'center-top',
-            /**
-             * @return {*}
-             * @this {*}
-             */
-            'format': function() {
-              return this['level'];
+          'normal': {
+            'fill': returnSourceColor50,
+            'stroke': returnSourceColor,
+            'hatchFill': null,
+            'markers': {
+              'enabled': false,
+              'size': 5,
+              'type': 'square',
+              'fill': '#ffff66',
+              'stroke': '#333333'
+            },
+            'labels': {
+              'enabled': true,
+              'position': 'center-top',
+              'anchor': 'center-top',
+              /**
+               * @return {*}
+               * @this {*}
+               */
+              'format': function() {
+                return this['level'];
+              }
             }
           },
-          'hoverLabels': {
-            'enabled': null
+          'hovered': {
+            'fill': returnSourceColor70,
+            'stroke': returnDarkenSourceColor,
+            'markers': {
+              'enabled': null
+            },
+            'labels': {
+              'enabled': null
+            }
           },
-          'selectLabels': {
-            'enabled': null
+          'selected': {
+            'fill': returnSourceColor70,
+            'stroke': returnDarkenSourceColor,
+            'markers': {
+              'enabled': true
+            },
+            'labels': {
+              'enabled': null
+            }
           },
           'color': '#e06666',
           'allowEdit': true,
@@ -1675,9 +1681,11 @@ goog.provide('anychart.themes.defaultTheme');
             2.618,
             4.236
           ],
-          'labels': {
-            'position': 'left-center',
-            'anchor': 'right-center'
+          'normal': {
+            'labels': {
+              'position': 'left-center',
+              'anchor': 'right-center'
+            }
           }
         },
         'fibonacciTimezones': {
@@ -1724,7 +1732,9 @@ goog.provide('anychart.themes.defaultTheme');
         },
         'marker': {
           'markerType': 'arrow-up',
-          'size': 20,
+          'normal': {
+            'size': 20
+          },
           'anchor': 'center-top',
           'offsetX': 0,
           'offsetY': 0

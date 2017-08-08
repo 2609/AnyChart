@@ -629,7 +629,7 @@ anychart.themes.merging.mergingMap_ = [
     targets: [
       'defaultAxis.labels',
       'defaultAxis.minorLabels',
-      'chart.defaultAnnotationSettings.base.labels',
+      'chart.defaultAnnotationSettings.base.normal.labels',
       'chart.defaultSeriesSettings.base.normal.labels',
       'pieFunnelPyramidBase.normal.labels',
       'defaultTimeline.labels',
@@ -675,7 +675,7 @@ anychart.themes.merging.mergingMap_ = [
   {
     defaultObj: 'defaultMarkerFactory',
     targets: [
-      'chart.defaultAnnotationSettings.base.markers',
+      'chart.defaultAnnotationSettings.base.normal.markers',
       'chart.defaultSeriesSettings.base.normal.markers',
       'pieFunnelPyramidBase.normal.markers',
       'defaultTimeline.markers',
