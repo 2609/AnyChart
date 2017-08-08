@@ -1715,6 +1715,8 @@ anychart.core.ui.Legend.prototype.initializeLegendItems_ = function(items) {
       item.container(this.itemsLayer_);
       items[i]['enabled'] = false;
       item.setup(items[i]);
+      if (!item.hasOwnOption('text'))
+        item.ownSettings['text'] = 'Legend Item';
       item.applyTextSettings(item.getTextElement(), true);
       item.setItemIndexToLayer(this.inverted_ ? items.length - 1 - i : i);
 
