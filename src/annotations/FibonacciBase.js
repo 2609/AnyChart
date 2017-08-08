@@ -132,6 +132,7 @@ anychart.annotationsModule.FibonacciBase.prototype.getNormalDescriptorsMeta = fu
   var base = anychart.annotationsModule.FibonacciBase.base(this, 'getNormalDescriptorsMeta');
   return goog.array.concat(
       base,
+      anychart.annotationsModule.LABELS_DESCRIPTORS_META,
       anychart.annotationsModule.STROKE_TREND_DESCRIPTORS_META,
       anychart.annotationsModule.LABELS_DESCRIPTORS_META);
 };
@@ -394,9 +395,12 @@ anychart.annotationsModule.FibonacciBase.prototype.drawLabel = function(index, m
 anychart.annotationsModule.FibonacciBase.prototype.setDefaultSettings = function(value) {
   anychart.annotationsModule.FibonacciBase.base(this, 'setDefaultSettings', value);
   this.levels(value['levels']);
-  this.normal().labels().setup(value['labels']);
-  this.hovered().labels().setup(value['hoverLabels']);
-  this.selected().labels().setup(value['selectLabels']);
+  if (value['normal'])
+    this.normal().labels().setup(value['normal']['labels']);
+  if (value['hovered'])
+    this.hovered().labels().setup(value['hovered']['labels']);
+  if (value['selected'])
+    this.selected().labels().setup(value['selected']['labels']);
 };
 
 

@@ -205,6 +205,19 @@ anychart.annotationsModule.Base.prototype.selected = function(opt_value) {
   }
   return this.selected_;
 };
+
+
+/**
+ * Resolve annotation color option.
+ * @param {Array.<string>} names
+ * @param {number} state
+ * @param {Function} normalizer
+ * @return {*}
+ */
+anychart.annotationsModule.Base.prototype.resolveOption = function(names, state, normalizer) {
+  var stateObject = state == 0 ? this.normal_ : state == 1 ? this.hovered_ : this.selected_;
+  return normalizer(stateObject.getOption(names[0]));
+};
 //endregion
 
 
@@ -1008,7 +1021,7 @@ anychart.annotationsModule.Base.getColor_ = function(colorNames, normalizer, isH
   var stateColor, context;
   state = anychart.core.utils.InteractivityState.clarifyState(state);
   if (state != anychart.PointState.NORMAL && colorNames.length > 1) {
-    stateColor = annotation.getOption(colorNames[state]);
+    stateColor = annotation.resolveOption(colorNames, state, normalizer);
     if (isHatchFill && stateColor === true)
       stateColor = normalizer(annotation.getAutoHatchFill());
     if (goog.isDef(stateColor)) {
@@ -1021,7 +1034,7 @@ anychart.annotationsModule.Base.getColor_ = function(colorNames, normalizer, isH
     }
   }
   // we can get here only if state color is undefined or is a function
-  var color = annotation.getOption(colorNames[0]);
+  var color = annotation.resolveOption(colorNames, 0, normalizer);
   if (isHatchFill && color === true)
     color = normalizer(annotation.getAutoHatchFill());
   if (goog.isFunction(color)) {
