@@ -2,6 +2,7 @@ goog.provide('anychart.exports.entry');
 
 goog.require('acgraph.exporting');
 goog.require('anychart');
+goog.require('anychart.base');
 goog.require('anychart.core.Chart');
 goog.require('anychart.core.VisualBase');
 goog.require('anychart.utils');
@@ -39,7 +40,7 @@ anychart.exports.image_ = {
  * @private
  */
 anychart.exports.facebook_ = {
-  'caption': window['location']['hostname'],
+  'caption': anychart.window['location'] ? anychart.window['location']['hostname'] : '',
   'link': undefined,
   'name': undefined,
   'description': undefined,
@@ -210,7 +211,7 @@ anychart.exports.pinterest = function(opt_linkOrOptions, opt_description, opt_wi
  @param {string=} opt_address Export server script URL.
  @return {string} Export server script URL.
  */
-anychart.exports.server = goog.global['acgraph']['server'];
+anychart.exports.server = anychart.window['acgraph']['server'];
 
 
 
@@ -744,8 +745,8 @@ anychart.exports.shareWithFacebook = function(container, opt_captionOrOptions, o
   var h = 550;
   var left = Number((screen.width / 2) - (w / 2));
   var top = Number((screen.height / 2) - (h / 2));
-  var window = goog.dom.getWindow();
-  var popup = window.open('', '_blank', 'scrollbars=yes, width=' + w + ', height=' + h + ', top=' + top + ', left=' + left);
+  var window = anychart.window;
+  var popup = anychart.window.open('', '_blank', 'scrollbars=yes, width=' + w + ', height=' + h + ', top=' + top + ', left=' + left);
 
   var onSuccess = function(imgUrl) {
     var urlBase = 'https://www.facebook.com/dialog/feed';
@@ -827,8 +828,8 @@ anychart.exports.shareWithTwitter = function(container) {
 
   if (goog.isDef(mapForm) && goog.isDef(dataInput)) {
     dataInput.value = anychart.exports.toSvg(container, exportOptions['width'], exportOptions['height']);
-    var window = goog.dom.getWindow();
-    var mapWindow = window.open('', 'Map', 'status=0,title=0,height=520,width=600,scrollbars=1, width=' + w + ', height=' + h + ', top=' + top + ', left=' + left);
+    var window = anychart.window;
+    var mapWindow = anychart.window.open('', 'Map', 'status=0,title=0,height=520,width=600,scrollbars=1, width=' + w + ', height=' + h + ', top=' + top + ', left=' + left);
     if (mapWindow) mapForm.submit();
   }
 };
@@ -851,8 +852,8 @@ anychart.exports.shareWithLinkedIn = function(container, opt_captionOrOptions, o
   var h = 520;
   var left = Number((screen.width / 2) - (w / 2));
   var top = Number((screen.height / 2) - (h / 2));
-  var window = goog.dom.getWindow();
-  var popup = window.open('', '_blank', 'scrollbars=yes, width=' + w + ', height=' + h + ', top=' + top + ', left=' + left);
+  var window = anychart.window;
+  var popup = anychart.window.open('', '_blank', 'scrollbars=yes, width=' + w + ', height=' + h + ', top=' + top + ', left=' + left);
 
   var onSuccess = function(imgUrl) {
     var urlBase = 'https://www.linkedin.com/shareArticle';
@@ -897,8 +898,8 @@ anychart.exports.shareWithPinterest = function(container, opt_linkOrOptions, opt
   var h = 520;
   var left = Number((screen.width / 2) - (w / 2));
   var top = Number((screen.height / 2) - (h / 2));
-  var window = goog.dom.getWindow();
-  var popup = window.open('', '_blank', 'scrollbars=yes, width=' + w + ', height=' + h + ', top=' + top + ', left=' + left);
+  var window = anychart.window;
+  var popup = anychart.window.open('', '_blank', 'scrollbars=yes, width=' + w + ', height=' + h + ', top=' + top + ', left=' + left);
 
   var onSuccess = function(imgUrl) {
     var urlBase = 'https://pinterest.com/pin/create/link';

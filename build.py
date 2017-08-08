@@ -516,7 +516,7 @@ def __make_build(build_name, modules, checks_only=False, theme_name='none', dev_
         module_def = '--module %s:%s%s' % \
                      (module_name, len(module_files), '' if len(module_deps) == 0 else ':' + ','.join(module_deps))
         normalized_module_name = module_name.replace('-', '_')
-        module_wrapper = '--module_wrapper %s:"if(!_.%s){_.%s=1;(function($){%s})($)}"' % \
+        module_wrapper = '--module_wrapper %s:"if(!_.%s){_.%s=1;(function($){%s}).call(this,$)}"' % \
                          (module_name, normalized_module_name, normalized_module_name, '%s')
         additional_flags.append(module_def)
         additional_flags.append(module_wrapper)
@@ -614,10 +614,11 @@ def __get_bundle_wrapper(bundle_name, modules, file_name='', performance_monitor
             "}else{" \
             "factory.call(global,window,document)" \
             "}})(typeof window!=='undefined'?window:this,function(window,document,opt_noGlobal){" \
-            "var $,_,$_=window.anychart;%s" \
+            "var $,_,$_=this.anychart;%s" \
             "if($_&&(_=$_._)){$=$_.$}else{%s$={};_={}}" % \
             (header, perf_start, core_check)
-    end = '%s$_=window.anychart;$_.$=$;$_._=_})%s' % (perf_end, source_mapping)
+    end = '%s$_=this.anychart;$_.$=$;$_._=_})%s' % (perf_end, source_mapping)
+    #end = '})'
 
     return start, end
 

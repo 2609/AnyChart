@@ -90,7 +90,7 @@ anychart.fromJsonFile = function(url, opt_onSuccessOrContainer, opt_onError, opt
  * @private
  */
 anychart.getChartCreationMethod_ = function(name, opt_onError, opt_context) {
-  var win = goog.dom.getWindow();
+  var win = anychart.window;
   var anychart = win['anychart'];
   if (!anychart) {
     if (opt_onError) opt_onError.call(opt_context, 500, 'AnyChart in not present on the page.');
@@ -393,7 +393,7 @@ anychart.dataAdapterModule.entry.processAsJson_ = function(xhr) {
  */
 anychart.dataAdapterModule.entry.processAsXml_ = function(xhr) {
   var xml = xhr.getResponseXml();
-  var json = goog.global['anychart']['utils']['xml2json'](xml);
+  var json = anychart.window['anychart']['utils']['xml2json'](xml);
   return [json['data']];
 };
 
