@@ -384,7 +384,7 @@ anychart.core.Text.prototype.textSettings = function(opt_objectOrName, opt_value
       } else {
         return this.ownSettings[opt_objectOrName];
       }
-    } else if (goog.isObject(opt_obje≠ctOrName)) {
+    } else if (goog.isObject(opt_objectOrName)) {
       // this.suspendSignalsDispatching();
       for (var item in opt_objectOrName) {
         if (opt_objectOrName.hasOwnProperty(item))
