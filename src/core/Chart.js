@@ -1539,11 +1539,16 @@ anychart.core.Chart.prototype.drawInternal = function() {
 
   this.resumeSignalsDispatching(false);
 
+  var id = acgraph.utils.IdGenerator.getInstance().identify(this, 'chart');
+  this.rootElement.id(id);
+
   if (manualSuspend) {
     anychart.performance.start('Stage resume');
     stage.resume();
     anychart.performance.end('Stage resume');
   }
+
+  stage.getCharts()[id] = this;
 
   this.dispatchDetachedEvent({
     'type': anychart.enums.EventType.CHART_DRAW,
