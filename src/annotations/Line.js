@@ -36,13 +36,12 @@ anychart.annotationsModule.Line = function(chartController) {
   anychart.core.settings.createDescriptorsMeta(this.descriptorsMeta, anychart.annotationsModule.X_ANCHOR_DESCRIPTORS_META);
   anychart.core.settings.createDescriptorsMeta(this.descriptorsMeta, anychart.annotationsModule.VALUE_ANCHOR_DESCRIPTORS_META);
   anychart.core.settings.createDescriptorsMeta(this.descriptorsMeta, anychart.annotationsModule.SECOND_ANCHOR_POINT_DESCRIPTORS_META);
-  anychart.core.settings.createDescriptorsMeta(this.descriptorsMeta, anychart.annotationsModule.STROKE_DESCRIPTORS_META);
 };
 goog.inherits(anychart.annotationsModule.Line, anychart.annotationsModule.Base);
+anychart.core.settings.populateAliases(anychart.annotationsModule.Line, ['stroke'], 'normal');
 anychart.core.settings.populate(anychart.annotationsModule.Line, anychart.annotationsModule.X_ANCHOR_DESCRIPTORS);
 anychart.core.settings.populate(anychart.annotationsModule.Line, anychart.annotationsModule.VALUE_ANCHOR_DESCRIPTORS);
 anychart.core.settings.populate(anychart.annotationsModule.Line, anychart.annotationsModule.SECOND_ANCHOR_POINT_DESCRIPTORS);
-anychart.core.settings.populate(anychart.annotationsModule.Line, anychart.annotationsModule.STROKE_DESCRIPTORS);
 anychart.annotationsModule.AnnotationTypes[anychart.enums.AnnotationTypes.LINE] = anychart.annotationsModule.Line;
 
 
@@ -61,6 +60,15 @@ anychart.annotationsModule.Line.prototype.type = anychart.enums.AnnotationTypes.
  * @type {anychart.annotationsModule.AnchorSupport}
  */
 anychart.annotationsModule.Line.prototype.SUPPORTED_ANCHORS = anychart.annotationsModule.AnchorSupport.TWO_POINTS;
+
+
+//endregion
+//region State settings
+/** @inheritDoc */
+anychart.annotationsModule.Line.prototype.getNormalDescriptorsMeta = function() {
+  var base = anychart.annotationsModule.Line.base(this, 'getNormalDescriptorsMeta');
+  return goog.array.concat(base, anychart.annotationsModule.STROKE_DESCRIPTORS_META);
+};
 
 
 //endregion
@@ -136,7 +144,6 @@ anychart.annotationsModule.Line.prototype.colorize = function(state) {
 anychart.annotationsModule.Line.prototype.serialize = function() {
   var json = anychart.annotationsModule.Line.base(this, 'serialize');
 
-  anychart.core.settings.serialize(this, anychart.annotationsModule.STROKE_DESCRIPTORS, json, 'Annotation');
   anychart.core.settings.serialize(this, anychart.annotationsModule.X_ANCHOR_DESCRIPTORS, json, 'Annotation');
   anychart.core.settings.serialize(this, anychart.annotationsModule.VALUE_ANCHOR_DESCRIPTORS, json, 'Annotation');
   anychart.core.settings.serialize(this, anychart.annotationsModule.SECOND_ANCHOR_POINT_DESCRIPTORS, json, 'Annotation');
@@ -148,7 +155,6 @@ anychart.annotationsModule.Line.prototype.serialize = function() {
 /** @inheritDoc */
 anychart.annotationsModule.Line.prototype.setupByJSON = function(config, opt_default) {
 
-  anychart.core.settings.deserialize(this, anychart.annotationsModule.STROKE_DESCRIPTORS, config);
   anychart.core.settings.deserialize(this, anychart.annotationsModule.X_ANCHOR_DESCRIPTORS, config);
   anychart.core.settings.deserialize(this, anychart.annotationsModule.VALUE_ANCHOR_DESCRIPTORS, config);
   anychart.core.settings.deserialize(this, anychart.annotationsModule.SECOND_ANCHOR_POINT_DESCRIPTORS, config);

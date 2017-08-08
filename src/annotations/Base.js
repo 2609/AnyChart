@@ -1,6 +1,7 @@
 goog.provide('anychart.annotationsModule.Base');
 goog.require('anychart.annotationsModule');
 goog.require('anychart.core.IPlot');
+goog.require('anychart.core.StateSettings');
 goog.require('anychart.core.VisualBaseWithBounds');
 goog.require('anychart.core.settings');
 goog.require('anychart.core.ui.MarkersFactory');
@@ -109,9 +110,102 @@ anychart.annotationsModule.Base = function(chartController) {
   this.markersSupported = true;
 
   anychart.core.settings.createDescriptorsMeta(this.descriptorsMeta, anychart.annotationsModule.BASE_DESCRIPTORS_META);
+
+  var normalMap = {};
+  anychart.core.settings.createDescriptorsMeta(normalMap, this.getNormalDescriptorsMeta());
+  this.normal_ = new anychart.core.StateSettings(this, normalMap, anychart.PointState.NORMAL);
+  var markersConstructor = function() {
+    return new anychart.core.ui.MarkersFactory(true, true);
+  };
+  this.normal_.setOption(anychart.core.StateSettings.MARKERS_FACTORY_CONSTRUCTOR, markersConstructor);
+  this.normal_.setOption(anychart.core.StateSettings.MARKERS_AFTER_INIT_CALLBACK, anychart.core.StateSettings.DEFAULT_MARKERS_AFTER_INIT_CALLBACK);
+
+  var hoveredMap = {};
+  anychart.core.settings.createDescriptorsMeta(hoveredMap, this.getHoveredDescriptorsMeta());
+  this.hovered_ = new anychart.core.StateSettings(this, hoveredMap, anychart.PointState.HOVER);
+  this.hovered_.setOption(anychart.core.StateSettings.MARKERS_FACTORY_CONSTRUCTOR, markersConstructor);
+
+  var selectedMap = {};
+  anychart.core.settings.createDescriptorsMeta(selectedMap, this.getSelectedDescriptorsMeta());
+  this.selected_ = new anychart.core.StateSettings(this, selectedMap, anychart.PointState.SELECT);
+  this.selected_.setOption(anychart.core.StateSettings.MARKERS_FACTORY_CONSTRUCTOR, markersConstructor);
 };
 goog.inherits(anychart.annotationsModule.Base, anychart.core.VisualBaseWithBounds);
+anychart.core.settings.populateAliases(anychart.annotationsModule.Base, ['markers'], 'normal');
 anychart.core.settings.populate(anychart.annotationsModule.Base, anychart.annotationsModule.BASE_DESCRIPTORS);
+
+
+//region State settings
+/**
+ * Returns normal descriptors meta.
+ * @return {!Array.<Array>}
+ */
+anychart.annotationsModule.Base.prototype.getNormalDescriptorsMeta = function() {
+  return [
+    ['markers', 0, 0]
+  ];
+};
+
+
+/**
+ * Returns hovered descriptors meta.
+ * @return {!Array.<Array>}
+ */
+anychart.annotationsModule.Base.prototype.getHoveredDescriptorsMeta = function() {
+  return this.getNormalDescriptorsMeta();
+};
+
+
+/**
+ * Returns selected descriptors meta.
+ * @return {!Array.<Array>}
+ */
+anychart.annotationsModule.Base.prototype.getSelectedDescriptorsMeta = function() {
+  return this.getNormalDescriptorsMeta();
+};
+
+
+/**
+ * Normal state settings.
+ * @param {!Object=} opt_value
+ * @return {anychart.core.StateSettings|anychart.annotationsModule.Base}
+ */
+anychart.annotationsModule.Base.prototype.normal = function(opt_value) {
+  if (goog.isDef(opt_value)) {
+    this.normal_.setupByJSON(opt_value);
+    return this;
+  }
+  return this.normal_;
+};
+
+
+/**
+ * Hovered state settings.
+ * @param {!Object=} opt_value
+ * @return {anychart.core.StateSettings|anychart.annotationsModule.Base}
+ */
+anychart.annotationsModule.Base.prototype.hovered = function(opt_value) {
+  if (goog.isDef(opt_value)) {
+    this.hovered_.setupByJSON(opt_value);
+    return this;
+  }
+  return this.hovered_;
+};
+
+
+/**
+ * Selected state settings.
+ * @param {!Object=} opt_value
+ * @return {anychart.core.StateSettings|anychart.annotationsModule.Base}
+ */
+anychart.annotationsModule.Base.prototype.selected = function(opt_value) {
+  if (goog.isDef(opt_value)) {
+    this.selected_.setupByJSON(opt_value);
+    return this;
+  }
+  return this.selected_;
+};
+//endregion
 
 
 //region Infrastructure
@@ -736,8 +830,8 @@ anychart.annotationsModule.Base.prototype.draw = function() {
 
   if (this.hasInvalidationState(anychart.ConsistencyState.ANNOTATIONS_MARKERS)) {
     if (this.markersSupported) {
-      var factory = /** @type {anychart.core.ui.MarkersFactory} */(this.markers());
-      var stateFactoriesEnabled = /** @type {boolean} */(this.hoverMarkers().enabled() || /** @type {anychart.core.ui.MarkersFactory} */(this.selectMarkers()).enabled());
+      var factory = /** @type {anychart.core.ui.MarkersFactory} */(this.normal().markers());
+      var stateFactoriesEnabled = /** @type {boolean} */(this.hovered().markers().enabled() || /** @type {anychart.core.ui.MarkersFactory} */(this.selected().markers()).enabled());
       factory.suspendSignalsDispatching();
       if ((factory.enabled() !== false) || stateFactoriesEnabled) {
         factory.container(this.rootLayer);
@@ -794,10 +888,9 @@ anychart.annotationsModule.Base.prototype.checkDrawingNeeded = function() {
 anychart.annotationsModule.Base.prototype.remove = function() {
   if (this.rootLayer)
     this.rootLayer.remove();
-  if (this.markers_) {
-    this.markers_.remove();
-    this.markers_.invalidate(anychart.ConsistencyState.CONTAINER);
-  }
+  var markers = this.normal().markers();
+  markers.remove();
+  markers.invalidate(anychart.ConsistencyState.CONTAINER);
 };
 
 
@@ -1011,74 +1104,6 @@ anychart.annotationsModule.Base.prototype.scaleSignalHandler_ = function(e) {
 
 //endregion
 //region Markers
-//----------------------------------------------------------------------------------------------------------------------
-//
-//  Markers
-//
-//----------------------------------------------------------------------------------------------------------------------
-/**
- * Getter/setter for markers.
- * @param {(Object|boolean|null|string)=} opt_value Series data markers settings.
- * @return {!(anychart.core.ui.MarkersFactory|anychart.annotationsModule.Base)} Markers instance or itself for chaining call.
- */
-anychart.annotationsModule.Base.prototype.markers = function(opt_value) {
-  if (!this.markers_) {
-    this.markers_ = new anychart.core.ui.MarkersFactory(true, true);
-    this.markers_.setParentEventTarget(this);
-    this.markers_.listenSignals(this.markersInvalidated_, this);
-  }
-
-  if (goog.isDef(opt_value)) {
-    if (goog.isObject(opt_value) && !('enabled' in opt_value))
-      opt_value['enabled'] = true;
-    this.markers_.setup(opt_value);
-    return this;
-  }
-  return this.markers_;
-};
-
-
-/**
- * Getter/setter for hoverMarkers.
- * @param {(Object|boolean|null|string)=} opt_value Series data markers settings.
- * @return {!(anychart.core.ui.MarkersFactory|anychart.annotationsModule.Base)} Markers instance or itself for chaining call.
- */
-anychart.annotationsModule.Base.prototype.hoverMarkers = function(opt_value) {
-  if (!this.hoverMarkers_) {
-    this.hoverMarkers_ = new anychart.core.ui.MarkersFactory(true, true);
-    // don't listen to it, for it will be reapplied at the next hover
-  }
-
-  if (goog.isDef(opt_value)) {
-    if (goog.isObject(opt_value) && !('enabled' in opt_value))
-      opt_value['enabled'] = true;
-    this.hoverMarkers_.setup(opt_value);
-    return this;
-  }
-  return this.hoverMarkers_;
-};
-
-
-/**
- * @param {(Object|boolean|null|string)=} opt_value Series data markers settings.
- * @return {!(anychart.core.ui.MarkersFactory|anychart.annotationsModule.Base)} Markers instance or itself for chaining call.
- */
-anychart.annotationsModule.Base.prototype.selectMarkers = function(opt_value) {
-  if (!this.selectMarkers_) {
-    this.selectMarkers_ = new anychart.core.ui.MarkersFactory(true, true);
-    // don't listen to it, for it will be reapplied at the next hover
-  }
-
-  if (goog.isDef(opt_value)) {
-    if (goog.isObject(opt_value) && !('enabled' in opt_value))
-      opt_value['enabled'] = true;
-    this.selectMarkers_.setup(opt_value);
-    return this;
-  }
-  return this.selectMarkers_;
-};
-
-
 /**
  * Listener for markers invalidation.
  * @param {anychart.SignalEvent} event Invalidation event.
@@ -1097,17 +1122,17 @@ anychart.annotationsModule.Base.prototype.markersInvalidated_ = function(event) 
  * @private
  */
 anychart.annotationsModule.Base.prototype.drawMarkers_ = function(state) {
-  var mainFactory = /** @type {anychart.core.ui.MarkersFactory} */(this.markers());
+  var mainFactory = /** @type {anychart.core.ui.MarkersFactory} */(this.normal().markers());
 
   var stateFactory;
   state = anychart.core.utils.InteractivityState.clarifyState(state);
 
   switch (state) {
     case anychart.PointState.HOVER:
-      stateFactory = /** @type {anychart.core.ui.MarkersFactory} */(this.hoverMarkers());
+      stateFactory = /** @type {anychart.core.ui.MarkersFactory} */(this.hovered().markers());
       break;
     case anychart.PointState.SELECT:
-      stateFactory = /** @type {anychart.core.ui.MarkersFactory} */(this.selectMarkers());
+      stateFactory = /** @type {anychart.core.ui.MarkersFactory} */(this.selected().markers());
       break;
     default:
       stateFactory = null;
@@ -1218,9 +1243,12 @@ anychart.annotationsModule.Base.prototype.hasOwnOption = function(name) {
  */
 anychart.annotationsModule.Base.prototype.setDefaultSettings = function(value) {
   this.themeSettings = value;
-  this.markers().setup(value['markers']);
-  this.hoverMarkers().setup(value['hoverMarkers']);
-  this.selectMarkers().setup(value['selectMarkers']);
+  if (value['normal'])
+    this.normal().markers().setup(value['normal']['markers']);
+  if (value['hovered'])
+    this.hovered().markers().setup(value['hovered']['markers']);
+  if (value['selected'])
+    this.selected().markers().setup(value['selected']['markers']);
 };
 
 
@@ -1231,9 +1259,13 @@ anychart.annotationsModule.Base.prototype.serialize = function() {
   json['type'] = this.getType();
 
   anychart.core.settings.serialize(this, anychart.annotationsModule.BASE_DESCRIPTORS, json, 'Annotation');
-  json['markers'] = this.markers().serialize();
-  json['hoverMarkers'] = this.hoverMarkers().serialize();
-  json['selectMarkers'] = this.selectMarkers().serialize();
+  //json['markers'] = this.markers().serialize();
+  //json['hoverMarkers'] = this.hoverMarkers().serialize();
+  //json['selectMarkers'] = this.selectMarkers().serialize();
+
+  json['normal'] = this.normal_.serialize();
+  json['hovered'] = this.hovered_.serialize();
+  json['selected'] = this.selected_.serialize();
 
   return json;
 };
@@ -1242,9 +1274,20 @@ anychart.annotationsModule.Base.prototype.serialize = function() {
 /** @inheritDoc */
 anychart.annotationsModule.Base.prototype.setupByJSON = function(config, opt_default) {
   anychart.core.settings.deserialize(this, anychart.annotationsModule.BASE_DESCRIPTORS, config);
-  this.markers().setup(config['markers']);
-  this.hoverMarkers().setup(config['hoverMarkers']);
-  this.selectMarkers().setup(config['selectMarkers']);
+  //this.markers().setup(config['markers']);
+  //this.hoverMarkers().setup(config['hoverMarkers']);
+  //this.selectMarkers().setup(config['selectMarkers']);
+
+  this.normal_.setupByJSON(config, opt_default);
+  if (config['normal']) {
+    this.normal_.setupByJSON(config['normal'], opt_default);
+  }
+  if (config['hovered']) {
+    this.hovered_.setupByJSON(config['hovered'], opt_default);
+  }
+  if (config['selected']) {
+    this.selected_.setupByJSON(config['selected'], opt_default);
+  }
 
   anychart.annotationsModule.Base.base(this, 'setupByJSON', config, opt_default);
 };
@@ -1276,7 +1319,10 @@ anychart.annotationsModule.Base.prototype.disposeInternal = function() {
   proto['yScale'] = proto.yScale;
   proto['xScale'] = proto.xScale;
   proto['select'] = proto.select;
-  proto['markers'] = proto.markers;
-  proto['hoverMarkers'] = proto.hoverMarkers;
-  proto['selectMarkers'] = proto.selectMarkers;
+  //proto['markers'] = proto.markers;
+  //proto['hoverMarkers'] = proto.hoverMarkers;
+  //proto['selectMarkers'] = proto.selectMarkers;
+  proto['normal'] = proto.normal;
+  proto['hovered'] = proto.hovered;
+  proto['selected'] = proto.selected;
 })();

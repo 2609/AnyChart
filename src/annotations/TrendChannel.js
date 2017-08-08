@@ -61,16 +61,13 @@ anychart.annotationsModule.TrendChannel = function(chartController) {
   anychart.core.settings.createDescriptorsMeta(this.descriptorsMeta, anychart.annotationsModule.VALUE_ANCHOR_DESCRIPTORS_META);
   anychart.core.settings.createDescriptorsMeta(this.descriptorsMeta, anychart.annotationsModule.SECOND_ANCHOR_POINT_DESCRIPTORS_META);
   anychart.core.settings.createDescriptorsMeta(this.descriptorsMeta, anychart.annotationsModule.THIRD_ANCHOR_POINT_DESCRIPTORS_META);
-  anychart.core.settings.createDescriptorsMeta(this.descriptorsMeta, anychart.annotationsModule.STROKE_DESCRIPTORS_META);
-  anychart.core.settings.createDescriptorsMeta(this.descriptorsMeta, anychart.annotationsModule.FILL_DESCRIPTORS_META);
 };
 goog.inherits(anychart.annotationsModule.TrendChannel, anychart.annotationsModule.Base);
+anychart.core.settings.populateAliases(anychart.annotationsModule.TrendChannel, ['fill', 'hatchFill', 'stroke'], 'normal');
 anychart.core.settings.populate(anychart.annotationsModule.TrendChannel, anychart.annotationsModule.X_ANCHOR_DESCRIPTORS);
 anychart.core.settings.populate(anychart.annotationsModule.TrendChannel, anychart.annotationsModule.VALUE_ANCHOR_DESCRIPTORS);
 anychart.core.settings.populate(anychart.annotationsModule.TrendChannel, anychart.annotationsModule.SECOND_ANCHOR_POINT_DESCRIPTORS);
 anychart.core.settings.populate(anychart.annotationsModule.TrendChannel, anychart.annotationsModule.THIRD_ANCHOR_POINT_DESCRIPTORS);
-anychart.core.settings.populate(anychart.annotationsModule.TrendChannel, anychart.annotationsModule.STROKE_DESCRIPTORS);
-anychart.core.settings.populate(anychart.annotationsModule.TrendChannel, anychart.annotationsModule.FILL_DESCRIPTORS);
 anychart.annotationsModule.AnnotationTypes[anychart.enums.AnnotationTypes.TREND_CHANNEL] = anychart.annotationsModule.TrendChannel;
 
 
@@ -89,6 +86,15 @@ anychart.annotationsModule.TrendChannel.prototype.type = anychart.enums.Annotati
  * @type {anychart.annotationsModule.AnchorSupport}
  */
 anychart.annotationsModule.TrendChannel.prototype.SUPPORTED_ANCHORS = anychart.annotationsModule.AnchorSupport.THREE_POINTS;
+
+
+//endregion
+//region State settings
+/** @inheritDoc */
+anychart.annotationsModule.TrendChannel.prototype.getNormalDescriptorsMeta = function() {
+  var base = anychart.annotationsModule.TrendChannel.base(this, 'getNormalDescriptorsMeta');
+  return goog.array.concat(base, anychart.annotationsModule.FILL_STROKE_DESCRIPTORS_META);
+};
 
 
 //endregion
@@ -309,8 +315,6 @@ anychart.annotationsModule.TrendChannel.prototype.checkVisible = function() {
 anychart.annotationsModule.TrendChannel.prototype.serialize = function() {
   var json = anychart.annotationsModule.TrendChannel.base(this, 'serialize');
 
-  anychart.core.settings.serialize(this, anychart.annotationsModule.FILL_DESCRIPTORS, json, 'Annotation');
-  anychart.core.settings.serialize(this, anychart.annotationsModule.STROKE_DESCRIPTORS, json, 'Annotation');
   anychart.core.settings.serialize(this, anychart.annotationsModule.X_ANCHOR_DESCRIPTORS, json, 'Annotation');
   anychart.core.settings.serialize(this, anychart.annotationsModule.VALUE_ANCHOR_DESCRIPTORS, json, 'Annotation');
   anychart.core.settings.serialize(this, anychart.annotationsModule.SECOND_ANCHOR_POINT_DESCRIPTORS, json, 'Annotation');
@@ -323,8 +327,6 @@ anychart.annotationsModule.TrendChannel.prototype.serialize = function() {
 /** @inheritDoc */
 anychart.annotationsModule.TrendChannel.prototype.setupByJSON = function(config, opt_default) {
 
-  anychart.core.settings.deserialize(this, anychart.annotationsModule.FILL_DESCRIPTORS, config);
-  anychart.core.settings.deserialize(this, anychart.annotationsModule.STROKE_DESCRIPTORS, config);
   anychart.core.settings.deserialize(this, anychart.annotationsModule.X_ANCHOR_DESCRIPTORS, config);
   anychart.core.settings.deserialize(this, anychart.annotationsModule.VALUE_ANCHOR_DESCRIPTORS, config);
   anychart.core.settings.deserialize(this, anychart.annotationsModule.SECOND_ANCHOR_POINT_DESCRIPTORS, config);

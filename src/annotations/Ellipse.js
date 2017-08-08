@@ -61,16 +61,13 @@ anychart.annotationsModule.Ellipse = function(chartController) {
   anychart.core.settings.createDescriptorsMeta(this.descriptorsMeta, anychart.annotationsModule.VALUE_ANCHOR_DESCRIPTORS_META);
   anychart.core.settings.createDescriptorsMeta(this.descriptorsMeta, anychart.annotationsModule.SECOND_ANCHOR_POINT_DESCRIPTORS_META);
   anychart.core.settings.createDescriptorsMeta(this.descriptorsMeta, anychart.annotationsModule.THIRD_ANCHOR_POINT_DESCRIPTORS_META);
-  anychart.core.settings.createDescriptorsMeta(this.descriptorsMeta, anychart.annotationsModule.STROKE_DESCRIPTORS_META);
-  anychart.core.settings.createDescriptorsMeta(this.descriptorsMeta, anychart.annotationsModule.FILL_DESCRIPTORS_META);
 };
 goog.inherits(anychart.annotationsModule.Ellipse, anychart.annotationsModule.Base);
+anychart.core.settings.populateAliases(anychart.annotationsModule.Ellipse, ['fill', 'hatchFill', 'stroke'], 'normal');
 anychart.core.settings.populate(anychart.annotationsModule.Ellipse, anychart.annotationsModule.X_ANCHOR_DESCRIPTORS);
 anychart.core.settings.populate(anychart.annotationsModule.Ellipse, anychart.annotationsModule.VALUE_ANCHOR_DESCRIPTORS);
 anychart.core.settings.populate(anychart.annotationsModule.Ellipse, anychart.annotationsModule.SECOND_ANCHOR_POINT_DESCRIPTORS);
 anychart.core.settings.populate(anychart.annotationsModule.Ellipse, anychart.annotationsModule.THIRD_ANCHOR_POINT_DESCRIPTORS);
-anychart.core.settings.populate(anychart.annotationsModule.Ellipse, anychart.annotationsModule.STROKE_DESCRIPTORS);
-anychart.core.settings.populate(anychart.annotationsModule.Ellipse, anychart.annotationsModule.FILL_DESCRIPTORS);
 anychart.annotationsModule.AnnotationTypes[anychart.enums.AnnotationTypes.ELLIPSE] = anychart.annotationsModule.Ellipse;
 
 
@@ -89,6 +86,15 @@ anychart.annotationsModule.Ellipse.prototype.type = anychart.enums.AnnotationTyp
  * @type {anychart.annotationsModule.AnchorSupport}
  */
 anychart.annotationsModule.Ellipse.prototype.SUPPORTED_ANCHORS = anychart.annotationsModule.AnchorSupport.TWO_POINTS;
+
+
+//endregion
+//region State settings
+/** @inheritDoc */
+anychart.annotationsModule.Ellipse.prototype.getNormalDescriptorsMeta = function() {
+  var base = anychart.annotationsModule.Ellipse.base(this, 'getNormalDescriptorsMeta');
+  return goog.array.concat(base, anychart.annotationsModule.FILL_STROKE_DESCRIPTORS_META);
+};
 
 
 //endregion
@@ -161,8 +167,6 @@ anychart.annotationsModule.Ellipse.prototype.colorize = function(state) {
 anychart.annotationsModule.Ellipse.prototype.serialize = function() {
   var json = anychart.annotationsModule.Ellipse.base(this, 'serialize');
 
-  anychart.core.settings.serialize(this, anychart.annotationsModule.FILL_DESCRIPTORS, json, 'Annotation');
-  anychart.core.settings.serialize(this, anychart.annotationsModule.STROKE_DESCRIPTORS, json, 'Annotation');
   anychart.core.settings.serialize(this, anychart.annotationsModule.X_ANCHOR_DESCRIPTORS, json, 'Annotation');
   anychart.core.settings.serialize(this, anychart.annotationsModule.VALUE_ANCHOR_DESCRIPTORS, json, 'Annotation');
   anychart.core.settings.serialize(this, anychart.annotationsModule.SECOND_ANCHOR_POINT_DESCRIPTORS, json, 'Annotation');
@@ -174,8 +178,6 @@ anychart.annotationsModule.Ellipse.prototype.serialize = function() {
 /** @inheritDoc */
 anychart.annotationsModule.Ellipse.prototype.setupByJSON = function(config, opt_default) {
 
-  anychart.core.settings.deserialize(this, anychart.annotationsModule.FILL_DESCRIPTORS, config);
-  anychart.core.settings.deserialize(this, anychart.annotationsModule.STROKE_DESCRIPTORS, config);
   anychart.core.settings.deserialize(this, anychart.annotationsModule.X_ANCHOR_DESCRIPTORS, config);
   anychart.core.settings.deserialize(this, anychart.annotationsModule.VALUE_ANCHOR_DESCRIPTORS, config);
   anychart.core.settings.deserialize(this, anychart.annotationsModule.SECOND_ANCHOR_POINT_DESCRIPTORS, config);

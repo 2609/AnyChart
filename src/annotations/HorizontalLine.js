@@ -34,11 +34,10 @@ anychart.annotationsModule.HorizontalLine = function(chartController) {
           ['stroke', 'hoverStroke', 'selectStroke'],
           anychart.enums.ColorType.STROKE));
   anychart.core.settings.createDescriptorsMeta(this.descriptorsMeta, anychart.annotationsModule.VALUE_ANCHOR_DESCRIPTORS_META);
-  anychart.core.settings.createDescriptorsMeta(this.descriptorsMeta, anychart.annotationsModule.STROKE_DESCRIPTORS_META);
 };
 goog.inherits(anychart.annotationsModule.HorizontalLine, anychart.annotationsModule.Base);
+anychart.core.settings.populateAliases(anychart.annotationsModule.HorizontalLine, ['stroke'], 'normal');
 anychart.core.settings.populate(anychart.annotationsModule.HorizontalLine, anychart.annotationsModule.VALUE_ANCHOR_DESCRIPTORS);
-anychart.core.settings.populate(anychart.annotationsModule.HorizontalLine, anychart.annotationsModule.STROKE_DESCRIPTORS);
 anychart.annotationsModule.AnnotationTypes[anychart.enums.AnnotationTypes.HORIZONTAL_LINE] = anychart.annotationsModule.HorizontalLine;
 
 
@@ -57,6 +56,15 @@ anychart.annotationsModule.HorizontalLine.prototype.type = anychart.enums.Annota
  * @type {anychart.annotationsModule.AnchorSupport}
  */
 anychart.annotationsModule.HorizontalLine.prototype.SUPPORTED_ANCHORS = anychart.annotationsModule.AnchorSupport.VALUE;
+
+
+//endregion
+//region State settings
+/** @inheritDoc */
+anychart.annotationsModule.HorizontalLine.prototype.getNormalDescriptorsMeta = function() {
+  var base = anychart.annotationsModule.HorizontalLine.base(this, 'getNormalDescriptorsMeta');
+  return goog.array.concat(base, anychart.annotationsModule.STROKE_DESCRIPTORS_META);
+};
 
 
 //endregion
@@ -114,7 +122,6 @@ anychart.annotationsModule.HorizontalLine.prototype.colorize = function(state) {
 anychart.annotationsModule.HorizontalLine.prototype.serialize = function() {
   var json = anychart.annotationsModule.HorizontalLine.base(this, 'serialize');
 
-  anychart.core.settings.serialize(this, anychart.annotationsModule.STROKE_DESCRIPTORS, json, 'Annotation');
   anychart.core.settings.serialize(this, anychart.annotationsModule.VALUE_ANCHOR_DESCRIPTORS, json, 'Annotation');
 
   return json;
@@ -124,7 +131,6 @@ anychart.annotationsModule.HorizontalLine.prototype.serialize = function() {
 /** @inheritDoc */
 anychart.annotationsModule.HorizontalLine.prototype.setupByJSON = function(config, opt_default) {
 
-  anychart.core.settings.deserialize(this, anychart.annotationsModule.STROKE_DESCRIPTORS, config);
   anychart.core.settings.deserialize(this, anychart.annotationsModule.VALUE_ANCHOR_DESCRIPTORS, config);
 
   anychart.annotationsModule.HorizontalLine.base(this, 'setupByJSON', config, opt_default);

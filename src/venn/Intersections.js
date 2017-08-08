@@ -35,7 +35,6 @@ anychart.vennModule.Intersections = function(chart) {
     ['markers', 0, 0]
   ]);
   this.normal_ = new anychart.core.StateSettings(this, normalDescriptorsMeta, anychart.PointState.NORMAL);
-  this.normal_.setOption(anychart.core.StateSettings.LABELS_FACTORY_CONSTRUCTOR, anychart.core.ui.LabelsFactory);
   this.normal_.setOption(anychart.core.StateSettings.LABELS_AFTER_INIT_CALLBACK, /** @this {anychart.vennModule.Intersections} */ function(factory) {
     factory.listenSignals(this.labelsInvalidated_, this);
   });

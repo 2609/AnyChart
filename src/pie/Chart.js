@@ -195,7 +195,7 @@ anychart.pieModule.Chart = function(opt_data, opt_csvSettings) {
     [anychart.enums.PropertyHandlerType.MULTI_ARG, 'fill', pieFillNormalizer]
   ];
   this.normal_ = new anychart.core.StateSettings(this, normalDescriptorsMeta, anychart.PointState.NORMAL, descriptorsOverride);
-  this.normal_.setOption(anychart.core.StateSettings.LABELS_FACTORY_CONSTRUCTOR, anychart.core.ui.CircularLabelsFactory);
+  this.normal_.setOption(anychart.core.StateSettings.LABELS_FACTORY_CONSTRUCTOR, anychart.core.StateSettings.CIRCULAR_LABELS_CONSTRUCTOR);
   this.normal_.setOption(anychart.core.StateSettings.LABELS_AFTER_INIT_CALLBACK, /** @this {anychart.pieModule.Chart} */ function(factory) {
     factory.listenSignals(this.labelsInvalidated_, this);
     factory.setParentEventTarget(this);
@@ -210,7 +210,7 @@ anychart.pieModule.Chart = function(opt_data, opt_csvSettings) {
     ['labels', 0, 0]
   ]);
   this.hovered_ = new anychart.core.StateSettings(this, hoveredDescriptorsMeta, anychart.PointState.HOVER);
-  this.hovered_.setOption(anychart.core.StateSettings.LABELS_FACTORY_CONSTRUCTOR, anychart.core.ui.CircularLabelsFactory);
+  this.hovered_.setOption(anychart.core.StateSettings.LABELS_FACTORY_CONSTRUCTOR, anychart.core.StateSettings.CIRCULAR_LABELS_CONSTRUCTOR);
 
   this.resumeSignalsDispatching(false);
 };

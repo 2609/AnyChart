@@ -2,6 +2,7 @@ goog.provide('anychart.core.StateSettings');
 goog.require('anychart.core.Base');
 goog.require('anychart.core.settings');
 goog.require('anychart.core.settings.IObjectWithSettings');
+goog.require('anychart.core.ui.CircularLabelsFactory');
 goog.require('anychart.core.ui.LabelsFactory');
 goog.require('anychart.core.ui.MarkersFactory');
 
@@ -65,6 +66,13 @@ anychart.core.StateSettings.HEADERS_AFTER_INIT_CALLBACK = 'headersAfterInitCallb
 
 
 /**
+ * Option name for markers factory constructor.
+ * @type {string}
+ */
+anychart.core.StateSettings.MARKERS_FACTORY_CONSTRUCTOR = 'markersFactoryConstructor';
+
+
+/**
  * Option name for markers factory after init callback.
  * @type {string}
  */
@@ -76,6 +84,36 @@ anychart.core.StateSettings.MARKERS_AFTER_INIT_CALLBACK = 'markersAfterInitCallb
  * @type {string}
  */
 anychart.core.StateSettings.OUTLIER_MARKERS_AFTER_INIT_CALLBACK = 'outlierMarkersAfterInitCallback';
+
+
+/**
+ * Default labels factory constructor.
+ * @this {*}
+ * @return {anychart.core.ui.LabelsFactory}
+ */
+anychart.core.StateSettings.DEFAULT_LABELS_CONSTRUCTOR = function() {
+  return new anychart.core.ui.LabelsFactory();
+};
+
+
+/**
+ * Circular labels factory constructor.
+ * @this {*}
+ * @return {anychart.core.ui.CircularLabelsFactory}
+ */
+anychart.core.StateSettings.CIRCULAR_LABELS_CONSTRUCTOR = function() {
+  return new anychart.core.ui.CircularLabelsFactory();
+};
+
+
+/**
+ * Default labels factory constructor.
+ * @this {*}
+ * @return {anychart.core.ui.MarkersFactory}
+ */
+anychart.core.StateSettings.DEFAULT_MARKERS_CONSTRUCTOR = function() {
+  return new anychart.core.ui.MarkersFactory();
+};
 
 
 /**
@@ -216,9 +254,9 @@ anychart.core.StateSettings.prototype.setMeta = function(fieldName, meta) {
  */
 anychart.core.StateSettings.prototype.labels = function(opt_value) {
   if (!this.labels_) {
-    var labelsFactoryConstructor = /** @type {Function} */ (this.getOption(anychart.core.StateSettings.LABELS_FACTORY_CONSTRUCTOR)) || anychart.core.ui.LabelsFactory;
+    var labelsFactoryConstructor = /** @type {Function} */ (this.getOption(anychart.core.StateSettings.LABELS_FACTORY_CONSTRUCTOR)) || anychart.core.StateSettings.DEFAULT_LABELS_CONSTRUCTOR;
     var afterInitCallback = /** @type {Function} */ (this.getOption(anychart.core.StateSettings.LABELS_AFTER_INIT_CALLBACK)) || goog.nullFunction;
-    this.labels_ = new labelsFactoryConstructor();
+    this.labels_ = labelsFactoryConstructor();
     afterInitCallback.call(this.stateHolder, this.labels_);
   }
 
@@ -261,8 +299,9 @@ anychart.core.StateSettings.prototype.headers = function(opt_value) {
  */
 anychart.core.StateSettings.prototype.markers = function(opt_value) {
   if (!this.markers_) {
+    var markersFactoryConstructor = /** @type {Function} */ (this.getOption(anychart.core.StateSettings.MARKERS_FACTORY_CONSTRUCTOR)) || anychart.core.StateSettings.DEFAULT_MARKERS_CONSTRUCTOR;
     var afterInitCallback = /** @type {Function} */ (this.getOption(anychart.core.StateSettings.MARKERS_AFTER_INIT_CALLBACK)) || goog.nullFunction;
-    this.markers_ = new anychart.core.ui.MarkersFactory();
+    this.markers_ = markersFactoryConstructor();
     afterInitCallback.call(this.stateHolder, this.markers_);
   }
 

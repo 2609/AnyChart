@@ -36,13 +36,12 @@ anychart.annotationsModule.InfiniteLine = function(chartController) {
   anychart.core.settings.createDescriptorsMeta(this.descriptorsMeta, anychart.annotationsModule.X_ANCHOR_DESCRIPTORS_META);
   anychart.core.settings.createDescriptorsMeta(this.descriptorsMeta, anychart.annotationsModule.VALUE_ANCHOR_DESCRIPTORS_META);
   anychart.core.settings.createDescriptorsMeta(this.descriptorsMeta, anychart.annotationsModule.SECOND_ANCHOR_POINT_DESCRIPTORS_META);
-  anychart.core.settings.createDescriptorsMeta(this.descriptorsMeta, anychart.annotationsModule.STROKE_DESCRIPTORS_META);
 };
 goog.inherits(anychart.annotationsModule.InfiniteLine, anychart.annotationsModule.Base);
+anychart.core.settings.populateAliases(anychart.annotationsModule.InfiniteLine, ['stroke'], 'normal');
 anychart.core.settings.populate(anychart.annotationsModule.InfiniteLine, anychart.annotationsModule.X_ANCHOR_DESCRIPTORS);
 anychart.core.settings.populate(anychart.annotationsModule.InfiniteLine, anychart.annotationsModule.VALUE_ANCHOR_DESCRIPTORS);
 anychart.core.settings.populate(anychart.annotationsModule.InfiniteLine, anychart.annotationsModule.SECOND_ANCHOR_POINT_DESCRIPTORS);
-anychart.core.settings.populate(anychart.annotationsModule.InfiniteLine, anychart.annotationsModule.STROKE_DESCRIPTORS);
 anychart.annotationsModule.AnnotationTypes[anychart.enums.AnnotationTypes.INFINITE_LINE] = anychart.annotationsModule.InfiniteLine;
 
 
@@ -61,6 +60,15 @@ anychart.annotationsModule.InfiniteLine.prototype.type = anychart.enums.Annotati
  * @type {anychart.annotationsModule.AnchorSupport}
  */
 anychart.annotationsModule.InfiniteLine.prototype.SUPPORTED_ANCHORS = anychart.annotationsModule.AnchorSupport.TWO_POINTS;
+
+
+//endregion
+//region State settings
+/** @inheritDoc */
+anychart.annotationsModule.InfiniteLine.prototype.getNormalDescriptorsMeta = function() {
+  var base = anychart.annotationsModule.InfiniteLine.base(this, 'getNormalDescriptorsMeta');
+  return goog.array.concat(base, anychart.annotationsModule.STROKE_DESCRIPTORS_META);
+};
 
 
 //endregion
@@ -142,7 +150,6 @@ anychart.annotationsModule.InfiniteLine.prototype.checkVisible = function() {
 anychart.annotationsModule.InfiniteLine.prototype.serialize = function() {
   var json = anychart.annotationsModule.InfiniteLine.base(this, 'serialize');
 
-  anychart.core.settings.serialize(this, anychart.annotationsModule.STROKE_DESCRIPTORS, json, 'Annotation');
   anychart.core.settings.serialize(this, anychart.annotationsModule.X_ANCHOR_DESCRIPTORS, json, 'Annotation');
   anychart.core.settings.serialize(this, anychart.annotationsModule.VALUE_ANCHOR_DESCRIPTORS, json, 'Annotation');
   anychart.core.settings.serialize(this, anychart.annotationsModule.SECOND_ANCHOR_POINT_DESCRIPTORS, json, 'Annotation');
@@ -154,7 +161,6 @@ anychart.annotationsModule.InfiniteLine.prototype.serialize = function() {
 /** @inheritDoc */
 anychart.annotationsModule.InfiniteLine.prototype.setupByJSON = function(config, opt_default) {
 
-  anychart.core.settings.deserialize(this, anychart.annotationsModule.STROKE_DESCRIPTORS, config);
   anychart.core.settings.deserialize(this, anychart.annotationsModule.X_ANCHOR_DESCRIPTORS, config);
   anychart.core.settings.deserialize(this, anychart.annotationsModule.VALUE_ANCHOR_DESCRIPTORS, config);
   anychart.core.settings.deserialize(this, anychart.annotationsModule.SECOND_ANCHOR_POINT_DESCRIPTORS, config);

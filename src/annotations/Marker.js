@@ -61,15 +61,12 @@ anychart.annotationsModule.Marker = function(chartController) {
           anychart.enums.ColorType.HATCH_FILL));
   anychart.core.settings.createDescriptorsMeta(this.descriptorsMeta, anychart.annotationsModule.X_ANCHOR_DESCRIPTORS_META);
   anychart.core.settings.createDescriptorsMeta(this.descriptorsMeta, anychart.annotationsModule.VALUE_ANCHOR_DESCRIPTORS_META);
-  anychart.core.settings.createDescriptorsMeta(this.descriptorsMeta, anychart.annotationsModule.STROKE_DESCRIPTORS_META);
-  anychart.core.settings.createDescriptorsMeta(this.descriptorsMeta, anychart.annotationsModule.FILL_DESCRIPTORS_META);
   anychart.core.settings.createDescriptorsMeta(this.descriptorsMeta, anychart.annotationsModule.MARKER_DESCRIPTORS_META);
 };
 goog.inherits(anychart.annotationsModule.Marker, anychart.annotationsModule.Base);
+anychart.core.settings.populateAliases(anychart.annotationsModule.Marker, ['stroke', 'fill', 'hatchFill', 'size'], 'normal');
 anychart.core.settings.populate(anychart.annotationsModule.Marker, anychart.annotationsModule.X_ANCHOR_DESCRIPTORS);
 anychart.core.settings.populate(anychart.annotationsModule.Marker, anychart.annotationsModule.VALUE_ANCHOR_DESCRIPTORS);
-anychart.core.settings.populate(anychart.annotationsModule.Marker, anychart.annotationsModule.STROKE_DESCRIPTORS);
-anychart.core.settings.populate(anychart.annotationsModule.Marker, anychart.annotationsModule.FILL_DESCRIPTORS);
 anychart.core.settings.populate(anychart.annotationsModule.Marker, anychart.annotationsModule.MARKER_DESCRIPTORS);
 anychart.annotationsModule.AnnotationTypes[anychart.enums.AnnotationTypes.MARKER] = anychart.annotationsModule.Marker;
 
@@ -89,6 +86,16 @@ anychart.annotationsModule.Marker.prototype.type = anychart.enums.AnnotationType
  * @type {anychart.annotationsModule.AnchorSupport}
  */
 anychart.annotationsModule.Marker.prototype.SUPPORTED_ANCHORS = anychart.annotationsModule.AnchorSupport.ONE_POINT;
+
+
+//endregion
+//region State settings
+/** @inheritDoc */
+anychart.annotationsModule.Marker.prototype.getNormalDescriptorsMeta = function() {
+  return goog.array.concat(
+      anychart.annotationsModule.FILL_STROKE_DESCRIPTORS_META,
+      anychart.annotationsModule.MARKER_DESCRIPTORS_STATE_META);
+};
 
 
 //endregion
@@ -201,8 +208,6 @@ anychart.annotationsModule.Marker.prototype.serialize = function() {
   var json = anychart.annotationsModule.Marker.base(this, 'serialize');
 
   anychart.core.settings.serialize(this, anychart.annotationsModule.MARKER_DESCRIPTORS, json, 'Annotation');
-  anychart.core.settings.serialize(this, anychart.annotationsModule.FILL_DESCRIPTORS, json, 'Annotation');
-  anychart.core.settings.serialize(this, anychart.annotationsModule.STROKE_DESCRIPTORS, json, 'Annotation');
   anychart.core.settings.serialize(this, anychart.annotationsModule.X_ANCHOR_DESCRIPTORS, json, 'Annotation');
   anychart.core.settings.serialize(this, anychart.annotationsModule.VALUE_ANCHOR_DESCRIPTORS, json, 'Annotation');
 
@@ -214,8 +219,6 @@ anychart.annotationsModule.Marker.prototype.serialize = function() {
 anychart.annotationsModule.Marker.prototype.setupByJSON = function(config, opt_default) {
 
   anychart.core.settings.deserialize(this, anychart.annotationsModule.MARKER_DESCRIPTORS, config);
-  anychart.core.settings.deserialize(this, anychart.annotationsModule.FILL_DESCRIPTORS, config);
-  anychart.core.settings.deserialize(this, anychart.annotationsModule.STROKE_DESCRIPTORS, config);
   anychart.core.settings.deserialize(this, anychart.annotationsModule.X_ANCHOR_DESCRIPTORS, config);
   anychart.core.settings.deserialize(this, anychart.annotationsModule.VALUE_ANCHOR_DESCRIPTORS, config);
 
