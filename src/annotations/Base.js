@@ -1256,6 +1256,16 @@ anychart.annotationsModule.Base.prototype.hasOwnOption = function(name) {
  */
 anychart.annotationsModule.Base.prototype.setDefaultSettings = function(value) {
   this.themeSettings = value;
+  this.normal_.setupByJSON(this.themeSettings, true);
+  if (this.themeSettings['normal']) {
+    this.normal_.setupByJSON(this.themeSettings['normal'], true);
+  }
+  if (this.themeSettings['hovered']) {
+    this.hovered_.setupByJSON(this.themeSettings['hovered'], true);
+  }
+  if (this.themeSettings['selected']) {
+    this.selected_.setupByJSON(this.themeSettings['selected'], true);
+  }
   if (value['normal'])
     this.normal().markers().setup(value['normal']['markers']);
   if (value['hovered'])
