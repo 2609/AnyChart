@@ -1693,7 +1693,7 @@ anychart.core.ui.Legend.prototype.initializeLegendItems_ = function(items) {
             itemSourceKey == items[i]['sourceKey']) {
           item.clear();
           item.setup(items[i]);
-          item.applyTextSettings(item.getTextElement(), false);
+          item.applyFontColor();
           item.setItemIndexToLayer(this.inverted_ ? items.length - 1 - i : i);
           break;
         }

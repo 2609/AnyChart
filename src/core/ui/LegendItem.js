@@ -911,6 +911,15 @@ anychart.core.ui.LegendItem.prototype.applyFontColor_ = function(hover, opt_isIn
 
 
 /**
+ * Public implementation for external access.
+ * @param {boolean=} opt_isInitial - Whether settings applied first time.
+ */
+anychart.core.ui.LegendItem.prototype.applyFontColor = function(opt_isInitial) {
+  this.applyFontColor_(this.hovered_, opt_isInitial);
+};
+
+
+/**
  * Applies fill and stroke to icon.
  * @param {boolean} hover Whether item hovered.
  * @private
