@@ -137,11 +137,11 @@ anychart.annotationsModule.Marker.prototype.ensureCreated = function() {
 anychart.annotationsModule.Marker.prototype.drawOnePointShape = function(x, y) {
   var size;
   if (!!(this.state & anychart.PointState.SELECT)) {
-    size = this.getOption('selectSize');
+    size = this.selected_.getOption('size');
   } else if (!!(this.state & anychart.PointState.HOVER)) {
-    size = this.getOption('hoverSize');
+    size = this.hovered_.getOption('size');
   }
-  size = /** @type {number} */(isNaN(size) ? this.getOption('size') : size);
+  size = /** @type {number} */(isNaN(size) ? this.normal_.getOption('size') : size);
   var drawer = anychart.utils.getMarkerDrawer(this.getOption('markerType'));
   var anchor = /** @type {anychart.enums.Anchor} */(this.getOption('anchor'));
   var position = {x: x, y: y};
