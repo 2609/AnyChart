@@ -11,6 +11,7 @@ goog.require('anychart.format.Context');
 goog.require('anychart.palettes');
 goog.require('anychart.scales.Linear');
 goog.require('anychart.stockModule.Axis');
+goog.require('anychart.stockModule.CurrentPriceIndicator');
 goog.require('anychart.stockModule.Grid');
 goog.require('anychart.stockModule.Series');
 goog.require('anychart.stockModule.indicators');
@@ -77,6 +78,13 @@ anychart.stockModule.Plot = function(chart) {
    * @private
    */
   this.yAxes_ = [];
+
+  /**
+   * Price indicators list.
+   * @type {Array.<!anychart.stockModule.CurrentPriceIndicator>}
+   * @private
+   */
+  this.priceIndicators_ = [];
 
   /**
    * X axis.
@@ -183,7 +191,8 @@ anychart.stockModule.Plot.prototype.SUPPORTED_CONSISTENCY_STATES =
     anychart.ConsistencyState.STOCK_PLOT_BACKGROUND |
     anychart.ConsistencyState.STOCK_PLOT_PALETTE |
     anychart.ConsistencyState.STOCK_PLOT_ANNOTATIONS |
-    anychart.ConsistencyState.STOCK_PLOT_LEGEND;
+    anychart.ConsistencyState.STOCK_PLOT_LEGEND |
+    anychart.ConsistencyState.STOCK_PLOT_PRICE_INDICATORS;
 
 
 /**
@@ -1303,6 +1312,41 @@ anychart.stockModule.Plot.prototype.yAxis = function(opt_indexOrValue, opt_value
 
 
 /**
+ * Stock price indicators multi getter/setter.
+ * @param {(Object|boolean|null|number)=} opt_indexOrValue Index or chart price indicators settings to set.
+ * @param {(Object|boolean|null)=} opt_value Chart price indicators settings to set.
+ * @return {!(anychart.stockModule.CurrentPriceIndicator|anychart.stockModule.Plot)} Price indicator instance by index or itself for method chaining.
+ */
+anychart.stockModule.Plot.prototype.priceIndicator = function(opt_indexOrValue, opt_value) {
+  var index, value;
+  index = anychart.utils.toNumber(opt_indexOrValue);
+  if (isNaN(index)) {
+    index = 0;
+    value = opt_indexOrValue;
+  } else {
+    index = /** @type {number} */(opt_indexOrValue);
+    value = opt_value;
+  }
+  var priceIndicator = this.priceIndicators_[index];
+  if (!priceIndicator) {
+    priceIndicator = new anychart.stockModule.CurrentPriceIndicator();
+    this.priceIndicators_[index] = priceIndicator;
+    // axis.setup(this.defaultYAxisSettings_);
+    // axis.setParentEventTarget(this);
+    // axis.listenSignals(this.yAxisInvalidated_, this);
+    this.invalidate(anychart.ConsistencyState.STOCK_PLOT_PRICE_INDICATORS, anychart.Signal.NEEDS_REDRAW);
+  }
+
+  if (goog.isDef(value)) {
+    priceIndicator.setup(value);
+    return this;
+  } else {
+    return priceIndicator;
+  }
+};
+
+
+/**
  * X axis getter/setter.
  * @param {(Object|boolean|null)=} opt_value Chart axis settings to set.
  * @return {!(anychart.stockModule.Axis|anychart.stockModule.Plot)}
@@ -1457,7 +1501,7 @@ anychart.stockModule.Plot.prototype.draw = function() {
   if (!this.checkDrawingNeeded())
     return this;
 
-  var i, axis, series;
+  var i, axis, series, priceIndicator;
 
   this.suspendSignalsDispatching();
 
@@ -1574,6 +1618,25 @@ anychart.stockModule.Plot.prototype.draw = function() {
       annotations.resumeSignalsDispatching(false);
     }
     this.markConsistent(anychart.ConsistencyState.STOCK_PLOT_ANNOTATIONS);
+  }
+
+  if (this.hasInvalidationState(anychart.ConsistencyState.STOCK_PLOT_PRICE_INDICATORS)) {
+    for (i = 0; i < this.priceIndicators_.length; i++) {
+      priceIndicator = this.priceIndicators_[i];
+      if (priceIndicator) {
+        priceIndicator.suspendSignalsDispatching();
+        // if (!axis.scale()) axis.scale(/** @type {anychart.scales.ScatterBase} */(this.yScale()));
+        // axis.labels().dropCallsCache();
+        // axis.minorLabels().dropCallsCache();
+        priceIndicator.axis(this.yAxes_[0]);
+        priceIndicator.series(this.series_[0]);
+        priceIndicator.setPlot(this);
+        priceIndicator.container(this.rootLayer_);
+        priceIndicator.draw();
+        priceIndicator.resumeSignalsDispatching(false);
+      }
+    }
+    this.markConsistent(anychart.ConsistencyState.STOCK_PLOT_PRICE_INDICATORS);
   }
 
   this.resumeSignalsDispatching(false);
