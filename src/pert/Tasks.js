@@ -70,6 +70,11 @@ anychart.pertModule.Tasks = function() {
   // * @private
   // */
   //this.selectDummyStroke_;
+
+  anychart.core.settings.createDescriptorsMeta(this.descriptorsMeta, [
+    ['dummyFill', 0, anychart.Signal.NEEDS_REDRAW_APPEARANCE],
+    ['dummyStroke', 0, anychart.Signal.NEEDS_REDRAW_APPEARANCE]
+  ]);
 };
 goog.inherits(anychart.pertModule.Tasks, anychart.pertModule.VisualElements);
 
@@ -83,31 +88,18 @@ anychart.pertModule.Tasks.prototype.SUPPORTED_SIGNALS =
 
 
 /**
- * Getter/setter for dummy fill.
- * @param {(!acgraph.vector.Fill|!Array.<(acgraph.vector.GradientKey|string)>|Function|null)=} opt_fillOrColorOrKeys .
- * @param {number=} opt_opacityOrAngleOrCx .
- * @param {(number|boolean|!anychart.math.Rect|!{left:number,top:number,width:number,height:number})=} opt_modeOrCy .
- * @param {(number|!anychart.math.Rect|!{left:number,top:number,width:number,height:number}|null)=} opt_opacityOrMode .
- * @param {number=} opt_opacity .
- * @param {number=} opt_fx .
- * @param {number=} opt_fy .
- * @return {acgraph.vector.Fill|anychart.pertModule.Tasks|Function} .
+ * @type {!Object.<string, anychart.core.settings.PropertyDescriptor>}
  */
-anychart.pertModule.Tasks.prototype.dummyFill = function(opt_fillOrColorOrKeys, opt_opacityOrAngleOrCx, opt_modeOrCy, opt_opacityOrMode, opt_opacity, opt_fx, opt_fy) {
-  if (goog.isDef(opt_fillOrColorOrKeys)) {
-    var val = goog.isFunction(opt_fillOrColorOrKeys) ?
-        opt_fillOrColorOrKeys :
-        acgraph.vector.normalizeFill.apply(null, arguments);
-    if (val != this.dummyFill_) {
-      this.dummyFill_ = val;
-      this.dispatchSignal(anychart.Signal.NEEDS_REDRAW_APPEARANCE);
-    }
-    return this;
-  }
-  return goog.isDef(this.dummyFill_) ?
-      this.dummyFill_ :
-      (this.parent() ? /** @type {anychart.pertModule.Tasks} */ (this.parent()).dummyFill() : 'none');
-};
+anychart.pertModule.Tasks.PROPERTY_DESCRIPTORS = (function() {
+  /** @type {!Object.<string, anychart.core.settings.PropertyDescriptor>} */
+  var map = {};
+  anychart.core.settings.createDescriptors(map, [
+    [anychart.enums.PropertyHandlerType, 'dummyFill', anychart.core.settings.fillOrFunctionNormalizer],
+    [anychart.enums.PropertyHandlerType, 'dummyStroke', anychart.core.settings.strokeOrFunctionNormalizer]
+  ]);
+  return map;
+})();
+anychart.core.settings.populate(anychart.pertModule.Tasks, anychart.pertModule.Tasks.PROPERTY_DESCRIPTORS);
 
 
 ///**
@@ -161,46 +153,19 @@ anychart.pertModule.Tasks.prototype.dummyFill = function(opt_fillOrColorOrKeys, 
 /**
  * Gets final dummy fill.
  * @param {anychart.format.Context} provider - Context provider.
- * @return {!acgraph.vector.Fill} - Final fill.
+ * @return {!acgraph.vector.Fill} - Final ummy fill.
  */
 anychart.pertModule.Tasks.prototype.getFinalDummyFill = function(provider) {
   var result;
-  var fill = this.dummyFill();
+  var fill = this.getOption('dummyFill');
   result = fill;
 
   if (goog.isFunction(fill)) {
-    provider['sourceColor'] = this.color();
+    provider['sourceColor'] = this.getOption('color');
     result = fill.call(provider);
   }
 
-  return result;
-};
-
-
-/**
- * Getter/setter for dummy stroke settings.
- * @param {(acgraph.vector.Stroke|acgraph.vector.ColoredFill|string|Function|null)=} opt_strokeOrFill Fill settings
- *    or stroke settings.
- * @param {number=} opt_thickness [1] Line thickness.
- * @param {string=} opt_dashpattern Controls the pattern of dashes and gaps used to stroke paths.
- * @param {acgraph.vector.StrokeLineJoin=} opt_lineJoin Line join style.
- * @param {acgraph.vector.StrokeLineCap=} opt_lineCap Line cap style.
- * @return {anychart.pertModule.Tasks|acgraph.vector.Stroke|Function} .
- */
-anychart.pertModule.Tasks.prototype.dummyStroke = function(opt_strokeOrFill, opt_thickness, opt_dashpattern, opt_lineJoin, opt_lineCap) {
-  if (goog.isDef(opt_strokeOrFill)) {
-    var stroke = goog.isFunction(opt_strokeOrFill) ?
-        opt_strokeOrFill :
-        acgraph.vector.normalizeStroke.apply(null, arguments);
-    if (stroke != this.dummyStroke_) {
-      this.dummyStroke_ = stroke;
-      this.dispatchSignal(anychart.Signal.NEEDS_REDRAW_APPEARANCE);
-    }
-    return this;
-  }
-  return goog.isDef(this.dummyStroke_) ?
-      this.dummyStroke_ :
-      (this.parent() ? /** @type {anychart.pertModule.Tasks} */ (this.parent()).dummyStroke() : 'none');
+  return /** @type {!acgraph.vector.Fill} */ (result);
 };
 
 
@@ -253,19 +218,19 @@ anychart.pertModule.Tasks.prototype.dummyStroke = function(opt_strokeOrFill, opt
 /**
  * Gets final dummy stroke.
  * @param {anychart.format.Context} provider - Context provider.
- * @return {!acgraph.vector.Stroke} - Final fill.
+ * @return {!acgraph.vector.Stroke} - Final dummy stroke.
  */
 anychart.pertModule.Tasks.prototype.getFinalDummyStroke = function(provider) {
   var result;
-  var stroke = this.dummyStroke();
+  var stroke = this.getOption('dummyStroke');
   result = stroke;
 
   if (goog.isFunction(stroke)) {
-    provider['sourceColor'] = this.color();
+    provider['sourceColor'] = this.getOption('color');
     result = stroke.call(provider);
   }
 
-  return result;
+  return /** @type {!acgraph.vector.Stroke} */ (result);
 };
 
 
@@ -417,25 +382,7 @@ anychart.pertModule.Tasks.prototype.serialize = function() {
   json['hoverUpperLabels'] = goog.object.clone(json['hoverLabels']);
   delete json['hoverLabels'];
 
-  if (goog.isFunction(this.dummyFill())) {
-    anychart.core.reporting.warning(
-        anychart.enums.WarningCode.CANT_SERIALIZE_FUNCTION,
-        null,
-        ['Pert element dummy fill']
-    );
-  } else {
-    if (this.dummyFill_) json['dummyFill'] = anychart.color.serialize(/** @type {acgraph.vector.Fill} */ (this.dummyFill_));
-  }
-
-  if (goog.isFunction(this.dummyStroke())) {
-    anychart.core.reporting.warning(
-        anychart.enums.WarningCode.CANT_SERIALIZE_FUNCTION,
-        null,
-        ['Pert element dummy stroke']
-    );
-  } else {
-    if (this.dummyStroke_) json['dummyStroke'] = anychart.color.serialize(/** @type {acgraph.vector.Fill} */ (this.dummyStroke_));
-  }
+  anychart.core.settings.serialize(this, anychart.pertModule.Tasks.PROPERTY_DESCRIPTORS, json, 'Pert tasks');
 
   //if (this.dummyFill_) json['dummyFill'] = anychart.color.serialize(/** @type {acgraph.vector.Fill} */ (this.dummyFill_));
   //json['hoverDummyFill'] = anychart.color.serialize(/** @type {acgraph.vector.Fill}*/(this.hoverDummyFill()));
@@ -463,10 +410,12 @@ anychart.pertModule.Tasks.prototype.setupByJSON = function(config, opt_default) 
   this.hoverLowerLabels(config['hoverLowerLabels']);
   this.selectLowerLabels(config['selectLowerLabels']);
 
-  this.dummyFill(config['dummyFill']);
+  anychart.core.settings.deserialize(this, anychart.pertModule.Tasks.PROPERTY_DESCRIPTORS, config);
+
+  //this.dummyFill(config['dummyFill']);
   //this.hoverDummyFill(config['hoverDummyFill']);
   //this.selectDummyFill(config['selectDummyFill']);
-  this.dummyStroke(config['dummyStroke']);
+  //this.dummyStroke(config['dummyStroke']);
   //this.hoverDummyStroke(config['hoverDummyStroke']);
   //this.selectDummyStroke(config['selectDummyStroke']);
 };
@@ -475,19 +424,19 @@ anychart.pertModule.Tasks.prototype.setupByJSON = function(config, opt_default) 
 //exports
 (function() {
   var proto = anychart.pertModule.Tasks.prototype;
-  proto['color'] = proto.color;
+  //proto['color'] = proto.color;
 
-  proto['fill'] = proto.fill;
-  proto['hoverFill'] = proto.hoverFill;
-  proto['selectFill'] = proto.selectFill;
-  proto['stroke'] = proto.stroke;
-  proto['hoverStroke'] = proto.hoverStroke;
-  proto['selectStroke'] = proto.selectStroke;
+  //proto['fill'] = proto.fill;
+  //proto['hoverFill'] = proto.hoverFill;
+  //proto['selectFill'] = proto.selectFill;
+  //proto['stroke'] = proto.stroke;
+  //proto['hoverStroke'] = proto.hoverStroke;
+  //proto['selectStroke'] = proto.selectStroke;
 
-  proto['dummyFill'] = proto.dummyFill;
+  //proto['dummyFill'] = proto.dummyFill;
   //proto['hoverDummyFill'] = proto.hoverDummyFill;
   //proto['selectDummyFill'] = proto.selectDummyFill;
-  proto['dummyStroke'] = proto.dummyStroke;
+  //proto['dummyStroke'] = proto.dummyStroke;
   //proto['hoverDummyStroke'] = proto.hoverDummyStroke;
   //proto['selectDummyStroke'] = proto.selectDummyStroke;
 

@@ -2610,8 +2610,8 @@ anychart.pertModule.Chart.prototype.drawContent = function(bounds) {
     var critSource, size;
     var fullSize = (this.maxLevel_ >= this.maxLevelHeight_) ? bounds.width : bounds.height;
 
-    var critSize = anychart.utils.normalizeSize(/** @type {string|number} */ (this.criticalPath().milestones().size()), fullSize);
-    var normSize = anychart.utils.normalizeSize(/** @type {string|number} */ (this.milestones().size()), fullSize);
+    var critSize = anychart.utils.normalizeSize(/** @type {string|number} */ (this.criticalPath().milestones().getOption('size')), fullSize);
+    var normSize = anychart.utils.normalizeSize(/** @type {string|number} */ (this.milestones().getOption('size')), fullSize);
     var maxSize = Math.max(normSize, critSize);
     left = bounds.left + maxSize / 2;
 
@@ -2626,15 +2626,15 @@ anychart.pertModule.Chart.prototype.drawContent = function(bounds) {
             if (!milestone.isFake) {
               var milPath = this.milestonesLayer_.genNextChild();
               src = milestone.isCritical ? this.criticalPath().milestones() : this.milestones();
-              str = milestone.isSelected ? src.selectStroke() : src.stroke();
+              str = milestone.isSelected ? src.getOption('selectStroke') : src.getOption('stroke');
               pixelShift = anychart.utils.extractThickness(/** @type {acgraph.vector.Stroke} */ (str)) % 2 == 0 ? 0 : 0.5;
 
               critSource = milestone.isCritical ? this.criticalPath().milestones() : this.milestones();
-              size = anychart.utils.normalizeSize(/** @type {string|number} */ (critSource.size()), fullSize);
+              size = anychart.utils.normalizeSize(/** @type {string|number} */ (critSource.getOption('size')), fullSize);
               var halfSize = Math.round(size / 2);
               milestone.radius = halfSize;
 
-              switch (critSource.shape()) {
+              switch (critSource.getOption('shape')) {
                 case anychart.enums.MilestoneShape.RHOMBUS:
                   milPath.moveTo(left + pixelShift - halfSize, top + pixelShift)
                       .lineTo(left + pixelShift, top + pixelShift - halfSize)
