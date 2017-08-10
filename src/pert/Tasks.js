@@ -94,8 +94,8 @@ anychart.pertModule.Tasks.PROPERTY_DESCRIPTORS = (function() {
   /** @type {!Object.<string, anychart.core.settings.PropertyDescriptor>} */
   var map = {};
   anychart.core.settings.createDescriptors(map, [
-    [anychart.enums.PropertyHandlerType, 'dummyFill', anychart.core.settings.fillOrFunctionNormalizer],
-    [anychart.enums.PropertyHandlerType, 'dummyStroke', anychart.core.settings.strokeOrFunctionNormalizer]
+    [anychart.enums.PropertyHandlerType.MULTI_ARG, 'dummyFill', anychart.core.settings.fillOrFunctionNormalizer],
+    [anychart.enums.PropertyHandlerType.MULTI_ARG, 'dummyStroke', anychart.core.settings.strokeOrFunctionNormalizer]
   ]);
   return map;
 })();
