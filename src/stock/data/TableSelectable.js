@@ -247,6 +247,51 @@ anychart.stockModule.data.TableSelectable.prototype.getRowFromMainStorage = func
 
 
 /**
+ * Returns a first row from main storage if it exists.
+ * @return {?anychart.stockModule.data.TableSelectable.RowProxy}
+ */
+anychart.stockModule.data.TableSelectable.prototype.getFirstRowFromMainStorage = function() {
+  var mainStorage = this.mapping_.getTable().getStorage();
+  var row = mainStorage.getRow(0);
+  return row ? new anychart.stockModule.data.TableSelectable.RowProxy(row, this.mapping_, false, 0, null) : null;
+};
+
+
+/**
+ * Returns a last row from main storage if it exists.
+ * @return {?anychart.stockModule.data.TableSelectable.RowProxy}
+ */
+anychart.stockModule.data.TableSelectable.prototype.getLastRowFromMainStorage = function() {
+  var mainStorage = this.mapping_.getTable().getStorage();
+  var row = mainStorage.getRow(mainStorage.getRowsCount() - 1);
+  return row ? new anychart.stockModule.data.TableSelectable.RowProxy(row, this.mapping_, false, 0, null) : null;
+};
+
+
+/**
+ * Returns data row.
+ * @param {anychart.enums.DataSource|number} dataSource .
+ * @return {?anychart.stockModule.data.TableSelectable.RowProxy}
+ */
+anychart.stockModule.data.TableSelectable.prototype.getRowByDataSource = function(dataSource) {
+  /** @type {?anychart.stockModule.data.TableSelectable.RowProxy} */
+  var row;
+  if (dataSource == anychart.enums.DataSource.FIRST_VISIBLE) {
+    row = this.getFirstVisibleRow();
+  } else if (dataSource == anychart.enums.DataSource.LAST_VISIBLE) {
+    row = this.getLastVisibleRow();
+  } else if (dataSource == anychart.enums.DataSource.SERIES_START) {
+    row = this.getFirstRowFromMainStorage();
+  } else if (dataSource == anychart.enums.DataSource.SERIES_END) {
+    row = this.getLastRowFromMainStorage();
+  } else {
+    row = this.getRowFromMainStorage(dataSource);
+  }
+  return row;
+};
+
+
+/**
  * Returns minimum value of the field  (includes only the visible range).
  * @param {string} field
  * @return {number}

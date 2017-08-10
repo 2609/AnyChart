@@ -180,19 +180,39 @@ anychart.stockModule.CurrentPriceIndicator.prototype.axis = function(opt_value) 
 
 
 /**
- * Target series.
- * @param {} opt_value .
+ * Date or point in data source .
+ * @param {(string|anychart.enums.DataSource|number|Date)=} opt_value .
+ * @return {anychart.enums.DataSource|number|anychart.stockModule.CurrentPriceIndicator}
  */
 anychart.stockModule.CurrentPriceIndicator.prototype.value = function(opt_value) {
   if (goog.isDef(opt_value)) {
+    opt_value = anychart.enums.normalizeDataSource(opt_value) || anychart.utils.normalizeTimestamp(opt_value);
     if (this.value_ !== opt_value) {
       this.value_ = opt_value;
-      this.invalidate(anychart.ConsistencyState.BOUNDS,
+      this.invalidate(anychart.ConsistencyState.APPEARANCE,
           anychart.Signal.NEEDS_REDRAW | anychart.Signal.BOUNDS_CHANGED);
     }
     return this;
   }
   return this.value_;
+};
+
+
+/**
+ * Date or point in data source .
+ * @param {string=} opt_value .
+ * @return {string|anychart.stockModule.CurrentPriceIndicator}
+ */
+anychart.stockModule.CurrentPriceIndicator.prototype.valueField = function(opt_value) {
+  if (goog.isDef(opt_value)) {
+    if (this.valueField_ !== opt_value) {
+      this.valueField_ = opt_value;
+      this.invalidate(anychart.ConsistencyState.APPEARANCE,
+          anychart.Signal.NEEDS_REDRAW | anychart.Signal.BOUNDS_CHANGED);
+    }
+    return this;
+  }
+  return this.valueField_;
 };
 
 
@@ -226,38 +246,43 @@ anychart.stockModule.CurrentPriceIndicator.prototype.draw = function() {
   if (!this.checkDrawingNeeded())
     return this;
 
-  var yScale = this.axis_.scale();
+  var series = this.series_ || this.plot_.getSeries(0);
+  var axis = this.axis_ || this.plot_.yAxis(0);
+  var yScale = axis.scale();
   var thickness = acgraph.vector.getThickness(this.stroke()) || 1;
-
+  var line = this.getLine();
+  line.clip(this.parentBounds());
+  this.label_.parentBounds(this.parentBounds());
+  
   if (this.hasInvalidationState(anychart.ConsistencyState.APPEARANCE)) {
-    var data = this.series_.getSelectableData();
-    var rowProxy = data.search(this.value_, anychart.enums.TableSearchMode.EXACT);
-    var seriesValue = rowProxy.get('close');
-
+    var row = series.getSelectableData().getRowByDataSource(this.value_);
+    var seriesValue = row.get(this.valueField() || series.drawer.valueFieldName);
     var yRatio = yScale.transform(seriesValue);
     var plotBounds = this.plot_.getPlotBounds();
 
     var y = plotBounds.getBottom() - yRatio * plotBounds.height;
     y = anychart.utils.applyPixelShift(y, thickness);
-    var line = this.getLine().clear();
+
+    line.clear();
     line
         .moveTo(plotBounds.left, y)
         .lineTo(plotBounds.getRight(), y);
     line.stroke(this.stroke());
 
-
-    if (this.axis_ && this.axis_.enabled() && this.label_.enabled()) {
-      var labelFormatProvider = this.getLabelsFormatProvider(this.axis_, yRatio);
+    if (axis && axis.enabled() && this.label_.enabled()) {
+      var labelFormatProvider = this.getLabelsFormatProvider(axis, yRatio);
       var labelFormat = this.label_.format() || anychart.utils.DEFAULT_FORMATTER;
       this.label_.text(labelFormat.call(labelFormatProvider, labelFormatProvider));
+      this.label_.autoAnchor(axis.orientation() == anychart.enums.Orientation.LEFT ?
+          anychart.enums.Anchor.RIGHT_CENTER : anychart.enums.Anchor.LEFT_CENTER);
 
-      var axisBounds = this.axis_.getPixelBounds();
-      var axisEnabled = this.axis_.enabled();
+      var axisBounds = axis.getPixelBounds();
+      var axisEnabled = axis.enabled();
       var left = axisEnabled ? axisBounds.getLeft() : plotBounds.getRight();
       var right = axisEnabled ? axisBounds.getRight() : plotBounds.getLeft();
 
       var x;
-      switch (this.axis_.orientation()) {
+      switch (axis.orientation()) {
         case anychart.enums.Orientation.LEFT:
           x = this.isLabelAnchorLeft(this.label_) ? right - 1 : right + 1;
           break;
@@ -283,6 +308,8 @@ anychart.stockModule.CurrentPriceIndicator.prototype.draw = function() {
     this.markConsistent(anychart.ConsistencyState.CONTAINER);
   }
 
+  this.markConsistent(anychart.ConsistencyState.ALL);
+
   this.label_.draw();
 };
 
@@ -305,6 +332,8 @@ anychart.stockModule.CurrentPriceIndicator.prototype.serialize = function() {
 /** @inheritDoc */
 anychart.stockModule.CurrentPriceIndicator.prototype.setupByJSON = function(config, opt_default) {
   anychart.stockModule.CurrentPriceIndicator.base(this, 'setupByJSON', config, opt_default);
+
+  this.label_.setupByJSON(config['label'], opt_default);
 };
 
 

@@ -4544,6 +4544,15 @@ goog.provide('anychart.themes.defaultTheme');
           },
           'scale': 0
         },
+        'defaultPriceIndicatorSettings': {
+          'label': {
+            'background': {
+              'fill': '#000'
+            },
+            'fontColor': '#fff',
+            'padding': 2
+          }
+        },
         'xAxis': {
           'enabled': true,
           'orientation': 'bottom',

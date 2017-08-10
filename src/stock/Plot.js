@@ -1085,6 +1085,15 @@ anychart.stockModule.Plot.prototype.setDefaultGridSettings = function(value) {
 
 
 /**
+ * Getter/setter for price indicator default settings.
+ * @param {Object} value Object with default price indicator settings.
+ */
+anychart.stockModule.Plot.prototype.setDefaultPriceIndicatorSettings = function(value) {
+  this.defaultPriceIndicatorSettings_ = value;
+};
+
+
+/**
  * Invalidates plot series. Doesn't dispatch anything.
  * @param {boolean} doInvalidateBounds
  * @param {boolean=} opt_skipLegend
@@ -1132,9 +1141,21 @@ anychart.stockModule.Plot.prototype.invalidateRedrawable = function(doInvalidate
   if (!opt_skipLegend && this.legend_ && this.legend_.enabled())
     this.legend_.invalidate(state);
 
+  for (i = 0; i < this.priceIndicators_.length; i++) {
+    var priceIndicator = this.priceIndicators_[i];
+    if (priceIndicator) {
+      priceIndicator.suspendSignalsDispatching();
+      // effectively invalidates all what's needed
+      priceIndicator.invalidate(anychart.ConsistencyState.APPEARANCE,
+          anychart.Signal.NEEDS_REDRAW | anychart.Signal.BOUNDS_CHANGED);
+      priceIndicator.resumeSignalsDispatching(false);
+    }
+  }
+
   this.invalidate(anychart.ConsistencyState.STOCK_PLOT_SERIES |
       anychart.ConsistencyState.STOCK_PLOT_ANNOTATIONS |
       anychart.ConsistencyState.STOCK_PLOT_AXES |
+      anychart.ConsistencyState.STOCK_PLOT_PRICE_INDICATORS |
       anychart.ConsistencyState.STOCK_PLOT_DT_AXIS |
       anychart.ConsistencyState.STOCK_PLOT_GRIDS |
       anychart.ConsistencyState.STOCK_PLOT_LEGEND);
@@ -1331,9 +1352,12 @@ anychart.stockModule.Plot.prototype.priceIndicator = function(opt_indexOrValue, 
   if (!priceIndicator) {
     priceIndicator = new anychart.stockModule.CurrentPriceIndicator();
     this.priceIndicators_[index] = priceIndicator;
-    // axis.setup(this.defaultYAxisSettings_);
-    // axis.setParentEventTarget(this);
-    // axis.listenSignals(this.yAxisInvalidated_, this);
+    // priceIndicator.axis(this.yAxes_[0]);
+    // priceIndicator.series(this.series_[0]);
+    priceIndicator.setPlot(this);
+    priceIndicator.setup(this.defaultPriceIndicatorSettings_);
+    priceIndicator.setParentEventTarget(this);
+    priceIndicator.listenSignals(this.priceIndicatorInvalidated_, this);
     this.invalidate(anychart.ConsistencyState.STOCK_PLOT_PRICE_INDICATORS, anychart.Signal.NEEDS_REDRAW);
   }
 
@@ -1625,12 +1649,7 @@ anychart.stockModule.Plot.prototype.draw = function() {
       priceIndicator = this.priceIndicators_[i];
       if (priceIndicator) {
         priceIndicator.suspendSignalsDispatching();
-        // if (!axis.scale()) axis.scale(/** @type {anychart.scales.ScatterBase} */(this.yScale()));
-        // axis.labels().dropCallsCache();
-        // axis.minorLabels().dropCallsCache();
-        priceIndicator.axis(this.yAxes_[0]);
-        priceIndicator.series(this.series_[0]);
-        priceIndicator.setPlot(this);
+        priceIndicator.parentBounds(this.seriesBounds_);
         priceIndicator.container(this.rootLayer_);
         priceIndicator.draw();
         priceIndicator.resumeSignalsDispatching(false);
@@ -2184,6 +2203,16 @@ anychart.stockModule.Plot.prototype.yAxisInvalidated_ = function(e) {
 
 
 /**
+ * Y axis invalidation handler.
+ * @param {anychart.SignalEvent} e
+ * @private
+ */
+anychart.stockModule.Plot.prototype.priceIndicatorInvalidated_ = function(e) {
+  this.invalidate(anychart.ConsistencyState.STOCK_PLOT_PRICE_INDICATORS, anychart.Signal.NEEDS_REDRAW);
+};
+
+
+/**
  * X axis invalidation handler.
  * @param {anychart.SignalEvent} e
  * @private
@@ -2564,6 +2593,9 @@ anychart.stockModule.Plot.prototype.setupByJSON = function(config, opt_default) 
 
   if ('defaultGridSettings' in config)
     this.setDefaultGridSettings(config['defaultGridSettings']);
+
+  if ('defaultPriceIndicatorSettings' in config)
+    this.setDefaultPriceIndicatorSettings(config['defaultPriceIndicatorSettings']);
 
   var grids = config['grids'];
   if (goog.isArray(grids)) {
