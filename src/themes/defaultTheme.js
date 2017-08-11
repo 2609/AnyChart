@@ -4546,6 +4546,7 @@ goog.provide('anychart.themes.defaultTheme');
         },
         'defaultPriceIndicatorSettings': {
           'label': {
+            'enabled': true,
             'background': {
               'fill': '#000'
             },

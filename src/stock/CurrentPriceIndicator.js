@@ -26,7 +26,8 @@ anychart.stockModule.CurrentPriceIndicator = function() {
    * @private
    */
   this.label_ = new anychart.core.ui.CrosshairLabel();
-  this.label_.zIndex(1000).enabled(true);
+  this.label_.listenSignals(this.labelInvalidated_, this);
+  // this.label_.zIndex(1000).enabled(true);
 };
 goog.inherits(anychart.stockModule.CurrentPriceIndicator, anychart.core.VisualBase);
 
@@ -96,10 +97,10 @@ anychart.stockModule.CurrentPriceIndicator.prototype.getLabelsFormatProvider = f
   var labelText;
   switch (scaleType) {
     case anychart.enums.ScaleTypes.LINEAR:
-      labelText = +parseFloat(scaleValue).toFixed();
+      labelText = +parseFloat(scaleValue).toFixed(2);
       break;
     case anychart.enums.ScaleTypes.LOG:
-      labelText = +scaleValue.toFixed(1);
+      labelText = +scaleValue.toFixed(2);
       break;
     case anychart.enums.ScaleTypes.ORDINAL:
       labelText = String(scaleValue);
@@ -135,13 +136,23 @@ anychart.stockModule.CurrentPriceIndicator.prototype.getLabelsFormatProvider = f
  * @param {(Object|boolean|null)=} opt_value
  * @return {anychart.core.ui.CrosshairLabel|anychart.stockModule.CurrentPriceIndicator}
  */
-anychart.stockModule.CurrentPriceIndicator.prototype.labels = function(opt_value) {
+anychart.stockModule.CurrentPriceIndicator.prototype.label = function(opt_value) {
   if (goog.isDef(opt_value)) {
     this.label_.setup(opt_value);
     return this;
   } else {
     return this.label_;
   }
+};
+
+
+/**
+ * Label invalidation handler.
+ * @param {anychart.SignalEvent} e
+ * @private
+ */
+anychart.stockModule.CurrentPriceIndicator.prototype.labelInvalidated_ = function(e) {
+  this.invalidate(anychart.ConsistencyState.APPEARANCE, anychart.Signal.NEEDS_REDRAW);
 };
 
 
@@ -251,8 +262,23 @@ anychart.stockModule.CurrentPriceIndicator.prototype.draw = function() {
   var yScale = axis.scale();
   var thickness = acgraph.vector.getThickness(this.stroke()) || 1;
   var line = this.getLine();
-  line.clip(this.parentBounds());
-  this.label_.parentBounds(this.parentBounds());
+  line.clip(/** @type {anychart.math.Rect} */(this.parentBounds()));
+
+  if (this.hasInvalidationState(anychart.ConsistencyState.CONTAINER)) {
+    var container = /** @type {acgraph.vector.ILayer} */(this.container());
+    this.line.parent(container);
+    this.label_.container(container);
+
+    this.markConsistent(anychart.ConsistencyState.CONTAINER);
+  }
+
+  if (this.hasInvalidationState(anychart.ConsistencyState.Z_INDEX)) {
+    var zIndex = /** @type {number} */(this.zIndex());
+    this.line.zIndex(zIndex);
+    this.label_.zIndex(zIndex);
+
+    this.markConsistent(anychart.ConsistencyState.Z_INDEX);
+  }
   
   if (this.hasInvalidationState(anychart.ConsistencyState.APPEARANCE)) {
     var row = series.getSelectableData().getRowByDataSource(this.value_);
@@ -284,33 +310,29 @@ anychart.stockModule.CurrentPriceIndicator.prototype.draw = function() {
       var x;
       switch (axis.orientation()) {
         case anychart.enums.Orientation.LEFT:
-          x = this.isLabelAnchorLeft(this.label_) ? right - 1 : right + 1;
+          x = this.isLabelAnchorLeft(this.label_) ? right : right;
           break;
         case anychart.enums.Orientation.RIGHT:
-          x = this.isLabelAnchorLeft(this.label_) ? left - 1 : left + 1;
+          x = this.isLabelAnchorLeft(this.label_) ? left : left;
           break;
       }
 
-      this.label_.x(/** @type {number}*/(x)).y(/** @type {number}*/(y));
+      if (y >= plotBounds.getTop() && y <= plotBounds.getBottom()) {
+        this.label_
+            .container(/** @type {acgraph.vector.ILayer} */(this.container()))
+            .x(/** @type {number}*/(x))
+            .y(/** @type {number}*/(y));
+      } else {
+        this.label_.container(null);
+      }
 
     }
 
     this.markConsistent(anychart.ConsistencyState.APPEARANCE);
   }
 
-  if (this.hasInvalidationState(anychart.ConsistencyState.CONTAINER)) {
-    var container = /** @type {acgraph.vector.ILayer} */(this.container());
-    this.line.parent(container);
-    this.label_.container(container);
-
-    // this.labels().container(container);
-    // this.minorLabels().container(container);
-    this.markConsistent(anychart.ConsistencyState.CONTAINER);
-  }
-
-  this.markConsistent(anychart.ConsistencyState.ALL);
-
   this.label_.draw();
+  this.markConsistent(anychart.ConsistencyState.ALL);
 };
 
 

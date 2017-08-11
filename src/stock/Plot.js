@@ -231,6 +231,13 @@ anychart.stockModule.Plot.ZINDEX_AXIS = 35;
 
 
 /**
+ * Grid z-index in chart root layer.
+ * @type {number}
+ */
+anychart.stockModule.Plot.ZINDEX_PRICE_INDICATOR = 150;
+
+
+/**
  * Background ZIndex.
  * @type {number}
  */
@@ -1354,8 +1361,9 @@ anychart.stockModule.Plot.prototype.priceIndicator = function(opt_indexOrValue, 
     this.priceIndicators_[index] = priceIndicator;
     // priceIndicator.axis(this.yAxes_[0]);
     // priceIndicator.series(this.series_[0]);
+    priceIndicator.zIndex(anychart.stockModule.Plot.ZINDEX_PRICE_INDICATOR);
     priceIndicator.setPlot(this);
-    priceIndicator.setup(this.defaultPriceIndicatorSettings_);
+    priceIndicator.setupByJSON(this.defaultPriceIndicatorSettings_, true);
     priceIndicator.setParentEventTarget(this);
     priceIndicator.listenSignals(this.priceIndicatorInvalidated_, this);
     this.invalidate(anychart.ConsistencyState.STOCK_PLOT_PRICE_INDICATORS, anychart.Signal.NEEDS_REDRAW);
