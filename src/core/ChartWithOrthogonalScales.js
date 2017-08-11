@@ -238,19 +238,19 @@ anychart.core.ChartWithOrthogonalScales.prototype.xScale = function(opt_value) {
  */
 anychart.core.ChartWithOrthogonalScales.prototype.xScaleInvalidated = function(event) {
   this.suspendSignalsDispatching();
+  var state = anychart.ConsistencyState.SCALE_CHART_SCALES |
+      anychart.ConsistencyState.SCALE_CHART_Y_SCALES |
+      anychart.ConsistencyState.SCALE_CHART_SCALE_MAPS;
   if (event.hasSignal(anychart.Signal.NEEDS_RECALCULATION)) {
-    var state = anychart.ConsistencyState.SCALE_CHART_SCALES |
-        anychart.ConsistencyState.SCALE_CHART_Y_SCALES |
-        anychart.ConsistencyState.SCALE_CHART_SCALE_MAPS;
     if (this.allowLegendCategoriesMode() &&
         this.legend().itemsSourceMode() == anychart.enums.LegendItemsSourceMode.CATEGORIES) {
       state |= anychart.ConsistencyState.CHART_LEGEND;
     }
-    this.invalidate(state, anychart.Signal.NEEDS_REDRAW);
   }
   if (event.hasSignal(anychart.Signal.NEEDS_REAPPLICATION)) {
     this.invalidateSeriesOfScale(this.xScale_);
   }
+  this.invalidate(state, anychart.Signal.NEEDS_REDRAW);
   this.resumeSignalsDispatching(true);
 };
 
