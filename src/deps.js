@@ -12,7 +12,7 @@ goog.addDependency('../../../../src/annotations/Base.js', ['anychart.annotations
 goog.addDependency('../../../../src/annotations/ChartController.js', ['anychart.annotationsModule.ChartController'], ['anychart.annotationsModule.Base', 'anychart.core.Base', 'anychart.core.IChartWithAnnotations', 'goog.array'], false);
 goog.addDependency('../../../../src/annotations/Ellipse.js', ['anychart.annotationsModule.Ellipse'], ['anychart.annotationsModule', 'anychart.annotationsModule.Base', 'anychart.core.settings', 'anychart.enums'], false);
 goog.addDependency('../../../../src/annotations/FibonacciArc.js', ['anychart.annotationsModule.FibonacciArc'], ['anychart.annotationsModule', 'anychart.annotationsModule.FibonacciBase', 'anychart.enums'], false);
-goog.addDependency('../../../../src/annotations/FibonacciBase.js', ['anychart.annotationsModule.FibonacciBase'], ['anychart.annotationsModule.Base', 'anychart.core.ui.LabelsFactory'], false);
+goog.addDependency('../../../../src/annotations/FibonacciBase.js', ['anychart.annotationsModule.FibonacciBase'], ['anychart.annotationsModule.Base', 'anychart.core.ui.LabelsFactory', 'anychart.format.Context'], false);
 goog.addDependency('../../../../src/annotations/FibonacciFan.js', ['anychart.annotationsModule.FibonacciFan'], ['anychart.annotationsModule', 'anychart.annotationsModule.FibonacciBase', 'anychart.enums'], false);
 goog.addDependency('../../../../src/annotations/FibonacciRetracement.js', ['anychart.annotationsModule.FibonacciRetracement'], ['anychart.annotationsModule', 'anychart.annotationsModule.FibonacciBase', 'anychart.enums'], false);
 goog.addDependency('../../../../src/annotations/FibonacciTimezones.js', ['anychart.annotationsModule.FibonacciTimezones'], ['anychart.annotationsModule', 'anychart.annotationsModule.FibonacciBase', 'anychart.enums'], false);
@@ -28,7 +28,7 @@ goog.addDependency('../../../../src/annotations/Triangle.js', ['anychart.annotat
 goog.addDependency('../../../../src/annotations/VerticalLine.js', ['anychart.annotationsModule.VerticalLine'], ['anychart.annotationsModule', 'anychart.annotationsModule.Base', 'anychart.core.settings', 'anychart.enums'], false);
 goog.addDependency('../../../../src/annotations/annotations.js', ['anychart.annotationsModule'], ['anychart.core.Base', 'anychart.core.settings', 'anychart.enums'], false);
 goog.addDependency('../../../../src/annotations/annotations.module.js', ['anychart.annotationsModule.entry'], ['anychart.annotationsModule.ChartController', 'anychart.annotationsModule.PlotController'], false);
-goog.addDependency('../../../../src/annotations/defaultTheme.js', ['anychart.annotationsModule.defaultTheme'], [], false);
+goog.addDependency('../../../../src/annotations/defaultTheme.js', ['anychart.annotationsModule.defaultTheme'], ['anychart.core.defaultTheme'], false);
 goog.addDependency('../../../../src/anychart.js', ['anychart', 'anychart.gauges', 'anychart.globalLock'], ['acgraph', 'anychart.base', 'anychart.core.reporting', 'anychart.core.ui.StageCredits', 'anychart.performance', 'anychart.themes.merging', 'anychart.utils', 'goog.array', 'goog.dom', 'goog.dom.animationFrame.polyfill', 'goog.events.KeyEvent', 'goog.events.KeyHandler', 'goog.json.hybrid'], false);
 goog.addDependency('../../../../src/base.js', ['anychart.base'], ['goog.labs.userAgent.device'], false);
 goog.addDependency('../../../../src/binding/binding.module.js', ['anychart.bindingModule.entry'], ['goog.dom', 'goog.dom.classlist', 'goog.dom.forms', 'goog.events'], false);
