@@ -119,6 +119,12 @@ anychart.mapModule.elements.Grid.prototype.getSignal = function(fieldName) {
 };
 
 
+/** @inheritDoc */
+anychart.mapModule.elements.Grid.prototype.isResolvable = function() {
+  return true;
+};
+
+
 //endregion
 //region --- IResolvable implementation
 /** @inheritDoc */

@@ -15,6 +15,7 @@ goog.require('anychart.core.ui.MarkersFactory');
  * @param {anychart.PointState} stateType
  * @param {!Array.<Array>=} opt_descriptorsOverride
  * @constructor
+ * @implements {anychart.core.settings.IResolvable}
  * @extends {anychart.core.Base}
  */
 anychart.core.StateSettings = function(stateHolder, descriptorsMeta, stateType, opt_descriptorsOverride) {
@@ -171,6 +172,51 @@ anychart.core.StateSettings.prototype.invalidate = function(state, opt_signal) {
 /** @inheritDoc */
 anychart.core.StateSettings.prototype.dispatchSignal = function(signal, opt_force) {
   return this.stateHolder.dispatchSignal(signal, opt_force);
+};
+
+
+/**
+ * @override
+ * @param {string} name
+ * @return {*}
+ */
+anychart.core.StateSettings.prototype.getOption = anychart.core.settings.getOption;
+
+
+//endregion
+//region --- IResolvable implementation
+/** @inheritDoc */
+anychart.core.StateSettings.prototype.getResolutionChain = anychart.core.settings.getResolutionChain;
+
+
+/** @inheritDoc */
+anychart.core.StateSettings.prototype.getLowPriorityResolutionChain = function() {
+  var sett = [this.themeSettings];
+  var parent = this.stateHolder.getParentState(this.stateType);
+  if (parent) {
+    sett.push(parent.themeSettings);
+  }
+  return sett;
+};
+
+
+/** @inheritDoc */
+anychart.core.StateSettings.prototype.getHighPriorityResolutionChain = function() {
+  var sett = [this.ownSettings];
+  var parent = this.stateHolder.getParentState(this.stateType);
+  if (parent) {
+    sett.push(parent.ownSettings);
+  }
+  return sett;
+};
+
+
+/** @inheritDoc */
+anychart.core.StateSettings.prototype.resolutionChainCache = function(opt_value) {
+  if (goog.isDef(opt_value)) {
+    this.resolutionChainCache_ = opt_value;
+  }
+  return this.resolutionChainCache_;
 };
 
 

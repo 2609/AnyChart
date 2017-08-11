@@ -35,12 +35,6 @@ anychart.pertModule.Tasks = function() {
   this.selectLowerLabels_;
 
 
-  /**
-   * @type {acgraph.vector.Fill|Function}
-   * @private
-   */
-  this.dummyFill_;
-
   ///**
   // * @type {acgraph.vector.Fill}
   // * @private
@@ -52,12 +46,6 @@ anychart.pertModule.Tasks = function() {
   // * @private
   // */
   //this.selectDummyFill_;
-
-  /**
-   * @type {acgraph.vector.Stroke|Function}
-   * @private
-   */
-  this.dummyStroke_;
 
   ///**
   // * @type {acgraph.vector.Stroke}
@@ -71,12 +59,11 @@ anychart.pertModule.Tasks = function() {
   // */
   //this.selectDummyStroke_;
 
-  anychart.core.settings.createDescriptorsMeta(this.descriptorsMeta, [
-    ['dummyFill', 0, anychart.Signal.NEEDS_REDRAW_APPEARANCE],
-    ['dummyStroke', 0, anychart.Signal.NEEDS_REDRAW_APPEARANCE]
-  ]);
+  this.normal_.setMeta('dummyFill', [0, anychart.Signal.NEEDS_REDRAW_APPEARANCE]);
+  this.normal_.setMeta('dummyStroke', [0, anychart.Signal.NEEDS_REDRAW_APPEARANCE]);
 };
 goog.inherits(anychart.pertModule.Tasks, anychart.pertModule.VisualElements);
+anychart.core.settings.populateAliases(anychart.pertModule.Tasks, ['dummyFill', 'dummyStroke'], 'normal');
 
 
 /**
@@ -85,21 +72,6 @@ goog.inherits(anychart.pertModule.Tasks, anychart.pertModule.VisualElements);
  */
 anychart.pertModule.Tasks.prototype.SUPPORTED_SIGNALS =
     anychart.pertModule.VisualElements.prototype.SUPPORTED_SIGNALS;
-
-
-/**
- * @type {!Object.<string, anychart.core.settings.PropertyDescriptor>}
- */
-anychart.pertModule.Tasks.PROPERTY_DESCRIPTORS = (function() {
-  /** @type {!Object.<string, anychart.core.settings.PropertyDescriptor>} */
-  var map = {};
-  anychart.core.settings.createDescriptors(map, [
-    [anychart.enums.PropertyHandlerType.MULTI_ARG, 'dummyFill', anychart.core.settings.fillOrFunctionNormalizer],
-    [anychart.enums.PropertyHandlerType.MULTI_ARG, 'dummyStroke', anychart.core.settings.strokeOrFunctionNormalizer]
-  ]);
-  return map;
-})();
-anychart.core.settings.populate(anychart.pertModule.Tasks, anychart.pertModule.Tasks.PROPERTY_DESCRIPTORS);
 
 
 ///**
@@ -156,16 +128,7 @@ anychart.core.settings.populate(anychart.pertModule.Tasks, anychart.pertModule.T
  * @return {!acgraph.vector.Fill} - Final ummy fill.
  */
 anychart.pertModule.Tasks.prototype.getFinalDummyFill = function(provider) {
-  var result;
-  var fill = this.getOption('dummyFill');
-  result = fill;
-
-  if (goog.isFunction(fill)) {
-    provider['sourceColor'] = this.getOption('color');
-    result = fill.call(provider);
-  }
-
-  return /** @type {!acgraph.vector.Fill} */ (result);
+  return /** @type {!acgraph.vector.Fill} */ (this.resolveColor('dummyFill', 0, provider));
 };
 
 
@@ -221,16 +184,7 @@ anychart.pertModule.Tasks.prototype.getFinalDummyFill = function(provider) {
  * @return {!acgraph.vector.Stroke} - Final dummy stroke.
  */
 anychart.pertModule.Tasks.prototype.getFinalDummyStroke = function(provider) {
-  var result;
-  var stroke = this.getOption('dummyStroke');
-  result = stroke;
-
-  if (goog.isFunction(stroke)) {
-    provider['sourceColor'] = this.getOption('color');
-    result = stroke.call(provider);
-  }
-
-  return /** @type {!acgraph.vector.Stroke} */ (result);
+  return /** @type {!acgraph.vector.Stroke} */ (this.resolveColor('dummyStroke', 0, provider));
 };
 
 
@@ -382,8 +336,6 @@ anychart.pertModule.Tasks.prototype.serialize = function() {
   json['hoverUpperLabels'] = goog.object.clone(json['hoverLabels']);
   delete json['hoverLabels'];
 
-  anychart.core.settings.serialize(this, anychart.pertModule.Tasks.PROPERTY_DESCRIPTORS, json, 'Pert tasks');
-
   //if (this.dummyFill_) json['dummyFill'] = anychart.color.serialize(/** @type {acgraph.vector.Fill} */ (this.dummyFill_));
   //json['hoverDummyFill'] = anychart.color.serialize(/** @type {acgraph.vector.Fill}*/(this.hoverDummyFill()));
   //json['selectDummyFill'] = anychart.color.serialize(/** @type {acgraph.vector.Fill}*/(this.selectDummyFill()));
@@ -409,8 +361,6 @@ anychart.pertModule.Tasks.prototype.setupByJSON = function(config, opt_default) 
   this.lowerLabels(config['lowerLabels']);
   this.hoverLowerLabels(config['hoverLowerLabels']);
   this.selectLowerLabels(config['selectLowerLabels']);
-
-  anychart.core.settings.deserialize(this, anychart.pertModule.Tasks.PROPERTY_DESCRIPTORS, config);
 
   //this.dummyFill(config['dummyFill']);
   //this.hoverDummyFill(config['hoverDummyFill']);

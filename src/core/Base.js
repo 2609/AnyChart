@@ -469,7 +469,7 @@ anychart.core.Base.prototype.suspendedDispatching = NaN;
 anychart.core.Base.prototype.suspensionLevel = 0;
 
 
-//region --- IObjectWithSettings
+//region --- IObjectWithSettings implementation
 /** @inheritDoc */
 anychart.core.Base.prototype.getOwnOption = function(name) {
   return this.ownSettings[name];
@@ -538,6 +538,18 @@ anychart.core.Base.prototype.getHookContext = function(fieldName) {
 anychart.core.Base.prototype.getHook = function(fieldName) {
   var meta = this.descriptorsMeta[fieldName];
   return meta ? (meta.beforeInvalidationHook || goog.nullFunction) : goog.nullFunction;
+};
+
+
+/** @inheritDoc */
+anychart.core.Base.prototype.isResolvable = function() {
+  return false;
+};
+
+
+/** @inheritDoc */
+anychart.core.Base.prototype.getParentState = function() {
+  return null;
 };
 
 

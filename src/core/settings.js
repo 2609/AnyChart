@@ -1049,6 +1049,21 @@ anychart.core.settings.IObjectWithSettings.prototype.invalidate = function(state
  * @param {boolean=} opt_force Force to dispatch signal.
  */
 anychart.core.settings.IObjectWithSettings.prototype.dispatchSignal = function(state, opt_force) {};
+
+
+/**
+ * Whether implementation of IObjectWithSettings implements IResolvable also.
+ * @return {boolean}
+ */
+anychart.core.settings.IObjectWithSettings.prototype.isResolvable = function() {};
+
+
+/**
+ * Returns parent state for state holder by type.
+ * @param {anychart.PointState|number} stateType
+ * @return {anychart.core.StateSettings}
+ */
+anychart.core.settings.IObjectWithSettings.prototype.getParentState = function(stateType) {};
 //endregion
 
 

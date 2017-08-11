@@ -1,6 +1,7 @@
 goog.provide('anychart.pertModule.VisualElements');
 
 goog.require('anychart.core.Base');
+goog.require('anychart.core.StateSettings');
 goog.require('anychart.core.settings');
 goog.require('anychart.core.ui.LabelsFactory');
 goog.require('anychart.core.ui.Tooltip');
@@ -16,48 +17,6 @@ goog.require('anychart.core.ui.Tooltip');
  */
 anychart.pertModule.VisualElements = function() {
   anychart.pertModule.VisualElements.base(this, 'constructor');
-
-  /**
-   * @type {acgraph.vector.Fill}
-   * @private
-   */
-  this.color_;
-
-  /**
-   * @type {acgraph.vector.Fill|Function}
-   * @private
-   */
-  this.fill_;
-
-  /**
-   * @type {acgraph.vector.Fill|Function}
-   * @private
-   */
-  this.hoverFill_;
-
-  /**
-   * @type {acgraph.vector.Fill|Function}
-   * @private
-   */
-  this.selectFill_;
-
-  /**
-   * @type {acgraph.vector.Stroke|Function}
-   * @private
-   */
-  this.stroke_;
-
-  /**
-   * @type {acgraph.vector.Stroke|Function}
-   * @private
-   */
-  this.hoverStroke_;
-
-  /**
-   * @type {acgraph.vector.Stroke|Function}
-   * @private
-   */
-  this.selectStroke_;
 
   /**
    * @type {anychart.core.ui.LabelsFactory}
@@ -104,21 +63,21 @@ anychart.pertModule.VisualElements = function() {
    */
   this.resolutionChainCache_ = null;
 
-  /**
-   * @type {!Object.<string, anychart.core.settings.PropertyDescriptorMeta>}
-   */
-  this.descriptorsMeta = {};
   anychart.core.settings.createDescriptorsMeta(this.descriptorsMeta, [
-    ['color', 0, anychart.Signal.NEEDS_REDRAW_APPEARANCE],
-    ['fill', 0, anychart.Signal.NEEDS_REDRAW_APPEARANCE],
-    ['hoverFill', 0, anychart.Signal.NEEDS_REDRAW_APPEARANCE],
-    ['selectFill', 0, anychart.Signal.NEEDS_REDRAW_APPEARANCE],
-    ['stroke', 0, anychart.Signal.NEEDS_REDRAW_APPEARANCE],
-    ['hoverStroke', 0, anychart.Signal.NEEDS_REDRAW_APPEARANCE],
-    ['selectStroke', 0, anychart.Signal.NEEDS_REDRAW_APPEARANCE]
+    ['color', 0, anychart.Signal.NEEDS_REDRAW_APPEARANCE]
   ]);
+
+  var descriptorsMap = {};
+  anychart.core.settings.createDescriptorsMeta(descriptorsMap, [
+    ['fill', 0, anychart.Signal.NEEDS_REDRAW_APPEARANCE],
+    ['stroke', 0, anychart.Signal.NEEDS_REDRAW_APPEARANCE]
+  ]);
+  this.normal_ = new anychart.core.StateSettings(this, descriptorsMap, anychart.PointState.NORMAL);
+  this.hovered_ = new anychart.core.StateSettings(this, descriptorsMap, anychart.PointState.HOVER);
+  this.selected_ = new anychart.core.StateSettings(this, descriptorsMap, anychart.PointState.SELECT);
 };
 goog.inherits(anychart.pertModule.VisualElements, anychart.core.Base);
+anychart.core.settings.populateAliases(anychart.pertModule.VisualElements, ['fill', 'stroke'], 'normal');
 
 
 /**
@@ -146,15 +105,10 @@ anychart.pertModule.VisualElements.prototype.SUPPORTED_CONSISTENCY_STATES =
 anychart.pertModule.VisualElements.PROPERTY_DESCRIPTORS = (function() {
   /** @type {!Object.<string, anychart.core.settings.PropertyDescriptor>} */
   var map = {};
-  anychart.core.settings.createDescriptors(map, [
-    [anychart.enums.PropertyHandlerType.MULTI_ARG, 'color', anychart.core.settings.fillNormalizer],
-    [anychart.enums.PropertyHandlerType.MULTI_ARG, 'fill', anychart.core.settings.fillOrFunctionNormalizer],
-    [anychart.enums.PropertyHandlerType.MULTI_ARG, 'hoverFill', anychart.core.settings.fillOrFunctionNormalizer],
-    [anychart.enums.PropertyHandlerType.MULTI_ARG, 'selectFill', anychart.core.settings.fillOrFunctionNormalizer],
-    [anychart.enums.PropertyHandlerType.MULTI_ARG, 'stroke', anychart.core.settings.fillOrFunctionNormalizer],
-    [anychart.enums.PropertyHandlerType.MULTI_ARG, 'hoverStroke', anychart.core.settings.fillOrFunctionNormalizer],
-    [anychart.enums.PropertyHandlerType.MULTI_ARG, 'selectStroke', anychart.core.settings.fillOrFunctionNormalizer]
-  ]);
+  anychart.core.settings.createDescriptor(map,
+      anychart.enums.PropertyHandlerType.MULTI_ARG,
+      'color',
+      anychart.core.settings.fillNormalizer);
   return map;
 })();
 anychart.core.settings.populate(anychart.pertModule.VisualElements, anychart.pertModule.VisualElements.PROPERTY_DESCRIPTORS);
@@ -167,6 +121,23 @@ anychart.core.settings.populate(anychart.pertModule.VisualElements, anychart.per
  * @return {*}
  */
 anychart.pertModule.VisualElements.prototype.getOption = anychart.core.settings.getOption;
+
+
+/** @inheritDoc */
+anychart.pertModule.VisualElements.prototype.isResolvable = function() {
+  return true;
+};
+
+
+/** @inheritDoc */
+anychart.pertModule.VisualElements.prototype.getParentState = function(stateType) {
+  var parent = this.parent();
+  if (parent) {
+    var state = !!(stateType & anychart.PointState.SELECT) ? 'selected' : !!(stateType & anychart.PointState.HOVER) ? 'hovered' : 'normal';
+    return parent[state]();
+  }
+  return null;
+};
 
 
 //endregion
@@ -269,28 +240,7 @@ anychart.pertModule.VisualElements.prototype.parentInvalidated_ = function(e) {
  * @return {!acgraph.vector.Fill} - Final fill.
  */
 anychart.pertModule.VisualElements.prototype.getFinalFill = function(state, provider) {
-  var result;
-  var fill;
-
-  switch (state) {
-    case anychart.PointState.HOVER:
-      fill = this.getOption('hoverFill');
-      break;
-    case anychart.PointState.SELECT:
-      fill = this.getOption('selectFill');
-      break;
-    default:
-      fill = this.getOption('fill');
-  }
-
-  result = fill;
-
-  if (goog.isFunction(fill)) {
-    provider['sourceColor'] = this.getOption('color');
-    result = fill.call(provider);
-  }
-
-  return /** @type {!acgraph.vector.Fill} */ (result);
+  return /** @type {!acgraph.vector.Fill} */ (this.resolveColor('fill', state, provider));
 };
 
 
@@ -301,28 +251,28 @@ anychart.pertModule.VisualElements.prototype.getFinalFill = function(state, prov
  * @return {!acgraph.vector.Stroke} - Final stroke.
  */
 anychart.pertModule.VisualElements.prototype.getFinalStroke = function(state, provider) {
+  return /** @type {!acgraph.vector.Stroke} */ (this.resolveColor('stroke', state, provider));
+};
+
+
+/**
+ * Resolves fill/stroke.
+ * @param {string} colorType
+ * @param {number} state
+ * @param {anychart.format.Context} provider
+ * @return {!acgraph.vector.Stroke|!acgraph.vector.Fill}
+ */
+anychart.pertModule.VisualElements.prototype.resolveColor = function(colorType, state, provider) {
   var result;
-  var stroke;
+  var stateObject = state == 0 ? this.normal_ : state == 1 ? this.hovered_ : this.selected_;
+  result = stateObject.getOption(colorType);
 
-  switch (state) {
-    case anychart.PointState.HOVER:
-      stroke = this.getOption('hoverStroke');
-      break;
-    case anychart.PointState.SELECT:
-      stroke = this.getOption('selectStroke');
-      break;
-    default:
-      stroke = this.getOption('stroke');
-  }
-
-  result = stroke;
-
-  if (goog.isFunction(stroke)) {
+  if (goog.isFunction(result)) {
     provider['sourceColor'] = this.getOption('color');
-    result = stroke.call(provider);
+    result = result.call(provider);
   }
 
-  return /** @type {!acgraph.vector.Stroke} */ (result);
+  return /** @type {!acgraph.vector.Stroke|!acgraph.vector.Fill} */ (result);
 };
 
 
