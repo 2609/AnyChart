@@ -6,44 +6,51 @@ goog.mixin(goog.global['anychart']['themes']['defaultTheme']['chart'], {
   'defaultAnnotationSettings': {
     'base': {
       'enabled': true,
-      'fill': anychart.core.defaultTheme.returnSourceColor50,
-      'stroke': anychart.core.defaultTheme.returnSourceColor,
-      'hatchFill': null,
-      'hoverFill': anychart.core.defaultTheme.returnSourceColor70,
-      'hoverStroke': anychart.core.defaultTheme.returnDarkenSourceColor,
-      'selectFill': anychart.core.defaultTheme.returnSourceColor70,
-      'selectStroke': anychart.core.defaultTheme.returnDarkenSourceColor,
-      'markers': {
-        'enabled': false,
-        'size': 5,
-        'type': 'square',
-        'fill': '#ffff66',
-        'stroke': '#333333'
-      },
-      'hoverMarkers': {
-        'enabled': null
-      },
-      'selectMarkers': {
-        'enabled': true
-      },
-      'labels': {
-        'enabled': true,
-        'position': 'center-top',
-        'anchor': 'center-top',
-        /**
-         * @return {*}
-         * @this {*}
-         */
-        'format': function() {
-          return this['level'];
+      'normal': {
+        'fill': anychart.core.defaultTheme.returnSourceColor50,
+        'stroke': anychart.core.defaultTheme.returnSourceColor,
+        'hatchFill': null,
+        'markers': {
+          'enabled': false,
+          'size': 5,
+          'type': 'square',
+          'fill': '#ffff66',
+          'stroke': '#333333'
+        },
+        'labels': {
+          'enabled': true,
+          'position': 'center-top',
+          'anchor': 'center-top',
+          /**
+           * @return {*}
+           * @this {*}
+           */
+          'format': function() {
+            return this['level'];
+          }
         }
       },
-      'hoverLabels': {
-        'enabled': null
+      'hovered': {
+        'fill': anychart.core.defaultTheme.returnSourceColor70,
+        'stroke': anychart.core.defaultTheme.returnDarkenSourceColor,
+        'markers': {
+          'enabled': null
+        },
+        'labels': {
+          'enabled': null
+        }
       },
-      'selectLabels': {
-        'enabled': null
+      'selected': {
+        'fill': anychart.core.defaultTheme.returnSourceColor70,
+        'stroke': anychart.core.defaultTheme.returnDarkenSourceColor,
+        'markers': {
+          'enabled': true
+        },
+        'labels': {
+          'enabled': null
+        }
       },
+
       'color': '#e06666',
       'allowEdit': true,
       'hoverGap': 5

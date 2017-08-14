@@ -921,6 +921,9 @@ anychart.core.settings.descriptors = (function() {
   map.FONT_VARIANT = [anychart.enums.PropertyHandlerType.SINGLE_ARG, 'fontVariant', anychart.enums.normalizeFontVariant];
   map.FONT_WEIGHT = [anychart.enums.PropertyHandlerType.SINGLE_ARG, 'fontWeight', anychart.core.settings.numberOrStringNormalizer];
   map.FONT_SIZE = [anychart.enums.PropertyHandlerType.SINGLE_ARG, 'fontSize', anychart.core.settings.numberOrPercentOrNullOrFunctionNormalizer];
+  // pert tasks
+  map.DUMMY_FILL = [anychart.enums.PropertyHandlerType.MULTI_ARG, 'dummyFill', anychart.core.settings.fillOrFunctionNormalizer];
+  map.DUMMY_STROKE = [anychart.enums.PropertyHandlerType.MULTI_ARG, 'dummyStroke', anychart.core.settings.strokeOrFunctionNormalizer];
 
   return map;
 })();
