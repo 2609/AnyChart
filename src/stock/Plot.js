@@ -1153,8 +1153,7 @@ anychart.stockModule.Plot.prototype.invalidateRedrawable = function(doInvalidate
     if (priceIndicator) {
       priceIndicator.suspendSignalsDispatching();
       // effectively invalidates all what's needed
-      priceIndicator.invalidate(anychart.ConsistencyState.APPEARANCE,
-          anychart.Signal.NEEDS_REDRAW | anychart.Signal.BOUNDS_CHANGED);
+      priceIndicator.invalidate(anychart.ConsistencyState.BOUNDS, anychart.Signal.NEEDS_REDRAW);
       priceIndicator.resumeSignalsDispatching(false);
     }
   }

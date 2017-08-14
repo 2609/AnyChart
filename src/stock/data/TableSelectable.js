@@ -248,22 +248,46 @@ anychart.stockModule.data.TableSelectable.prototype.getRowFromMainStorage = func
 
 /**
  * Returns a first row from main storage if it exists.
+ * @param {string=} opt_fieldName This means that the first row will be returned in which there is a significant value
+ * for this field.
  * @return {?anychart.stockModule.data.TableSelectable.RowProxy}
  */
-anychart.stockModule.data.TableSelectable.prototype.getFirstRowFromMainStorage = function() {
+anychart.stockModule.data.TableSelectable.prototype.getFirstRowFromMainStorage = function(opt_fieldName) {
   var mainStorage = this.mapping_.getTable().getStorage();
-  var row = mainStorage.getRow(0);
+  var row;
+  if (goog.isDef(opt_fieldName)) {
+    var column = this.mapping_.getSourceColumn(opt_fieldName);
+    for (var i = 0, len = mainStorage.getRowsCount(); i < len; i++) {
+      row = mainStorage.getRow(i);
+      if (row.getValue(column))
+        break;
+    }
+  } else {
+    row = mainStorage.getRow(0);
+  }
   return row ? new anychart.stockModule.data.TableSelectable.RowProxy(row, this.mapping_, false, 0, null) : null;
 };
 
 
 /**
  * Returns a last row from main storage if it exists.
+ * @param {string=} opt_fieldName This means that the last row will be returned in which there is a significant value
+ * for this field.
  * @return {?anychart.stockModule.data.TableSelectable.RowProxy}
  */
-anychart.stockModule.data.TableSelectable.prototype.getLastRowFromMainStorage = function() {
+anychart.stockModule.data.TableSelectable.prototype.getLastRowFromMainStorage = function(opt_fieldName) {
   var mainStorage = this.mapping_.getTable().getStorage();
-  var row = mainStorage.getRow(mainStorage.getRowsCount() - 1);
+  var row;
+  if (goog.isDef(opt_fieldName)) {
+    var column = this.mapping_.getSourceColumn(opt_fieldName);
+    for (var i = mainStorage.getRowsCount(); i--;) {
+      row = mainStorage.getRow(i);
+      if (row.getValue(column))
+        break;
+    }
+  } else {
+    row = mainStorage.getRow(mainStorage.getRowsCount() - 1);
+  }
   return row ? new anychart.stockModule.data.TableSelectable.RowProxy(row, this.mapping_, false, 0, null) : null;
 };
 
@@ -271,9 +295,10 @@ anychart.stockModule.data.TableSelectable.prototype.getLastRowFromMainStorage = 
 /**
  * Returns data row.
  * @param {anychart.enums.DataSource|number} dataSource .
+ * @param {string=} opt_fieldName .
  * @return {?anychart.stockModule.data.TableSelectable.RowProxy}
  */
-anychart.stockModule.data.TableSelectable.prototype.getRowByDataSource = function(dataSource) {
+anychart.stockModule.data.TableSelectable.prototype.getRowByDataSource = function(dataSource, opt_fieldName) {
   /** @type {?anychart.stockModule.data.TableSelectable.RowProxy} */
   var row;
   if (dataSource == anychart.enums.DataSource.FIRST_VISIBLE) {
@@ -281,9 +306,9 @@ anychart.stockModule.data.TableSelectable.prototype.getRowByDataSource = functio
   } else if (dataSource == anychart.enums.DataSource.LAST_VISIBLE) {
     row = this.getLastVisibleRow();
   } else if (dataSource == anychart.enums.DataSource.SERIES_START) {
-    row = this.getFirstRowFromMainStorage();
+    row = this.getFirstRowFromMainStorage(opt_fieldName);
   } else if (dataSource == anychart.enums.DataSource.SERIES_END) {
-    row = this.getLastRowFromMainStorage();
+    row = this.getLastRowFromMainStorage(opt_fieldName);
   } else {
     row = this.getRowFromMainStorage(dataSource);
   }
@@ -540,14 +565,7 @@ anychart.stockModule.data.TableSelectable.RowProxy.prototype.get = function(fiel
  * @return {*}
  */
 anychart.stockModule.data.TableSelectable.RowProxy.prototype.getColumn = function(column) {
-  var result;
-  if (goog.isNumber(column) && column < 0) {
-    if (this.row.computedValues)
-      result = this.row.computedValues[~column];
-  } else {
-    result = this.row.values[column];
-  }
-  return result; // may by undefined
+  return this.row.getValue(column);
 };
 
 
