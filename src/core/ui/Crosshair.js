@@ -18,9 +18,9 @@ anychart.core.ui.Crosshair = function() {
 
   /**
    * @type {anychart.core.ChartWithAxes|anychart.mapModule.Chart|anychart.stockModule.Chart|anychart.stockModule.Plot}
-   * @protected
+   * @private
    */
-  this.chart = null;
+  this.interactivityTarget_ = null;
 
   /**
    * If true, all default chart elements layout is swapped.
@@ -80,12 +80,6 @@ anychart.core.ui.Crosshair = function() {
   this.xLabelAutoEnabled_ = true;
 
   /**
-   * @type {boolean}
-   * @private
-   */
-  this.needsForceSignalsDispatching_ = false;
-
-  /**
    * Resolution chain cache.
    * @type {?Array.<Object|null|undefined>}
    * @private
@@ -104,17 +98,10 @@ anychart.core.ui.Crosshair = function() {
    */
   this.childrenMap = {};
 
-  /**
-   * @this {anychart.core.ui.Crosshair}
-   */
-  var displayModeBeforeInvalidationHook = function() {
-    this.bindHandlers();
-  };
-
   anychart.core.settings.createDescriptorsMeta(this.descriptorsMeta, [
     ['xStroke', anychart.ConsistencyState.APPEARANCE, anychart.Signal.NEEDS_REDRAW],
     ['yStroke', anychart.ConsistencyState.APPEARANCE, anychart.Signal.NEEDS_REDRAW],
-    ['displayMode', 0, 0, 0, displayModeBeforeInvalidationHook]
+    ['displayMode', 0, 0]
   ]);
 };
 goog.inherits(anychart.core.ui.Crosshair, anychart.core.VisualBase);
@@ -473,167 +460,132 @@ anychart.core.ui.Crosshair.prototype.draw = function() {
 };
 
 
-/**
- * Whether to dispatch signals even if current consistency state is not effective.
- * @param {boolean=} opt_value - Value to set.
- * @return {boolean|anychart.core.ui.Crosshair}
- */
-anychart.core.ui.Crosshair.prototype.needsForceSignalsDispatching = function(opt_value) {
-  if (goog.isDef(opt_value)) {
-    this.needsForceSignalsDispatching_ = opt_value;
-    return this;
-  }
-  return this.needsForceSignalsDispatching_;
-};
-
-
-/**
- * @inheritDoc
- */
-anychart.core.ui.Crosshair.prototype.invalidate = function(state, opt_signal) {
-  var effective = anychart.core.ui.Crosshair.base(this, 'invalidate', state, opt_signal);
-  if (!effective && this.needsForceSignalsDispatching())
-    this.dispatchSignal(opt_signal || 0);
-  return effective;
-};
-
-
 //endregion
 /**
- *
- * @param {(anychart.core.ChartWithAxes|anychart.mapModule.Chart|anychart.stockModule.Chart|anychart.stockModule.Plot)=} opt_chart
+ * Gets/sets interactivity target.
+ * @param {(anychart.core.ChartWithAxes|anychart.mapModule.Chart|anychart.stockModule.Chart|anychart.stockModule.Plot)=} opt_value - Target to set.
+ * @return {anychart.core.ui.Crosshair|anychart.core.ChartWithAxes|anychart.mapModule.Chart|anychart.stockModule.Chart|anychart.stockModule.Plot}
  */
-anychart.core.ui.Crosshair.prototype.bindHandlers = function(opt_chart) {
-  if (opt_chart) {
-    this.chart = opt_chart;
-  }
-
-  if (this.chart) {
-    if (this.getOption('displayMode') == anychart.enums.CrosshairDisplayMode.STICKY) {
-      this.chart.unlisten(acgraph.events.EventType.MOUSEOVER, this.handleMouseOverAndMove, false, this);
-      this.chart.unlisten(acgraph.events.EventType.MOUSEMOVE, this.handleMouseOverAndMove, false, this);
-      this.chart.unlisten(acgraph.events.EventType.MOUSEOUT, this.handleMouseOut, false, this);
-      this.chart.listen(anychart.enums.EventType.POINTS_HOVER, this.show, false, this);
-    } else { // float
-      this.chart.unlisten(anychart.enums.EventType.POINTS_HOVER, this.show, false, this);
-      this.chart.listen(acgraph.events.EventType.MOUSEOVER, this.handleMouseOverAndMove, false, this);
-      this.chart.listen(acgraph.events.EventType.MOUSEMOVE, this.handleMouseOverAndMove, false, this);
-      this.chart.listen(acgraph.events.EventType.MOUSEOUT, this.handleMouseOut, false, this);
-    }
-  }
-};
-
-
-/**
- * Removes handlers.
- */
-anychart.core.ui.Crosshair.prototype.unbindHandlers = function() {
-  this.chart.unlisten(acgraph.events.EventType.MOUSEOVER, this.handleMouseOverAndMove, false, this);
-  this.chart.unlisten(acgraph.events.EventType.MOUSEMOVE, this.handleMouseOverAndMove, false, this);
-  this.chart.unlisten(acgraph.events.EventType.MOUSEOUT, this.handleMouseOut, false, this);
-  this.chart.unlisten(anychart.enums.EventType.POINTS_HOVER, this.show, false, this);
-};
-
-
-/**
- * Handler for sticky mode.
- * @param {anychart.core.MouseEvent} event
- * @protected
- */
-anychart.core.ui.Crosshair.prototype.show = function(event) {
-  var toShowSeriesStatus = [];
-  var statuses = event['seriesStatus'];
-  for (var i = 0; i < statuses.length; i++) {
-    var status = statuses[i];
-    if (status['series'].enabled() && !goog.array.isEmpty(status['points'])) {
-      toShowSeriesStatus.push(status);
-    }
-  }
-
-  if (toShowSeriesStatus.length) {
-    var nearestSeriesStatus = toShowSeriesStatus[0];
-    toShowSeriesStatus[0]['series'].getIterator().select(toShowSeriesStatus[0]['nearestPointToCursor']['index']);
-
-    for (i = 0; i < toShowSeriesStatus.length; i++) {
-      var seriesStatus = toShowSeriesStatus[i];
-      if (nearestSeriesStatus['nearestPointToCursor']['distance'] > seriesStatus['nearestPointToCursor']['distance']) {
-        seriesStatus['series'].getIterator().select(seriesStatus['nearestPointToCursor']['index']);
-        nearestSeriesStatus = seriesStatus;
+anychart.core.ui.Crosshair.prototype.interactivityTarget = function(opt_value) {
+  if (goog.isDef(opt_value)) {
+    if (this.interactivityTarget_ != opt_value) {
+      if (this.interactivityTarget_) {
+        this.interactivityTarget_.unlisten(acgraph.events.EventType.MOUSEOVER, this.handleMouseOverAndMove, false, this);
+        this.interactivityTarget_.unlisten(acgraph.events.EventType.MOUSEMOVE, this.handleMouseOverAndMove, false, this);
+        this.interactivityTarget_.unlisten(acgraph.events.EventType.MOUSEOUT, this.handleMouseOut, false, this);
+      }
+      this.interactivityTarget_ = opt_value;
+      if (this.interactivityTarget_) { // null condition.
+        this.interactivityTarget_.listen(acgraph.events.EventType.MOUSEOVER, this.handleMouseOverAndMove, false, this);
+        this.interactivityTarget_.listen(acgraph.events.EventType.MOUSEMOVE, this.handleMouseOverAndMove, false, this);
+        this.interactivityTarget_.listen(acgraph.events.EventType.MOUSEOUT, this.handleMouseOut, false, this);
       }
     }
-
-    var series = nearestSeriesStatus['series'];
-
-    var container = /** @type {acgraph.vector.ILayer} */(this.container());
-    var bounds = this.parentBounds();
-    var chartOffset = container.getStage().getClientPosition();
-
-
-    var shiftX = this.xLine.strokeThickness() % 2 == 0 ? 0 : -.5;
-    var shiftY = this.yLine.strokeThickness() % 2 == 0 ? 0 : -.5;
-
-    var xScale = series.xScale();
-
-    var iterator = series.getIterator();
-    var x = anychart.utils.toNumber(iterator.meta('x'));
-    var mouseX = event['originalEvent'] - chartOffset.x;
-    var y = event['originalEvent']['clientY'] - chartOffset.y;
-
-    var xStroke = this.getOption('xStroke');
-    var yStroke = this.getOption('yStroke');
-
-    if (xStroke && xStroke != 'none') {
-      var xLineCoord;
-      this.xLine.clear();
-
-      // one pixel shift with clamp
-      xLineCoord = goog.math.clamp(x, bounds.getLeft(), bounds.getRight() - 1);
-      xLineCoord = Math.round(xLineCoord) - shiftX;
-      this.xLine
-          .moveTo(xLineCoord, bounds.getTop())
-          .lineTo(xLineCoord, bounds.getBottom());
-    }
-
-    if (this.xAxis_ && this.xAxis_.enabled() && this.xLabel_.enabled()) {
-      var xLabelFormatProvider = this.getLabelsFormatProvider(this.xAxis_, xScale.transform(iterator.get('x')));
-      var xLabelFormat = this.xLabel_.format() || anychart.utils.DEFAULT_FORMATTER;
-      this.xLabel_.text(xLabelFormat.call(xLabelFormatProvider, xLabelFormatProvider));
-      var xLabelPosition = this.getLabelPosition_(this.xAxis_, this.xLabel_, x, y, xScale.transform(iterator.get('x')));
-      this.xLabel_.x(/** @type {number}*/(xLabelPosition.x)).y(/** @type {number}*/(xLabelPosition.y));
-      this.xLabel_.container(container).draw();
-    }
-
-
-    if (yStroke && yStroke != 'none') {
-      var yLineCoord;
-      this.yLine.clear();
-
-      yLineCoord = goog.math.clamp(y, bounds.getTop(), bounds.getBottom() - 1);
-      yLineCoord = Math.round(yLineCoord) - shiftY;
-      this.yLine
-          .moveTo(bounds.getLeft(), yLineCoord)
-          .lineTo(bounds.getRight(), yLineCoord);
-    }
-
-    if (this.yAxis_ && this.yAxis_.enabled() && this.yLabel_.enabled()) {
-      var width = bounds.getRight() - bounds.getLeft();
-      var height = bounds.getBottom() - bounds.getTop();
-      var dataPlotOffsetX = mouseX - bounds.getLeft();
-      var dataPlotOffsetY = y - bounds.getTop();
-      var yRatio = this.barChartMode_ ? dataPlotOffsetX / width : (height - dataPlotOffsetY) / height;
-
-      var yLabelFormatProvider = this.getLabelsFormatProvider(this.yAxis_, yRatio);
-      var yLabelFormat = this.yLabel_.format() || anychart.utils.DEFAULT_FORMATTER;
-      this.yLabel_.text(yLabelFormat.call(yLabelFormatProvider, yLabelFormatProvider));
-      var yLabelPosition = this.getLabelPosition_(this.yAxis_, this.yLabel_, x, y, yRatio);
-      this.yLabel_.x(/** @type {number}*/(yLabelPosition.x)).y(/** @type {number}*/(yLabelPosition.y));
-      this.yLabel_.container(container).draw();
-    }
-
-  } else {
-    this.hide();
+    return this;
   }
+  return this.interactivityTarget_;
 };
+
+
+// /**
+//  * Handler for sticky mode.
+//  * @param {anychart.core.MouseEvent} event
+//  * @protected
+//  */
+// anychart.core.ui.Crosshair.prototype.show = function(event) {
+//   var toShowSeriesStatus = [];
+//   var statuses = event['seriesStatus'];
+//   for (var i = 0; i < statuses.length; i++) {
+//     var status = statuses[i];
+//     if (status['series'].enabled() && !goog.array.isEmpty(status['points'])) {
+//       toShowSeriesStatus.push(status);
+//     }
+//   }
+//
+//   if (toShowSeriesStatus.length) {
+//     var nearestSeriesStatus = toShowSeriesStatus[0];
+//     toShowSeriesStatus[0]['series'].getIterator().select(toShowSeriesStatus[0]['nearestPointToCursor']['index']);
+//
+//     for (i = 0; i < toShowSeriesStatus.length; i++) {
+//       var seriesStatus = toShowSeriesStatus[i];
+//       if (nearestSeriesStatus['nearestPointToCursor']['distance'] > seriesStatus['nearestPointToCursor']['distance']) {
+//         seriesStatus['series'].getIterator().select(seriesStatus['nearestPointToCursor']['index']);
+//         nearestSeriesStatus = seriesStatus;
+//       }
+//     }
+//
+//     var series = nearestSeriesStatus['series'];
+//
+//     var container = /** @type {acgraph.vector.ILayer} */(this.container());
+//     var bounds = this.parentBounds();
+//     var chartOffset = container.getStage().getClientPosition();
+//
+//
+//     var shiftX = this.xLine.strokeThickness() % 2 == 0 ? 0 : -.5;
+//     var shiftY = this.yLine.strokeThickness() % 2 == 0 ? 0 : -.5;
+//
+//     var xScale = series.xScale();
+//
+//     var iterator = series.getIterator();
+//     var x = anychart.utils.toNumber(iterator.meta('x'));
+//     var mouseX = event['originalEvent']['clientX'] - chartOffset.x;
+//     var y = event['originalEvent']['clientY'] - chartOffset.y;
+//
+//     var xStroke = this.getOption('xStroke');
+//     var yStroke = this.getOption('yStroke');
+//
+//     if (xStroke && xStroke != 'none') {
+//       var xLineCoord;
+//       this.xLine.clear();
+//
+//       // one pixel shift with clamp
+//       xLineCoord = goog.math.clamp(x, bounds.getLeft(), bounds.getRight() - 1);
+//       xLineCoord = Math.round(xLineCoord) - shiftX;
+//       this.xLine
+//           .moveTo(xLineCoord, bounds.getTop())
+//           .lineTo(xLineCoord, bounds.getBottom());
+//     }
+//
+//     if (this.xAxis_ && this.xAxis_.enabled() && this.xLabel_.enabled()) {
+//       var xLabelFormatProvider = this.getLabelsFormatProvider(this.xAxis_, xScale.transform(iterator.get('x')));
+//       var xLabelFormat = this.xLabel_.format() || anychart.utils.DEFAULT_FORMATTER;
+//       this.xLabel_.text(xLabelFormat.call(xLabelFormatProvider, xLabelFormatProvider));
+//       var xLabelPosition = this.getLabelPosition_(this.xAxis_, this.xLabel_, x, y, xScale.transform(iterator.get('x')));
+//       this.xLabel_.x(/** @type {number}*/(xLabelPosition.x)).y(/** @type {number}*/(xLabelPosition.y));
+//       this.xLabel_.container(container).draw();
+//     }
+//
+//
+//     if (yStroke && yStroke != 'none') {
+//       var yLineCoord;
+//       this.yLine.clear();
+//
+//       yLineCoord = goog.math.clamp(y, bounds.getTop(), bounds.getBottom() - 1);
+//       yLineCoord = Math.round(yLineCoord) - shiftY;
+//       this.yLine
+//           .moveTo(bounds.getLeft(), yLineCoord)
+//           .lineTo(bounds.getRight(), yLineCoord);
+//     }
+//
+//     if (this.yAxis_ && this.yAxis_.enabled() && this.yLabel_.enabled()) {
+//       var width = bounds.getRight() - bounds.getLeft();
+//       var height = bounds.getBottom() - bounds.getTop();
+//       var dataPlotOffsetX = mouseX - bounds.getLeft();
+//       var dataPlotOffsetY = y - bounds.getTop();
+//       var yRatio = this.barChartMode_ ? dataPlotOffsetX / width : (height - dataPlotOffsetY) / height;
+//
+//       var yLabelFormatProvider = this.getLabelsFormatProvider(this.yAxis_, yRatio);
+//       var yLabelFormat = this.yLabel_.format() || anychart.utils.DEFAULT_FORMATTER;
+//       this.yLabel_.text(yLabelFormat.call(yLabelFormatProvider, yLabelFormatProvider));
+//       var yLabelPosition = this.getLabelPosition_(this.yAxis_, this.yLabel_, x, y, yRatio);
+//       this.yLabel_.x(/** @type {number}*/(yLabelPosition.x)).y(/** @type {number}*/(yLabelPosition.y));
+//       this.yLabel_.container(container).draw();
+//     }
+//
+//   } else {
+//     this.hide();
+//   }
+// };
 
 
 /**
@@ -685,11 +637,46 @@ anychart.core.ui.Crosshair.prototype.canDrawForAxis = function(axis) {
 anychart.core.ui.Crosshair.prototype.handleMouseOverAndMove = function(e) {
   if (!this.enabled()) return;
 
-  var bounds = this.parentBounds();
+  var mouseX, mouseY;
   var chartOffset = this.container().getStage().getClientPosition();
 
-  var mouseX = e['clientX'] - chartOffset.x;
-  var mouseY = e['clientY'] - chartOffset.y;
+  if (this.getOption('displayMode') == anychart.enums.CrosshairDisplayMode.STICKY) {
+    var pointsData = this.interactivityTarget_.getByXInfo(e['clientX'], e['clientY']);
+    if (pointsData) {
+      var toShowSeriesStatus = [];
+      var statuses = pointsData;
+      for (var i = 0; i < statuses.length; i++) {
+        var status = statuses[i];
+        if (status['series'].enabled() && !goog.array.isEmpty(status['points'])) {
+          toShowSeriesStatus.push(status);
+        }
+      }
+
+      if (toShowSeriesStatus.length) {
+        var nearestSeriesStatus = toShowSeriesStatus[0];
+        toShowSeriesStatus[0]['series'].getIterator().select(toShowSeriesStatus[0]['nearestPointToCursor']['index']);
+
+        for (i = 0; i < toShowSeriesStatus.length; i++) {
+          var seriesStatus = toShowSeriesStatus[i];
+          if (nearestSeriesStatus['nearestPointToCursor']['distance'] > seriesStatus['nearestPointToCursor']['distance']) {
+            seriesStatus['series'].getIterator().select(seriesStatus['nearestPointToCursor']['index']);
+            nearestSeriesStatus = seriesStatus;
+          }
+        }
+
+        var series = nearestSeriesStatus['series'];
+        var iterator = series.getIterator();
+        var x = anychart.utils.toNumber(iterator.meta('x'));
+        mouseX = x;
+      }
+    }
+  } else {
+    mouseX = e['clientX'] - chartOffset.x;
+  }
+
+  var bounds = this.parentBounds();
+
+  mouseY = e['clientY'] - chartOffset.y;
 
   if (mouseX >= bounds.getLeft() && mouseX <= bounds.getRight() &&
       mouseY >= bounds.getTop() && mouseY <= bounds.getBottom()) {
@@ -726,8 +713,17 @@ anychart.core.ui.Crosshair.prototype.drawXLabel_ = function(mouseX, mouseY) {
   if (enabled) {
     var bounds = this.parentBounds();
     var width = bounds.getRight() - bounds.getLeft();
+    var height = bounds.getBottom() - bounds.getTop();
     var dataPlotOffsetX = mouseX - bounds.getLeft();
-    var xRatio = dataPlotOffsetX / width;
+    var dataPlotOffsetY = mouseY - bounds.getTop();
+
+    var xRatio;
+    if (this.barChartMode_) {
+      var ratio = dataPlotOffsetY / height;
+      xRatio = this.xAxis_.scale().inverted() ? 1 - ratio : ratio;
+    } else {
+      xRatio = dataPlotOffsetX / width;
+    }
 
     var xLabelFormatProvider = this.getLabelsFormatProvider(this.xAxis_, xRatio);
     var xLabelFormat = this.xLabel_.format() || anychart.utils.DEFAULT_FORMATTER;
@@ -765,8 +761,19 @@ anychart.core.ui.Crosshair.prototype.drawXLine_ = function(mouseX, mouseY) {
   if (xStroke && xStroke != 'none') {
     var bounds = this.parentBounds();
     var dataPlotOffsetX = mouseX - bounds.getLeft();
+    var dataPlotOffsetY = mouseY - bounds.getTop();
     var width = bounds.getRight() - bounds.getLeft();
-    var xRatio = dataPlotOffsetX / width;
+    var height = bounds.getBottom() - bounds.getTop();
+
+    var xRatio;
+
+    if (this.barChartMode_) {
+      var ratio = dataPlotOffsetY / height;
+      xRatio = this.xAxis_.scale().inverted() ? 1 - ratio : ratio;
+    } else {
+      xRatio = dataPlotOffsetX / width;
+    }
+
     var shiftX = this.xLine.strokeThickness() % 2 == 0 ? 0 : -.5;
     var shiftY = this.yLine.strokeThickness() % 2 == 0 ? 0 : -.5;
 
@@ -828,33 +835,6 @@ anychart.core.ui.Crosshair.prototype.drawYLine_ = function(mouseX, mouseY) {
           .lineTo(bounds.getRight(), yLineCoord - shiftY);
     }
   }
-
-
-  // var xStroke = this.getOption('xStroke');
-  // if (xStroke && xStroke != 'none') {
-  //   var bounds = this.parentBounds();
-  //   var dataPlotOffsetX = mouseX - bounds.getLeft();
-  //   var width = bounds.getRight() - bounds.getLeft();
-  //   var xRatio = dataPlotOffsetX / width;
-  //   var shiftX = this.xLine.strokeThickness() % 2 == 0 ? 0 : -.5;
-  //   var shiftY = this.yLine.strokeThickness() % 2 == 0 ? 0 : -.5;
-  //
-  //   var xLineCoord;
-  //   this.xLine.clear();
-  //
-  //   if (this.xAxis_.isHorizontal()) {
-  //     // one pixel shift with clamp
-  //     xLineCoord = goog.math.clamp(this.prepareCoordinate_(this.xAxis_, xRatio, mouseX), bounds.getLeft(), bounds.getRight() - 1);
-  //     this.xLine
-  //         .moveTo(xLineCoord - shiftX, bounds.getTop())
-  //         .lineTo(xLineCoord - shiftX, bounds.getBottom());
-  //   } else {
-  //     xLineCoord = goog.math.clamp(this.prepareCoordinate_(this.xAxis_, xRatio, mouseY), bounds.getTop(), bounds.getBottom() - 1);
-  //     this.xLine
-  //         .moveTo(bounds.getLeft(), xLineCoord - shiftY)
-  //         .lineTo(bounds.getRight(), xLineCoord - shiftY);
-  //   }
-  // }
 };
 
 
@@ -885,21 +865,6 @@ anychart.core.ui.Crosshair.prototype.drawYLabel_ = function(mouseX, mouseY) {
     this.yLabel_.x(/** @type {number}*/(yLabelPosition.x)).y(/** @type {number}*/(yLabelPosition.y));
     this.yLabel_.container(/** @type {acgraph.vector.ILayer} */(this.container())).draw();
   }
-
-
-  // if (enabled) {
-  //   var bounds = this.parentBounds();
-  //   var width = bounds.getRight() - bounds.getLeft();
-  //   var dataPlotOffsetX = mouseX - bounds.getLeft();
-  //   var xRatio = dataPlotOffsetX / width;
-  //
-  //   var xLabelFormatProvider = this.getLabelsFormatProvider(this.xAxis_, xRatio);
-  //   var xLabelFormat = this.xLabel_.format() || anychart.utils.DEFAULT_FORMATTER;
-  //   this.xLabel_.text(xLabelFormat.call(xLabelFormatProvider, xLabelFormatProvider));
-  //   var xLabelPosition = this.getLabelPosition_(this.xAxis_, this.xLabel_, mouseX, mouseY, xRatio);
-  //   this.xLabel_.x(/** @type {number}*/(xLabelPosition.x)).y(/** @type {number}*/(xLabelPosition.y));
-  //   this.xLabel_.container(/** @type {acgraph.vector.ILayer} */(this.container())).draw();
-  // }
 };
 
 
@@ -1048,13 +1013,10 @@ anychart.core.ui.Crosshair.prototype.getLabelsFormatProvider = function(axis, ra
   var scaleValue = scale.inverseTransform(ratio);
 
   var labelText;
-  var tickValue;
   switch (scaleType) {
     case anychart.enums.ScaleTypes.LINEAR:
-      labelText = +parseFloat(scaleValue).toFixed();
-      break;
     case anychart.enums.ScaleTypes.LOG:
-      labelText = +scaleValue.toFixed(1);
+      labelText = anychart.format.parseNumber(scaleValue);
       break;
     case anychart.enums.ScaleTypes.ORDINAL:
       labelText = String(scaleValue);
@@ -1062,17 +1024,7 @@ anychart.core.ui.Crosshair.prototype.getLabelsFormatProvider = function(axis, ra
     case anychart.enums.ScaleTypes.STOCK_SCATTER_DATE_TIME:
     case anychart.enums.ScaleTypes.STOCK_ORDINAL_DATE_TIME:
     case anychart.enums.ScaleTypes.DATE_TIME:
-      var date = new Date(scaleValue);
-      var mm = date.getMonth() + 1;
-      var dd = date.getDate();
-      var yy = date.getFullYear();
-
-      mm = mm < 10 ? '0' + mm : '' + mm;
-      dd = dd < 10 ? '0' + dd : '' + dd;
-
-      labelText = mm + '-' + dd + '-' + yy;
-      tickValue = scaleValue;
-
+      labelText = anychart.format.date(scaleValue);
       break;
   }
 
@@ -1082,7 +1034,7 @@ anychart.core.ui.Crosshair.prototype.getLabelsFormatProvider = function(axis, ra
     'max': scale.max ? scale.max : null,
     'min': scale.min ? scale.min : null,
     'scale': scale,
-    'tickValue': tickValue
+    'tickValue': scaleValue
   };
 };
 
@@ -1115,12 +1067,11 @@ anychart.core.ui.Crosshair.prototype.remove = function() {
 //region -- Disposing.
 /** @inheritDoc */
 anychart.core.ui.Crosshair.prototype.disposeInternal = function() {
-  if (this.chart) {
-    this.chart.unlisten(acgraph.events.EventType.MOUSEOVER, this.handleMouseOverAndMove, false, this);
-    this.chart.unlisten(acgraph.events.EventType.MOUSEMOVE, this.handleMouseOverAndMove, false, this);
-    this.chart.unlisten(acgraph.events.EventType.MOUSEOUT, this.handleMouseOut, false, this);
-    this.chart.unlisten(anychart.enums.EventType.POINTS_HOVER, this.show, false, this);
-    this.chart = null;
+  if (this.interactivityTarget_) {
+    this.interactivityTarget_.unlisten(acgraph.events.EventType.MOUSEOVER, this.handleMouseOverAndMove, false, this);
+    this.interactivityTarget_.unlisten(acgraph.events.EventType.MOUSEMOVE, this.handleMouseOverAndMove, false, this);
+    this.interactivityTarget_.unlisten(acgraph.events.EventType.MOUSEOUT, this.handleMouseOut, false, this);
+    this.interactivityTarget_ = null;
   }
 
   goog.dispose(this.xLine);

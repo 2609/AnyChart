@@ -34,12 +34,6 @@ anychart.core.ui.Background = function() {
   this.parent_ = null;
 
   /**
-   * @type {boolean}
-   * @private
-   */
-  this.needsForceSignalsDispatching_ = false;
-
-  /**
    * Resolution chain cache.
    * @type {?Array.<Object|null|undefined>}
    * @private
@@ -275,20 +269,6 @@ anychart.core.ui.Background.prototype.corners = function(opt_value) {
   } else {
     return /** @type {Array.<number|string>} */(this.getOption('corners'));
   }
-};
-
-
-/**
- * Whether to dispatch signals even if current consistency state is not effective.
- * @param {boolean=} opt_value - Value to set.
- * @return {boolean|anychart.core.ui.Background}
- */
-anychart.core.ui.Background.prototype.needsForceSignalsDispatching = function(opt_value) {
-  if (goog.isDef(opt_value)) {
-    this.needsForceSignalsDispatching_ = opt_value;
-    return this;
-  }
-  return this.needsForceSignalsDispatching_;
 };
 
 
@@ -705,17 +685,6 @@ anychart.core.ui.Background.prototype.getRemainingBounds = function() {
   parentBounds.width -= 2 * thickness;
 
   return parentBounds;
-};
-
-
-/**
- * @inheritDoc
- */
-anychart.core.ui.Background.prototype.invalidate = function(state, opt_signal) {
-  var effective = anychart.core.ui.Background.base(this, 'invalidate', state, opt_signal);
-  if (!effective && this.needsForceSignalsDispatching())
-    this.dispatchSignal(opt_signal || 0);
-  return effective;
 };
 
 

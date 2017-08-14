@@ -20,78 +20,83 @@ goog.inherits(anychart.mapModule.elements.Crosshair, anychart.core.ui.Crosshair)
 
 
 //region --- Interactivity
-/** @inheritDoc */
+/**
+ * @param {anychart.core.MouseEvent} event - .
+ */
 anychart.mapModule.elements.Crosshair.prototype.show = function(event) {
   var toShowSeriesStatus = [];
-  goog.array.forEach(event['seriesStatus'], function(status) {
-    if (status['series'].enabled() && !goog.array.isEmpty(status['points'])) {
-      toShowSeriesStatus.push(status);
-    }
-  }, this);
-
-  if (!goog.array.isEmpty(toShowSeriesStatus)) {
-    var nearestSeriesStatus = toShowSeriesStatus[0];
-
-    goog.array.forEach(toShowSeriesStatus, function(status) {
-      if (nearestSeriesStatus['nearestPointToCursor']['distance'] > status['nearestPointToCursor']['distance']) {
-        nearestSeriesStatus = status;
+  var seriesStatus = this.interactivityTarget().getSeriesStatus(event);
+  if (seriesStatus) {
+    goog.array.forEach(seriesStatus, function(status) {
+      if (status['series'].enabled() && !goog.array.isEmpty(status['points'])) {
+        toShowSeriesStatus.push(status);
       }
-    });
+    }, this);
 
-    var xAxis = /** @type {anychart.mapModule.elements.Axis} */(this.xAxis());
-    var yAxis = /** @type {anychart.mapModule.elements.Axis} */(this.yAxis());
-    var xStroke = /** @type {acgraph.vector.Stroke} */(this.getOption('xStroke'));
-    var yStroke = /** @type {acgraph.vector.Stroke} */(this.getOption('yStroke'));
-    var xLabel = /** @type {anychart.core.ui.CrosshairLabel} */(this.xLabel());
-    var yLabel = /** @type {anychart.core.ui.CrosshairLabel} */(this.yLabel());
+    if (!goog.array.isEmpty(toShowSeriesStatus)) {
+      var nearestSeriesStatus = toShowSeriesStatus[0];
 
-    var series = nearestSeriesStatus['series'];
+      goog.array.forEach(toShowSeriesStatus, function(status) {
+        if (nearestSeriesStatus['nearestPointToCursor']['distance'] > status['nearestPointToCursor']['distance']) {
+          nearestSeriesStatus = status;
+        }
+      });
 
-    var iterator = series.getIterator();
-    iterator.select(nearestSeriesStatus['nearestPointToCursor']['point']['index']);
-    var x = anychart.utils.toNumber(iterator.meta('x'));
-    var y = anychart.utils.toNumber(iterator.meta('value'));
+      var xAxis = /** @type {anychart.mapModule.elements.Axis} */(this.xAxis());
+      var yAxis = /** @type {anychart.mapModule.elements.Axis} */(this.yAxis());
+      var xStroke = /** @type {acgraph.vector.Stroke} */(this.getOption('xStroke'));
+      var yStroke = /** @type {acgraph.vector.Stroke} */(this.getOption('yStroke'));
+      var xLabel = /** @type {anychart.core.ui.CrosshairLabel} */(this.xLabel());
+      var yLabel = /** @type {anychart.core.ui.CrosshairLabel} */(this.yLabel());
 
-    if (isNaN(x) || isNaN(y)) {
-      var position = series.getPositionByRegion()['value'];
-      x = position['x'];
-      y = position['y'];
-    }
+      var series = nearestSeriesStatus['series'];
 
-    var scale = this.chart.scale();
+      var iterator = series.getIterator();
+      iterator.select(nearestSeriesStatus['nearestPointToCursor']['point']['index']);
+      var x = anychart.utils.toNumber(iterator.meta('x'));
+      var y = anychart.utils.toNumber(iterator.meta('value'));
 
-    var coords = scale.inverseTransform(x, y);
-    x = coords[0];
-    y = coords[1];
-
-    var xRatio = scale.transformX(x);
-    var yRatio = scale.transformY(y);
-
-    if (xRatio > 0 && xRatio < 1) {
-      if (xStroke && xStroke != 'none') {
-        this.drawLine(xAxis, this.xLine, x);
+      if (isNaN(x) || isNaN(y)) {
+        var position = series.getPositionByRegion()['value'];
+        x = position['x'];
+        y = position['y'];
       }
 
-      if (xLabel.enabled()) {
-        this.drawLabel(xAxis, xLabel, x);
+      var scale = this.interactivityTarget().scale();
+
+      var coords = scale.inverseTransform(x, y);
+      x = coords[0];
+      y = coords[1];
+
+      var xRatio = scale.transformX(x);
+      var yRatio = scale.transformY(y);
+
+      if (xRatio > 0 && xRatio < 1) {
+        if (xStroke && xStroke != 'none') {
+          this.drawLine(xAxis, this.xLine, x);
+        }
+
+        if (xLabel.enabled()) {
+          this.drawLabel(xAxis, xLabel, x);
+        }
+      } else {
+        this.hideX();
+      }
+
+      if (yRatio > 0 && yRatio < 1) {
+        if (yStroke && yStroke != 'none') {
+          this.drawLine(yAxis, this.yLine, y);
+        }
+
+        if (yLabel.enabled()) {
+          this.drawLabel(yAxis, yLabel, y);
+        }
+      } else {
+        this.hideY();
       }
     } else {
-      this.hideX();
+      this.hide();
     }
-
-    if (yRatio > 0 && yRatio < 1) {
-      if (yStroke && yStroke != 'none') {
-        this.drawLine(yAxis, this.yLine, y);
-      }
-
-      if (yLabel.enabled()) {
-        this.drawLabel(yAxis, yLabel, y);
-      }
-    } else {
-      this.hideY();
-    }
-  } else {
-    this.hide();
   }
 };
 
@@ -117,12 +122,12 @@ anychart.mapModule.elements.Crosshair.prototype.update = function(opt_x, opt_y) 
     y = goog.isDef(this.lastY_) ? this.lastY_ : 0;
   }
 
-  var localCord = this.chart.globalToLocal(x, y);
-  var latLong = this.chart.inverseTransform(localCord.x, localCord.y);
+  var localCord = this.interactivityTarget().globalToLocal(x, y);
+  var latLong = this.interactivityTarget().inverseTransform(localCord.x, localCord.y);
   var lon = latLong['long'];
   var lat = latLong['lat'];
 
-  var scale = this.chart.scale();
+  var scale = this.interactivityTarget().scale();
 
   var xRatio = scale.transformX(latLong['x']);
   var yRatio = scale.transformY(latLong['y']);
@@ -167,21 +172,25 @@ anychart.mapModule.elements.Crosshair.prototype.update = function(opt_x, opt_y) 
 anychart.mapModule.elements.Crosshair.prototype.handleMouseOverAndMove = function(e) {
   this.lastX_ = e['clientX'];
   this.lastY_ = e['clientY'];
-
-  this.update(e['clientX'], e['clientY']);
+  if (this.getOption('displayMode') == anychart.enums.CrosshairDisplayMode.STICKY) {
+    //TODO (A.Kudryavtsev): Has map issues. Doesn't work for a while (ticket DVF-3239).
+    //this.show(e);
+  } else {
+    this.update(e['clientX'], e['clientY']);
+  }
 };
 
 
 /** @inheritDoc */
 anychart.mapModule.elements.Crosshair.prototype.handleMouseOut = function(e) {
-  if (!anychart.utils.checkIfParent(/** @type {!goog.events.EventTarget} */(this.chart), e['relatedTarget'])) {
+  if (!anychart.utils.checkIfParent(/** @type {!goog.events.EventTarget} */(this.interactivityTarget()), e['relatedTarget'])) {
     this.lastX_ = e['clientX'];
     this.lastY_ = e['clientY'];
 
-    var localCord = this.chart.globalToLocal(e['clientX'], e['clientY']);
-    var latLong = this.chart.inverseTransform(localCord.x, localCord.y);
+    var localCord = this.interactivityTarget().globalToLocal(e['clientX'], e['clientY']);
+    var latLong = this.interactivityTarget().inverseTransform(localCord.x, localCord.y);
 
-    var scale = this.chart.scale();
+    var scale = this.interactivityTarget().scale();
 
     var xRatio = scale.transformX(latLong['x']);
     var yRatio = scale.transformY(latLong['y']);
@@ -253,7 +262,7 @@ anychart.mapModule.elements.Crosshair.prototype.draw = function() {
  * @param {number} value .
  */
 anychart.mapModule.elements.Crosshair.prototype.drawLine = function(axis, line, value) {
-  var scale = this.chart.scale();
+  var scale = this.interactivityTarget().scale();
 
   var xy;
   var precision;

@@ -49,14 +49,6 @@ anychart.core.ui.LabelBase = function() {
   this.rootLayer_ = acgraph.layer();
   this.bindHandlersToGraphics(this.rootLayer_);
 
-  /**
-   * @this {anychart.core.ui.LabelBase}
-   */
-  var minMaxBeforeInvalidationHook = function() {
-    if (this.adjustEnabled_())
-      this.invalidate(anychart.ConsistencyState.BOUNDS, anychart.Signal.NEEDS_REDRAW | anychart.Signal.BOUNDS_CHANGED);
-  };
-
   anychart.core.settings.createDescriptorsMeta(this.descriptorsMeta, [
     ['text', anychart.ConsistencyState.APPEARANCE | anychart.ConsistencyState.BOUNDS, anychart.Signal.NEEDS_REDRAW | anychart.Signal.BOUNDS_CHANGED],
     ['position', anychart.ConsistencyState.BOUNDS, anychart.Signal.NEEDS_REDRAW | anychart.Signal.BOUNDS_CHANGED],
@@ -67,8 +59,8 @@ anychart.core.ui.LabelBase = function() {
     ['offsetY', anychart.ConsistencyState.BOUNDS, anychart.Signal.NEEDS_REDRAW | anychart.Signal.BOUNDS_CHANGED],
     ['rotation', anychart.ConsistencyState.BOUNDS, anychart.Signal.NEEDS_REDRAW | anychart.Signal.BOUNDS_CHANGED],
     ['adjustFontSize', anychart.ConsistencyState.BOUNDS, anychart.Signal.NEEDS_REDRAW | anychart.Signal.BOUNDS_CHANGED],
-    ['minFontSize', 0, 0, 0, minMaxBeforeInvalidationHook],
-    ['minFontSize', 0, 0, 0, minMaxBeforeInvalidationHook]
+    ['minFontSize', 0, 0, 0, this.minMaxBeforeInvalidationHook],
+    ['minFontSize', 0, 0, 0, this.minMaxBeforeInvalidationHook]
   ]);
 
 
@@ -99,6 +91,15 @@ anychart.core.ui.LabelBase.prototype.SUPPORTED_CONSISTENCY_STATES =
 
 
 //region -- Descriptors.
+/**
+ * Before invalidation hook for minFontSize and maxFontSize props.
+ */
+anychart.core.ui.LabelBase.prototype.minMaxBeforeInvalidationHook = function() {
+  if (this.adjustEnabled_())
+    this.invalidate(anychart.ConsistencyState.BOUNDS, anychart.Signal.NEEDS_REDRAW | anychart.Signal.BOUNDS_CHANGED);
+};
+
+
 /**
  * Descriptors.
  * @type {!Object.<string, anychart.core.settings.PropertyDescriptor>}

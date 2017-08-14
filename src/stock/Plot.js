@@ -112,6 +112,13 @@ anychart.stockModule.Plot = function(chart) {
   this.eventsInterceptor_ = null;
 
   /**
+   * Whether this plot is last in chart.
+   * @type {boolean}
+   * @private
+   */
+  this.isLastPlot_ = false;
+
+  /**
    * @type {number|undefined}
    * @private
    */
@@ -1686,6 +1693,9 @@ anychart.stockModule.Plot.prototype.ensureBoundsDistributed_ = function() {
 
     this.seriesBounds_ = seriesBounds;
     this.eventsInterceptor_.setBounds(this.seriesBounds_);
+
+    this.crosshair().parentBounds(seriesBounds);
+
     this.invalidateRedrawable(true, true);
     this.markConsistent(anychart.ConsistencyState.BOUNDS | anychart.ConsistencyState.STOCK_PLOT_LEGEND);
   }
@@ -1703,9 +1713,10 @@ anychart.stockModule.Plot.prototype.ensureBoundsDistributed_ = function() {
  * Gets autoText for legend title.
  * @param {string|Function} legendFormatter Legend title formatter.
  * @param {number=} opt_titleValue Value for title.
+ * @param {number=} opt_rawValue - As is date.
  * @return {?string} Title auto text or null.
  */
-anychart.stockModule.Plot.prototype.getLegendAutoText = function(legendFormatter, opt_titleValue) {
+anychart.stockModule.Plot.prototype.getLegendAutoText = function(legendFormatter, opt_titleValue, opt_rawValue) {
   opt_titleValue = opt_titleValue || (isNaN(this.highlightedValue_) ? this.chart_.getLastDate() : this.highlightedValue_);
   var formatter;
   if (!isNaN(opt_titleValue) && (formatter = legendFormatter)) {
@@ -1716,6 +1727,7 @@ anychart.stockModule.Plot.prototype.getLegendAutoText = function(legendFormatter
 
       var values = {
         'value': {value: opt_titleValue, type: anychart.enums.TokenType.DATE_TIME},
+        'rawValue': {value: opt_rawValue, type: anychart.enums.TokenType.DATE_TIME},
         'hoveredDate': {value: opt_titleValue, type: anychart.enums.TokenType.DATE_TIME},
         'dataIntervalUnit': {value: grouping.getCurrentDataInterval()['unit'], type: anychart.enums.TokenType.STRING},
         'dataIntervalUnitCount': {value: grouping.getCurrentDataInterval()['count'], type: anychart.enums.TokenType.NUMBER},
@@ -1733,16 +1745,17 @@ anychart.stockModule.Plot.prototype.getLegendAutoText = function(legendFormatter
  * Updates legend.
  * @param {anychart.math.Rect=} opt_seriesBounds
  * @param {number=} opt_titleValue
+ * @param {number=} opt_rawValue - As is date.
  * @private
  */
-anychart.stockModule.Plot.prototype.updateLegend_ = function(opt_seriesBounds, opt_titleValue) {
+anychart.stockModule.Plot.prototype.updateLegend_ = function(opt_seriesBounds, opt_titleValue, opt_rawValue) {
   var legend = /** @type {anychart.core.ui.Legend} */(this.legend());
   legend.suspendSignalsDispatching();
   legend.container(this.rootLayer_);
   if (opt_seriesBounds) {
     legend.parentBounds(opt_seriesBounds);
   }
-  var autoText = this.getLegendAutoText(/** @type {string|Function} */ (legend.titleFormat()), opt_titleValue);
+  var autoText = this.getLegendAutoText(/** @type {string|Function} */ (legend.titleFormat()), opt_titleValue, opt_rawValue);
   if (!goog.isNull(autoText))
     legend.title().autoText(autoText);
   if (!legend.itemsSource())
@@ -1892,34 +1905,33 @@ anychart.stockModule.Plot.prototype.prepareHighlight = function(value) {
 
 /**
  * Highlights passed value.
- * @param {number} value
- * @param {boolean} isLastPlot - .
+ * @param {number} value - Aligned date.
+ * @param {number} rawValue - As is date.
  * @param {anychart.stockModule.Plot} hlSource - Highlight source.
  * @param {number=} opt_y - .
  */
-anychart.stockModule.Plot.prototype.highlight = function(value, isLastPlot, hlSource, opt_y) {
+anychart.stockModule.Plot.prototype.highlight = function(value, rawValue, hlSource, opt_y) {
   if (!this.rootLayer_ || !this.seriesBounds_) return;
 
-  this.crosshair().suspendSignalsDispatching();
-  this.crosshair().parentBounds(this.getPlotBounds());
-  this.crosshair().resumeSignalsDispatching(false);
+  var sticky = this.crosshair().getOption('displayMode') == anychart.enums.CrosshairDisplayMode.STICKY;
+  var setValue = sticky ? value : rawValue;
 
-  var ratio = this.chart_.xScale().transform(value);
+  var ratio = this.chart_.xScale().transform(setValue);
   var thickness = acgraph.vector.getThickness(/** @type {acgraph.vector.Stroke} */ (this.crosshair().getOption('yStroke')));
   var x = this.seriesBounds_.left + ratio * this.seriesBounds_.width;
   x = anychart.utils.applyPixelShift(x, thickness);
 
-  this.crosshair().xLabelAutoEnabled(isLastPlot);
-  this.crosshair().autoHighlightX(x, isLastPlot, hlSource != this, opt_y);
+  this.crosshair().xLabelAutoEnabled(this.isLastPlot_);
+  this.crosshair().autoHighlightX(x, this.isLastPlot_, hlSource != this, opt_y);
 
   for (var i = 0; i < this.series_.length; i++) {
     var series = this.series_[i];
     if (series)
-      series.highlight(value);
+      series.highlight(setValue);
   }
 
   if (this.legend_ && this.legend_.enabled()) {
-    this.updateLegend_(null, value);
+    this.updateLegend_(null, value, rawValue);
   }
   this.dispatchSignal(anychart.Signal.NEED_UPDATE_LEGEND);
 };
@@ -1979,7 +1991,7 @@ anychart.stockModule.Plot.prototype.handlePlotMouseOverAndMove_ = function(e) {
       this.frameHighlightRatio_ = x / this.seriesBounds_.width;
       this.frameHighlightX_ = e['clientX'];
       this.frameHighlightY_ = e['clientY'];
-      this.crosshair().xLabelAutoEnabled(this.chart_.isLastPlot(this));
+      this.crosshair().xLabelAutoEnabled(this.isLastPlot_);
       if (!goog.isDef(this.frame_))
         this.frame_ = window.requestAnimationFrame(this.frameAction_);
     }
@@ -2018,6 +2030,20 @@ anychart.stockModule.Plot.prototype.handlePlotMouseDown_ = function(e) {
 //  Crosshair
 //
 //----------------------------------------------------------------------------------------------------------------------
+/**
+ * Sets whether this plot is last in chart.
+ * @param {boolean=} opt_value - Value to set.
+ * @return {anychart.stockModule.Plot|boolean}
+ */
+anychart.stockModule.Plot.prototype.isLastPlot = function(opt_value) {
+  if (goog.isDef(opt_value)) {
+    this.isLastPlot_ = opt_value;
+    return this;
+  }
+  return this.isLastPlot_;
+};
+
+
 /**
  *
  * @param {(Object|boolean|null)=} opt_value

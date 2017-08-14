@@ -67,12 +67,6 @@ anychart.core.ui.Separator = function() {
   this.parent_ = null;
 
   /**
-   * @type {boolean}
-   * @private
-   */
-  this.needsForceSignalsDispatching_ = false;
-
-  /**
    * Resolution chain cache.
    * @type {?Array.<Object|null|undefined>}
    * @private
@@ -280,20 +274,6 @@ anychart.core.ui.Separator.prototype.parentInvalidated_ = function(e) {
 
 
 //endregion
-/**
- * Whether to dispatch signals even if current consistency state is not effective.
- * @param {boolean=} opt_value - Value to set.
- * @return {boolean|anychart.core.ui.Separator}
- */
-anychart.core.ui.Separator.prototype.needsForceSignalsDispatching = function(opt_value) {
-  if (goog.isDef(opt_value)) {
-    this.needsForceSignalsDispatching_ = opt_value;
-    return this;
-  }
-  return this.needsForceSignalsDispatching_;
-};
-
-
 /** @inheritDoc */
 anychart.core.ui.Separator.prototype.invalidateParentBounds = function() {
   this.invalidate(anychart.ConsistencyState.BOUNDS | anychart.ConsistencyState.APPEARANCE,
@@ -576,17 +556,6 @@ anychart.core.ui.Separator.prototype.isHorizontal = function() {
   return (goog.isDef(orientation)) ?
       (orientation == anychart.enums.Orientation.TOP || orientation == anychart.enums.Orientation.BOTTOM) :
       true;
-};
-
-
-/**
- * @inheritDoc
- */
-anychart.core.ui.Separator.prototype.invalidate = function(state, opt_signal) {
-  var effective = anychart.core.ui.Separator.base(this, 'invalidate', state, opt_signal);
-  if (!effective && this.needsForceSignalsDispatching())
-    this.dispatchSignal(opt_signal || 0);
-  return effective;
 };
 
 

@@ -808,7 +808,7 @@ anychart.core.ChartWithAxes.prototype.crosshair = function(opt_value) {
   if (!this.crosshair_) {
     this.crosshair_ = new anychart.core.ui.Crosshair();
     this.crosshair_.enabled(false);
-    this.crosshair_.bindHandlers(this);
+    this.crosshair_.interactivityTarget(this);
     this.registerDisposable(this.crosshair_);
     this.crosshair_.listenSignals(this.onCrosshairSignal_, this);
     this.invalidate(anychart.ConsistencyState.AXES_CHART_CROSSHAIR, anychart.Signal.NEEDS_REDRAW);

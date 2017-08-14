@@ -147,6 +147,13 @@ anychart.stockModule.Chart = function(opt_allowPointSettings) {
   this.mwZoomAction_ = goog.bind(this.doMWZoom_, this);
 
   /**
+   * Index of last plot.
+   * @type {number}
+   * @private
+   */
+  this.lastPlotIndex_ = -1;
+
+  /**
    * Series config.
    * @type {Object.<string, anychart.core.series.TypeConfig>}
    */
@@ -568,14 +575,22 @@ anychart.stockModule.Chart.prototype.plot = function(opt_indexOrValue, opt_value
   }
   var plot = this.plots_[index];
   if (!plot) {
+    //NOTE: plot.crosshair().interactivityTarget() is not set because stock chart controls crosshair itself.
     plot = new anychart.stockModule.Plot(this);
+
     plot.crosshair().parent(/** @type {anychart.core.ui.Crosshair} */ (this.crosshair()));
-    plot.crosshair().bindHandlers(plot);
     if (goog.isDef(this.defaultPlotSettings_))
       plot.setup(this.defaultPlotSettings_);
     plot.setParentEventTarget(this);
     this.plots_[index] = plot;
     plot.listenSignals(this.plotInvalidated_, this);
+    if (index > this.lastPlotIndex_) {
+      var prevPlot = this.plots_[this.lastPlotIndex_];
+      if (prevPlot)
+        prevPlot.isLastPlot(false);
+      plot.isLastPlot(true);
+      this.lastPlotIndex_ = index;
+    }
     this.invalidate(anychart.ConsistencyState.BOUNDS | anychart.ConsistencyState.STOCK_PLOTS_APPEARANCE,
         anychart.Signal.NEEDS_REDRAW | anychart.Signal.BOUNDS_CHANGED);
   }
@@ -1755,10 +1770,6 @@ anychart.stockModule.Chart.prototype.preventHighlight = function() {
  */
 anychart.stockModule.Chart.prototype.allowHighlight = function() {
   this.highlightPrevented_ = false;
-  for (var i = 0; i < this.plots_.length; i++) {
-    var plot = this.plots_[i];
-    plot.crosshair().bindHandlers(plot);
-  }
   this.refreshHighlight_();
 };
 
@@ -1784,8 +1795,8 @@ anychart.stockModule.Chart.prototype.refreshHighlight_ = function() {
  */
 anychart.stockModule.Chart.prototype.highlightAtRatio_ = function(ratio, clientX, clientY, sourcePlot) {
   if (this.highlightPrevented_ || ratio < 0 || ratio > 1) return;
-  var actualValue = this.xScale().inverseTransform(ratio);
-  var value = this.dataController_.alignHighlight(actualValue);
+  var rawValue = this.xScale().inverseTransform(ratio);
+  var value = this.dataController_.alignHighlight(rawValue);
   if (isNaN(value)) return;
 
   var i;
@@ -1803,9 +1814,7 @@ anychart.stockModule.Chart.prototype.highlightAtRatio_ = function(ratio, clientX
   for (i = 0; i < this.plots_.length; i++) {
     if (this.plots_[i]) {
       var plot = this.plots_[i];
-      var lastPlot = i == this.plots_.length - 1;
-      var sticky = plot.crosshair().getOption('displayMode') == anychart.enums.CrosshairDisplayMode.STICKY;
-      plot.highlight(sticky ? value : actualValue, lastPlot, sourcePlot, clientY);
+      plot.highlight(value, rawValue, sourcePlot, clientY);
     }
   }
   this.highlighted_ = true;
@@ -1833,6 +1842,7 @@ anychart.stockModule.Chart.prototype.highlightAtRatio_ = function(ratio, clientX
     var grouping = /** @type {anychart.stockModule.Grouping} */(this.grouping());
     tooltip.showForSeriesPoints(points, clientX, clientY, null, false, {
       'hoveredDate': {value: value, type: anychart.enums.TokenType.DATE_TIME},
+      'rawHoveredDate': {value: rawValue, type: anychart.enums.TokenType.DATE_TIME},
       'dataIntervalUnit': {value: grouping.getCurrentDataInterval()['unit'], type: anychart.enums.TokenType.STRING},
       'dataIntervalUnitCount': {
         value: grouping.getCurrentDataInterval()['count'],
@@ -1853,11 +1863,8 @@ anychart.stockModule.Chart.prototype.unhighlight_ = function() {
     this.highlighted_ = false;
     for (var i = 0; i < this.plots_.length; i++) {
       var plot = this.plots_[i];
-      if (plot) {
-        if (this.highlightPrevented_)
-          plot.crosshair().unbindHandlers();
+      if (plot)
         plot.unhighlight();
-      }
     }
     this.tooltip().hide();
   }
@@ -1907,24 +1914,6 @@ anychart.stockModule.Chart.prototype.crosshair = function(opt_value) {
  */
 anychart.stockModule.Chart.prototype.onCrosshairSignal_ = function(event) {
   this.invalidate(anychart.ConsistencyState.AXES_CHART_CROSSHAIR, anychart.Signal.NEEDS_REDRAW);
-};
-
-
-/**
- * Checks whether incoming plot is last one on chart.
- * @param {anychart.stockModule.Plot} plot - Plot to check.
- * @return {boolean}
- */
-anychart.stockModule.Chart.prototype.isLastPlot = function(plot) {
-  if (this.plots_.length) {
-    for (var i = this.plots_.length - 1; i >= 0; i--) {
-      var testPlot = this.plots_[i];
-      if (testPlot) {
-        return testPlot == plot;
-      }
-    }
-  }
-  return false;
 };
 
 
