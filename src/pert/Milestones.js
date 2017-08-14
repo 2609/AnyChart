@@ -64,22 +64,9 @@ anychart.pertModule.Milestones.prototype.setupByJSON = function(config, opt_defa
 
 
 //exports
-(function() {
-  var proto = anychart.pertModule.Milestones.prototype;
-  //proto['color'] = proto.color;
-
-  //proto['fill'] = proto.fill;
-  //proto['hoverFill'] = proto.hoverFill;
-  //proto['selectFill'] = proto.selectFill;
-
-  //proto['stroke'] = proto.stroke;
-  //proto['hoverStroke'] = proto.hoverStroke;
-  //proto['selectStroke'] = proto.selectStroke;
-
-  proto['labels'] = proto.labels;
-  proto['selectLabels'] = proto.selectLabels;
-  proto['hoverLabels'] = proto.hoverLabels;
-  proto['tooltip'] = proto.tooltip;
-  //proto['shape'] = proto.shape;
-  //proto['size'] = proto.size;
-})();
+//(function() {
+//var proto = anychart.pertModule.Milestones.prototype;
+//auto
+//proto['shape'] = proto.shape;
+//proto['size'] = proto.size;
+//})();

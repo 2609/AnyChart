@@ -60,6 +60,13 @@ anychart.core.StateSettings.LABELS_AFTER_INIT_CALLBACK = 'labelsAfterInitCallbac
 
 
 /**
+ * Option name for labels factory after init callback.
+ * @type {string}
+ */
+anychart.core.StateSettings.LOWER_LABELS_AFTER_INIT_CALLBACK = 'lowerLabelsAfterInitCallback';
+
+
+/**
  * Option name for headers factory after init callback.
  * @type {string}
  */
@@ -291,6 +298,17 @@ anychart.core.StateSettings.prototype.setMeta = function(fieldName, meta) {
 };
 
 
+/**
+ * Add meta.
+ * @param {Array.<Array>} metas
+ */
+anychart.core.StateSettings.prototype.addMeta = function(metas) {
+  for (var i = 0; i < metas.length; i++) {
+    anychart.core.settings.createDescriptorMeta.apply(null, goog.array.concat(this.descriptorsMeta, metas[i]));
+  }
+};
+
+
 //endregion
 //region --- Complex objects
 /**
@@ -335,6 +353,38 @@ anychart.core.StateSettings.prototype.headers = function(opt_value) {
     return this;
   }
   return this.headers_;
+};
+
+
+/**
+ * Upper labels (tasks)
+ * @param {(Object|boolean|null)=} opt_value
+ * @return {anychart.core.StateSettings|anychart.core.ui.LabelsFactory}
+ */
+anychart.core.StateSettings.prototype.upperLabels = function(opt_value) {
+  return this.labels(opt_value);
+};
+
+
+/**
+ * Labels.
+ * @param {(Object|boolean|null)=} opt_value
+ * @return {anychart.core.StateSettings|anychart.core.ui.LabelsFactory|anychart.core.ui.CircularLabelsFactory}
+ */
+anychart.core.StateSettings.prototype.lowerLabels = function(opt_value) {
+  if (!this.lowerLabels_) {
+    var afterInitCallback = /** @type {Function} */ (this.getOption(anychart.core.StateSettings.LOWER_LABELS_AFTER_INIT_CALLBACK)) || goog.nullFunction;
+    this.lowerLabels_ = new anychart.core.ui.LabelsFactory();
+    afterInitCallback.call(this.stateHolder, this.lowerLabels_);
+  }
+
+  if (goog.isDef(opt_value)) {
+    if (goog.isObject(opt_value) && !('enabled' in opt_value))
+      opt_value['enabled'] = true;
+    this.lowerLabels_.setup(opt_value);
+    return this;
+  }
+  return this.lowerLabels_;
 };
 
 
@@ -424,14 +474,27 @@ anychart.core.StateSettings.prototype.selected = function(opt_value) {
 anychart.core.StateSettings.prototype.serialize = function() {
   var json = anychart.core.StateSettings.base(this, 'serialize');
   anychart.core.settings.serialize(this, anychart.core.StateSettings.PROPERTY_DESCRIPTORS, json, 'State settings', this.descriptorsMeta);
+
   if (this.descriptorsMeta['labels'])
     json['labels'] = this.labels().serialize();
+
   if (this.descriptorsMeta['headers'])
     json['headers'] = this.headers().serialize();
+
+  if (this.descriptorsMeta['lowerLabels'])
+    json['lowerLabels'] = this.lowerLabels().serialize();
+
+  if (this.descriptorsMeta['upperLabels']) {
+    json['upperLabels'] = goog.object.clone(json['labels']);
+    delete json['labels'];
+  }
+
   if (this.descriptorsMeta['markers'])
     json['markers'] = this.markers().serialize();
+
   if (this.descriptorsMeta['outlierMarkers'])
     json['outlierMarkers'] = this.markers().serialize();
+
   return json;
 };
 
@@ -440,12 +503,22 @@ anychart.core.StateSettings.prototype.serialize = function() {
 anychart.core.StateSettings.prototype.setupByJSON = function(config, opt_default) {
   anychart.core.StateSettings.base(this, 'setupByJSON', config, opt_default);
   anychart.core.settings.deserialize(this, anychart.core.StateSettings.PROPERTY_DESCRIPTORS, config);
+
   if (goog.isDef(this.descriptorsMeta['labels']))
     this.labels().setupInternal(!!opt_default, config['labels']);
+
   if (goog.isDef(this.descriptorsMeta['headers']))
     this.headers().setup(config['headers']);
+
+  if (goog.isDef(this.descriptorsMeta['lowerLabels']))
+    this.lowerLabels().setupInternal(!!opt_default, config['lowerLabels']);
+
+  if (goog.isDef(this.descriptorsMeta['upperLabels']))
+    this.upperLabels().setupInternal(!!opt_default, config['upperLabels']);
+
   if (goog.isDef(this.descriptorsMeta['markers']))
     this.markers().setupInternal(!!opt_default, config['markers']);
+
   if (goog.isDef(this.descriptorsMeta['outlierMarkers']))
     this.outlierMarkers().setupInternal(!!opt_default, config['outlierMarkers']);
 };
@@ -453,7 +526,7 @@ anychart.core.StateSettings.prototype.setupByJSON = function(config, opt_default
 
 /** @inheritDoc */
 anychart.core.StateSettings.prototype.disposeInternal = function() {
-  goog.disposeAll(this.labels_, this.headers_, this.markers_, this.outlierMarkers_);
+  goog.disposeAll(this.labels_, this.headers_, this.lowerLabels_, this.markers_, this.outlierMarkers_);
   anychart.core.StateSettings.base(this, 'disposeInternal');
 };
 
@@ -464,6 +537,8 @@ anychart.core.StateSettings.prototype.disposeInternal = function() {
   var proto = anychart.core.StateSettings.prototype;
   proto['labels'] = proto.labels;
   proto['headers'] = proto.headers;
+  proto['upperLabels'] = proto.upperLabels;
+  proto['lowerLabels'] = proto.lowerLabels;
   proto['markers'] = proto.markers;
   proto['outlierMarkers'] = proto.outlierMarkers;
   proto['normal'] = proto.normal;

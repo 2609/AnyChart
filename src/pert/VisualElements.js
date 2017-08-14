@@ -18,23 +18,6 @@ goog.require('anychart.core.ui.Tooltip');
 anychart.pertModule.VisualElements = function() {
   anychart.pertModule.VisualElements.base(this, 'constructor');
 
-  /**
-   * @type {anychart.core.ui.LabelsFactory}
-   * @private
-   */
-  this.labels_;
-
-  /**
-   * @type {anychart.core.ui.LabelsFactory}
-   * @private
-   */
-  this.hoverLabels_;
-
-  /**
-   * @type {anychart.core.ui.LabelsFactory}
-   * @private
-   */
-  this.selectLabels_;
 
   /**
    * @type {anychart.core.ui.Tooltip}
@@ -70,14 +53,18 @@ anychart.pertModule.VisualElements = function() {
   var descriptorsMap = {};
   anychart.core.settings.createDescriptorsMeta(descriptorsMap, [
     ['fill', 0, anychart.Signal.NEEDS_REDRAW_APPEARANCE],
-    ['stroke', 0, anychart.Signal.NEEDS_REDRAW_APPEARANCE]
+    ['stroke', 0, anychart.Signal.NEEDS_REDRAW_APPEARANCE],
+    ['labels', 0, 0]
   ]);
   this.normal_ = new anychart.core.StateSettings(this, descriptorsMap, anychart.PointState.NORMAL);
+  this.normal_.setOption(anychart.core.StateSettings.LABELS_AFTER_INIT_CALLBACK, this.labelsAfterInitCallback);
   this.hovered_ = new anychart.core.StateSettings(this, descriptorsMap, anychart.PointState.HOVER);
+  this.hovered_.setOption(anychart.core.StateSettings.LABELS_AFTER_INIT_CALLBACK, this.labelsAfterInitCallback);
   this.selected_ = new anychart.core.StateSettings(this, descriptorsMap, anychart.PointState.SELECT);
+  this.selected_.setOption(anychart.core.StateSettings.LABELS_AFTER_INIT_CALLBACK, this.labelsAfterInitCallback);
 };
 goog.inherits(anychart.pertModule.VisualElements, anychart.core.Base);
-anychart.core.settings.populateAliases(anychart.pertModule.VisualElements, ['fill', 'stroke'], 'normal');
+anychart.core.settings.populateAliases(anychart.pertModule.VisualElements, ['fill', 'stroke', 'labels'], 'normal');
 
 
 /**
@@ -231,6 +218,48 @@ anychart.pertModule.VisualElements.prototype.parentInvalidated_ = function(e) {
 
 
 //endregion
+//region --- States
+/**
+ * Normal state settings.
+ * @param {!Object=} opt_value
+ * @return {anychart.core.StateSettings|anychart.pertModule.VisualElements}
+ */
+anychart.pertModule.VisualElements.prototype.normal = function(opt_value) {
+  if (goog.isDef(opt_value)) {
+    this.normal_.setupByJSON(opt_value);
+    return this;
+  }
+  return this.normal_;
+};
+
+
+/**
+ * Hovered state settings.
+ * @param {!Object=} opt_value
+ * @return {anychart.core.StateSettings|anychart.pertModule.VisualElements}
+ */
+anychart.pertModule.VisualElements.prototype.hovered = function(opt_value) {
+  if (goog.isDef(opt_value)) {
+    this.hovered_.setupByJSON(opt_value);
+    return this;
+  }
+  return this.hovered_;
+};
+
+
+/**
+ * Selected state settings.
+ * @param {!Object=} opt_value
+ * @return {anychart.core.StateSettings|anychart.pertModule.VisualElements}
+ */
+anychart.pertModule.VisualElements.prototype.selected = function(opt_value) {
+  if (goog.isDef(opt_value)) {
+    this.selected_.setupByJSON(opt_value);
+    return this;
+  }
+  return this.selected_;
+};
+//endregion
 
 
 /**
@@ -277,68 +306,10 @@ anychart.pertModule.VisualElements.prototype.resolveColor = function(colorType, 
 
 
 /**
- * Gets or sets labels settings.
- * @param {(Object|boolean|null)=} opt_value - Labels settings.
- * @return {!(anychart.core.ui.LabelsFactory|anychart.pertModule.VisualElements)} - Labels instance or itself for chaining call.
+ * @param {anychart.core.ui.LabelsFactory} factory
  */
-anychart.pertModule.VisualElements.prototype.labels = function(opt_value) {
-  if (!this.labels_) {
-    this.labels_ = new anychart.core.ui.LabelsFactory();
-    this.labels_.listenSignals(this.labelsInvalidated, this);
-    this.registerDisposable(this.labels_);
-  }
-
-  if (goog.isDef(opt_value)) {
-    if (goog.isObject(opt_value) && !('enabled' in opt_value))
-      opt_value['enabled'] = true;
-    this.labels_.setup(opt_value);
-    return this;
-  }
-  return this.labels_;
-};
-
-
-/**
- * Gets or sets select labels settings.
- * @param {(Object|boolean|null)=} opt_value - Labels settings.
- * @return {!(anychart.core.ui.LabelsFactory|anychart.pertModule.VisualElements)} - Labels instance or itself for chaining call.
- */
-anychart.pertModule.VisualElements.prototype.selectLabels = function(opt_value) {
-  if (!this.selectLabels_) {
-    this.selectLabels_ = new anychart.core.ui.LabelsFactory();
-    this.selectLabels_.listenSignals(this.labelsInvalidated, this);
-    this.registerDisposable(this.selectLabels_);
-  }
-
-  if (goog.isDef(opt_value)) {
-    if (goog.isObject(opt_value) && !('enabled' in opt_value))
-      opt_value['enabled'] = true;
-    this.selectLabels_.setup(opt_value);
-    return this;
-  }
-  return this.selectLabels_;
-};
-
-
-/**
- * Gets or sets hover labels settings.
- * @param {(Object|boolean|null)=} opt_value - Labels settings.
- * @return {!(anychart.core.ui.LabelsFactory|anychart.pertModule.VisualElements)} - Labels instance or itself for chaining call.
- */
-anychart.pertModule.VisualElements.prototype.hoverLabels = function(opt_value) {
-  if (!this.hoverLabels_) {
-    this.hoverLabels_ = new anychart.core.ui.LabelsFactory();
-    this.hoverLabels_.listenSignals(this.labelsInvalidated, this);
-    this.registerDisposable(this.hoverLabels_);
-  }
-
-  if (goog.isDef(opt_value)) {
-    if (goog.isObject(opt_value) && !('enabled' in opt_value))
-      opt_value['enabled'] = true;
-    this.hoverLabels_.setup(opt_value);
-    return this;
-  }
-  return this.hoverLabels_;
+anychart.pertModule.VisualElements.prototype.labelsAfterInitCallback = function(factory) {
+  factory.listenSignals(this.labelsInvalidated, this);
 };
 
 
@@ -406,7 +377,7 @@ anychart.pertModule.VisualElements.prototype.labelsContainer = function(opt_valu
   if (goog.isDef(opt_value)) {
     if (this.labelsContainer_ != opt_value) {
       this.labelsContainer_ = opt_value;
-      this.labels().container(this.labelsContainer_);
+      this.normal_.labels().container(this.labelsContainer_);
     }
     return this;
   }
@@ -419,7 +390,7 @@ anychart.pertModule.VisualElements.prototype.labelsContainer = function(opt_valu
  * @return {anychart.pertModule.VisualElements}
  */
 anychart.pertModule.VisualElements.prototype.drawLabels = function() {
-  this.labels().draw();
+  this.normal_.labels().draw();
   return this;
 };
 
@@ -429,7 +400,7 @@ anychart.pertModule.VisualElements.prototype.drawLabels = function() {
  * @return {anychart.pertModule.VisualElements}
  */
 anychart.pertModule.VisualElements.prototype.clearLabels = function() {
-  this.labels().clear();
+  this.normal_.labels().clear();
   return this;
 };
 
@@ -440,7 +411,7 @@ anychart.pertModule.VisualElements.prototype.clearLabels = function() {
  * @return {anychart.pertModule.VisualElements}
  */
 anychart.pertModule.VisualElements.prototype.setLabelsParentEventTarget = function(parentEventTarget) {
-  this.labels().setParentEventTarget(parentEventTarget);
+  this.normal_.labels().setParentEventTarget(parentEventTarget);
   return this;
 };
 
@@ -473,14 +444,14 @@ anychart.pertModule.VisualElements.prototype.serialize = function() {
   var json = anychart.pertModule.VisualElements.base(this, 'serialize');
   anychart.core.settings.serialize(this, anychart.pertModule.VisualElements.PROPERTY_DESCRIPTORS, json, 'Pert visual element');
 
-  json['labels'] = this.labels().serialize();
-  json['selectLabels'] = this.selectLabels().getChangedSettings();
-  json['hoverLabels'] = this.hoverLabels().getChangedSettings();
-  if (goog.isNull(json['hoverLabels']['enabled'])) {
-    delete json['hoverLabels']['enabled'];
+  json['normal'] = this.normal_.serialize();
+  json['hovered'] = this.hovered_.serialize();
+  json['selected'] = this.selected_.serialize();
+  if (goog.isNull(json['hovered']['labels']['enabled'])) {
+    delete json['hovered']['labels']['enabled'];
   }
-  if (goog.isNull(json['selectLabels']['enabled'])) {
-    delete json['selectLabels']['enabled'];
+  if (goog.isNull(json['selected']['labels']['enabled'])) {
+    delete json['selected']['labels']['enabled'];
   }
 
   json['tooltip'] = this.tooltip().serialize();
@@ -495,10 +466,27 @@ anychart.pertModule.VisualElements.prototype.setupByJSON = function(config, opt_
 
   anychart.core.settings.deserialize(this, anychart.pertModule.VisualElements.PROPERTY_DESCRIPTORS, config);
 
-  this.labels().setupInternal(!!opt_default, config['labels']);
-  this.hoverLabels().setupInternal(!!opt_default, config['hoverLabels']);
-  this.selectLabels().setupInternal(!!opt_default, config['selectLabels']);
+  this.normal_.setupByJSON(config, opt_default);
+  if (config['normal']) {
+    this.normal_.setupByJSON(config['normal'], opt_default);
+  }
+  if (config['hovered']) {
+    this.hovered_.setupByJSON(config['hovered'], opt_default);
+  }
+  if (config['selected']) {
+    this.selected_.setupByJSON(config['selected'], opt_default);
+  }
 
   if ('tooltip' in config)
     this.tooltip().setupInternal(!!opt_default, config['tooltip']);
 };
+
+(function() {
+  var proto = anychart.pertModule.VisualElements.prototype;
+  //auto
+  //proto['color'] = proto.color;
+  proto['tooltip'] = proto.tooltip;
+  proto['normal'] = proto.normal;
+  proto['hovered'] = proto.hovered;
+  proto['selected'] = proto.selected;
+})();
