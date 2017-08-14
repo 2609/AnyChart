@@ -3561,18 +3561,14 @@ anychart.ganttModule.TimeLine.prototype.drawProjectTimeline_ = function() {
     var baselineStart = item.get(anychart.enums.GanttDataFields.BASELINE_START);
     var baselineEnd = item.get(anychart.enums.GanttDataFields.BASELINE_END);
 
-    if (goog.isDef(baselineStart) && goog.isDef(baselineEnd)) {
+    if (anychart.ganttModule.BaseGrid.isMilestone(item)) {
+      this.drawAsMilestone_(item, totalTop, itemHeight);
+    } else if (goog.isDef(baselineStart) && goog.isDef(baselineEnd)) {
       this.drawAsBaseline_(item, totalTop, itemHeight);
+    } else if (item.numChildren()) {
+      this.drawAsParent_(item, totalTop, itemHeight);
     } else {
-      if (item.numChildren()) {
-        this.drawAsParent_(item, totalTop, itemHeight);
-      } else {
-        if (anychart.ganttModule.BaseGrid.isMilestone(item)) {
-          this.drawAsMilestone_(item, totalTop, itemHeight);
-        } else {
-          this.drawAsProgress_(item, totalTop, itemHeight);
-        }
-      }
+      this.drawAsProgress_(item, totalTop, itemHeight);
     }
 
     this.drawMarkers_(item, totalTop, itemHeight);
