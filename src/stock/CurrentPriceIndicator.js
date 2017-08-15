@@ -297,7 +297,6 @@ anychart.stockModule.CurrentPriceIndicator.prototype.risingLabel = function(opt_
  * @private
  */
 anychart.stockModule.CurrentPriceIndicator.prototype.labelInvalidated_ = function(e) {
-  console.log('!!!');
   this.invalidate(anychart.ConsistencyState.BOUNDS | anychart.ConsistencyState.STOCK_PRICE_INDICATOR_LABEL,
       anychart.Signal.NEEDS_REDRAW);
 };
@@ -432,8 +431,6 @@ anychart.stockModule.CurrentPriceIndicator.prototype.draw = function() {
         .moveTo(plotBounds.left, y)
         .lineTo(plotBounds.getRight(), y);
     line.parent(/** @type {acgraph.vector.ILayer} */(this.container()));
-
-    console.log(this.label_.getFinalSettings('enabled'));
 
     if (axis && axis.enabled() && this.label_.getFinalSettings('enabled')) {
       var labelPositionProvider = this.getLabelPositionProvider(axis, y);
