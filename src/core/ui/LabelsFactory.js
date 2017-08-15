@@ -329,7 +329,6 @@ anychart.core.settings.populate(anychart.core.ui.LabelsFactory, anychart.core.ui
 anychart.core.ui.LabelsFactory.prototype.enabled = function(opt_value) {
   if (goog.isDef(opt_value)) {
     var prevEnabledState = this.getOption('enabled');
-    this.ownSettings['enabled'] = opt_value;
     if (!goog.isNull(opt_value)) {
       if (goog.isNull(prevEnabledState) && !!opt_value) {
         this.invalidate(anychart.ConsistencyState.ENABLED, this.getEnableChangeSignals());

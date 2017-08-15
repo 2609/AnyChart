@@ -28,9 +28,8 @@ anychart.stockModule.CurrentPriceIndicator = function() {
    */
   this.mainLabel_ = new anychart.core.ui.LabelsFactory();
   this.mainLabel_.listenSignals(this.labelInvalidated_, this);
-  this.mainLabel_.markConsistent(anychart.ConsistencyState.ALL);
-
   this.label_ = this.mainLabel_.add(null, null, 0);
+  this.mainLabel_.markConsistent(anychart.ConsistencyState.ALL);
 
   /**
    * @type {anychart.core.ui.LabelsFactory}
@@ -298,7 +297,9 @@ anychart.stockModule.CurrentPriceIndicator.prototype.risingLabel = function(opt_
  * @private
  */
 anychart.stockModule.CurrentPriceIndicator.prototype.labelInvalidated_ = function(e) {
-  this.invalidate(anychart.ConsistencyState.STOCK_PRICE_INDICATOR_LABEL, anychart.Signal.NEEDS_REDRAW);
+  console.log('!!!');
+  this.invalidate(anychart.ConsistencyState.BOUNDS | anychart.ConsistencyState.STOCK_PRICE_INDICATOR_LABEL,
+      anychart.Signal.NEEDS_REDRAW);
 };
 
 
@@ -432,6 +433,8 @@ anychart.stockModule.CurrentPriceIndicator.prototype.draw = function() {
         .lineTo(plotBounds.getRight(), y);
     line.parent(/** @type {acgraph.vector.ILayer} */(this.container()));
 
+    console.log(this.label_.getFinalSettings('enabled'));
+
     if (axis && axis.enabled() && this.label_.getFinalSettings('enabled')) {
       var labelPositionProvider = this.getLabelPositionProvider(axis, y);
       
@@ -478,6 +481,9 @@ anychart.stockModule.CurrentPriceIndicator.prototype.draw = function() {
             this.mainLabel_.themeSettings);
       }
       this.label_.stateOrder(labelStateOrder);
+    } else {
+      this.label_.clear();
+      this.labelDisabled = true;
     }
     this.markConsistent(anychart.ConsistencyState.STOCK_PRICE_INDICATOR_LABEL);
   }
@@ -489,6 +495,10 @@ anychart.stockModule.CurrentPriceIndicator.prototype.draw = function() {
 
   if (!this.labelDisabled)
     this.label_.draw();
+
+  this.mainLabel_.markConsistent(anychart.ConsistencyState.ALL);
+  this.risingLabel_.markConsistent(anychart.ConsistencyState.ALL);
+  this.fallingLabel_.markConsistent(anychart.ConsistencyState.ALL);
 
   return this;
 };
