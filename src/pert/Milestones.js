@@ -37,7 +37,7 @@ anychart.pertModule.Milestones.PROPERTY_DESCRIPTORS = (function() {
   /** @type {!Object.<string, anychart.core.settings.PropertyDescriptor>} */
   var map = {};
   function sizeNormalizer(opt_value) {
-    return /** @type {number|string} */ (anychart.utils.normalizeNumberOrPercent(opt_value, 80));
+    return /** @type {number|string} */ (anychart.utils.normalizeNumberOrPercent(opt_value, 80) || 0);
   }
   anychart.core.settings.createDescriptors(map, [
     [anychart.enums.PropertyHandlerType.SINGLE_ARG, 'size', sizeNormalizer],
