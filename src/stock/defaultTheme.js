@@ -414,11 +414,13 @@ goog.mixin(goog.global['anychart']['themes']['defaultTheme'], {
         'label': {
           'enabled': true,
           'background': {
+            'enabled': true,
             'fill': '#000'
           },
           'fontColor': '#fff',
           'padding': 2
-        }
+        },
+        'stroke': 'black'
       },
       'xAxis': {
         'enabled': true,

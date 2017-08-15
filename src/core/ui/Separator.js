@@ -585,31 +585,6 @@ anychart.core.ui.Separator.prototype.invalidate = function(state, opt_signal) {
 
 
 /** @inheritDoc */
-anychart.core.ui.Separator.prototype.enabled = function(opt_value) {
-  if (goog.isDef(opt_value)) {
-    if (this.ownSettings['enabled'] != opt_value) {
-      this.ownSettings['enabled'] = opt_value;
-      this.invalidate(anychart.ConsistencyState.ENABLED,
-          anychart.Signal.NEEDS_REDRAW | anychart.Signal.BOUNDS_CHANGED | anychart.Signal.ENABLED_STATE_CHANGED);
-      if (this.ownSettings['enabled']) {
-        this.doubleSuspension = false;
-        this.resumeSignalsDispatching(true);
-      } else {
-        if (isNaN(this.suspendedDispatching)) {
-          this.suspendSignalsDispatching();
-        } else {
-          this.doubleSuspension = true;
-        }
-      }
-    }
-    return this;
-  } else {
-    return /** @type {boolean} */(this.getOption('enabled'));
-  }
-};
-
-
-/** @inheritDoc */
 anychart.core.ui.Separator.prototype.serialize = function() {
   var json = {};
 

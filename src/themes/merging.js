@@ -719,7 +719,8 @@ anychart.themes.merging.mergingMap_ = (function() {
           [['tree', 'heat'], 'Map'],
           'venn'
         ], '.labels'],
-        ['pert.tasks.', [[['upper', 'lower'], 'Labels']]]
+        ['pert.tasks.', [[['upper', 'lower'], 'Labels']]],
+        'stock.defaultPlotSettings.defaultPriceIndicatorSettings.label'
       ]
     },
     {

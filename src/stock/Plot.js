@@ -1153,7 +1153,8 @@ anychart.stockModule.Plot.prototype.invalidateRedrawable = function(doInvalidate
     if (priceIndicator) {
       priceIndicator.suspendSignalsDispatching();
       // effectively invalidates all what's needed
-      priceIndicator.invalidate(anychart.ConsistencyState.BOUNDS, anychart.Signal.NEEDS_REDRAW);
+      priceIndicator.invalidate(anychart.ConsistencyState.BOUNDS | anychart.ConsistencyState.APPEARANCE,
+          anychart.Signal.NEEDS_REDRAW);
       priceIndicator.resumeSignalsDispatching(false);
     }
   }
@@ -2366,6 +2367,7 @@ anychart.stockModule.Plot.prototype.disposeInternal = function() {
   delete this.indicators_;
   delete this.series_;
   delete this.yAxes_;
+  delete this.priceIndicators_;
   this.xAxis_ = null;
 
   delete this.chart_;
@@ -2435,6 +2437,15 @@ anychart.stockModule.Plot.prototype.serialize = function() {
   }
   if (yAxes.length)
     json['yAxes'] = yAxes;
+
+  var priceIndicators = [];
+  for (i = 0; i < this.priceIndicators_.length; i++) {
+    var priceIndicator = this.priceIndicators_[i];
+    if (priceIndicator)
+      priceIndicators[i] = priceIndicator.serialize();
+  }
+  if (priceIndicators.length)
+    json['priceIndicators'] = priceIndicators;
 
 
   var grids = [];
@@ -2597,6 +2608,15 @@ anychart.stockModule.Plot.prototype.setupByJSON = function(config, opt_default) 
   }
   if (scale)
     this.yScale(scale);
+
+  var priceIndicators = config['priceIndicators'];
+  if (goog.isArray(priceIndicators)) {
+    for (i = 0; i < priceIndicators.length; i++) {
+      json = priceIndicators[i];
+      if (json)
+        this.priceIndicator(i, json);
+    }
+  }
 
   if ('defaultGridSettings' in config)
     this.setDefaultGridSettings(config['defaultGridSettings']);
@@ -2844,4 +2864,5 @@ anychart.stockModule.Plot.Dragger.prototype.limitY = function(y) {
   proto['markerPalette'] = proto.markerPalette;
   proto['hatchFillPalette'] = proto.hatchFillPalette;
   proto['annotations'] = proto.annotations;
+  proto['priceIndicator'] = proto.priceIndicator;
 })();

@@ -310,7 +310,7 @@ anychart.stockModule.data.TableSelectable.prototype.getRowByDataSource = functio
   } else if (dataSource == anychart.enums.DataSource.SERIES_END) {
     row = this.getLastRowFromMainStorage(opt_fieldName);
   } else {
-    row = this.getRowFromMainStorage(dataSource);
+    row = this.getRowFromMainStorage(/** @type {number} */(dataSource));
   }
   return row;
 };
