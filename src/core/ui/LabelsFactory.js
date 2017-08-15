@@ -31,6 +31,8 @@ anychart.core.ui.LabelsFactory = function() {
   this.suspendSignalsDispatching();
   anychart.core.ui.LabelsFactory.base(this, 'constructor');
 
+  delete this.themeSettings['enabled'];
+
   /**
    * Labels background settings.
    * @type {anychart.core.ui.Background}
@@ -1266,6 +1268,8 @@ anychart.core.ui.LabelsFactory.prototype.setupByJSON = function(config, opt_defa
  */
 anychart.core.ui.LabelsFactory.Label = function() {
   anychart.core.ui.LabelsFactory.Label.base(this, 'constructor');
+
+  delete this.themeSettings['enabled'];
 
   /**
    * Label index.
