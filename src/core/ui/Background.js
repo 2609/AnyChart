@@ -26,6 +26,8 @@ goog.require('goog.array');
 anychart.core.ui.Background = function() {
   anychart.core.ui.Background.base(this, 'constructor');
 
+  delete this.themeSettings['enabled'];
+
   /**
    * Parent title.
    * @type {anychart.core.ui.Background}

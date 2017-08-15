@@ -31,6 +31,8 @@ goog.require('goog.object');
 anychart.core.ui.Tooltip = function(capability) {
   anychart.core.ui.Tooltip.base(this, 'constructor');
 
+  delete this.themeSettings['enabled'];
+
   /**
    * Tooltip's capability.
    * Used to separate chart's tooltip functionality from series' tooltip and from other.

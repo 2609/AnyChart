@@ -19,6 +19,8 @@ goog.require('anychart.math.Rect');
 anychart.mapModule.elements.Axis = function() {
   anychart.mapModule.elements.Axis.base(this, 'constructor');
 
+  delete this.themeSettings['enabled'];
+
   this.labelsBounds_ = [];
   this.minorLabelsBounds_ = [];
 

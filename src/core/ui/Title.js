@@ -45,6 +45,8 @@ goog.require('goog.math.AffineTransform');
 anychart.core.ui.Title = function() {
   anychart.core.ui.Title.base(this, 'constructor');
 
+  delete this.themeSettings['enabled'];
+
   /**
    * Text element.
    * @type {!acgraph.vector.Text}

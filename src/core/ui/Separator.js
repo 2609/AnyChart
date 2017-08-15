@@ -18,6 +18,8 @@ goog.require('anychart.utils');
 anychart.core.ui.Separator = function() {
   anychart.core.ui.Separator.base(this, 'constructor');
 
+  delete this.themeSettings['enabled'];
+
   /**
    * Path of the separator.
    * @type {acgraph.vector.Path}

@@ -78,6 +78,34 @@ anychart.core.settings.populate(anychart.resourceModule.Overlay, anychart.resour
 
 
 /**
+ * Getter/setter for enabled.
+ * @param {?boolean=} opt_value Value to set.
+ * @return {!anychart.resourceModule.Overlay|boolean|null} .
+ */
+anychart.resourceModule.Overlay.prototype.enabled = function(opt_value) {
+  if (goog.isDef(opt_value)) {
+    if (this.ownSettings['enabled'] != opt_value) {
+      var enabled = this.ownSettings['enabled'] = opt_value;
+      this.invalidate(anychart.ConsistencyState.ENABLED, anychart.Signal.NEEDS_REDRAW);
+      if (enabled) {
+        this.doubleSuspension = false;
+        this.resumeSignalsDispatching(true);
+      } else {
+        if (isNaN(this.suspendedDispatching)) {
+          this.suspendSignalsDispatching();
+        } else {
+          this.doubleSuspension = true;
+        }
+      }
+    }
+    return this;
+  } else {
+    return /** @type {boolean} */(this.getOption('enabled'));
+  }
+};
+
+
+/**
  * Overlay target.
  * @param {Element=} opt_value .
  * @return {Element|anychart.resourceModule.Overlay}
@@ -286,6 +314,7 @@ anychart.resourceModule.Overlay.prototype.disposeInternal = function() {
   // proto['id'] = proto.id;
   // proto['className'] = proto.className;
   proto['getElement'] = proto.getElement;
+  proto['enabled'] = proto.enabled;
 })();
 
 

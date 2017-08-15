@@ -18,6 +18,8 @@ goog.require('anychart.utils');
 anychart.mapModule.elements.AxisTicks = function() {
   anychart.mapModule.elements.AxisTicks.base(this, 'constructor');
 
+  delete this.themeSettings['enabled'];
+
   /**
    * Ticks enabled.
    * @type {anychart.enums.Orientation}
