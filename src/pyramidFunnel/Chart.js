@@ -157,7 +157,7 @@ anychart.core.settings.populateAliases(anychart.pyramidFunnelModule.Chart, ['fil
  */
 anychart.pyramidFunnelModule.Chart.prototype.normal = function(opt_value) {
   if (goog.isDef(opt_value)) {
-    this.normal_.setupByJSON(opt_value);
+    this.normal_.setup(opt_value);
     return this;
   }
   return this.normal_;
@@ -171,7 +171,7 @@ anychart.pyramidFunnelModule.Chart.prototype.normal = function(opt_value) {
  */
 anychart.pyramidFunnelModule.Chart.prototype.hovered = function(opt_value) {
   if (goog.isDef(opt_value)) {
-    this.hovered_.setupByJSON(opt_value);
+    this.hovered_.setup(opt_value);
     return this;
   }
   return this.hovered_;
@@ -185,7 +185,7 @@ anychart.pyramidFunnelModule.Chart.prototype.hovered = function(opt_value) {
  */
 anychart.pyramidFunnelModule.Chart.prototype.selected = function(opt_value) {
   if (goog.isDef(opt_value)) {
-    this.selected_.setupByJSON(opt_value);
+    this.selected_.setup(opt_value);
     return this;
   }
   return this.selected_;

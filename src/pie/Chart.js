@@ -225,7 +225,7 @@ anychart.core.settings.populateAliases(anychart.pieModule.Chart, ['fill', 'strok
  */
 anychart.pieModule.Chart.prototype.normal = function(opt_value) {
   if (goog.isDef(opt_value)) {
-    this.normal_.setupByJSON(opt_value);
+    this.normal_.setup(opt_value);
     return this;
   }
   return this.normal_;
@@ -239,7 +239,7 @@ anychart.pieModule.Chart.prototype.normal = function(opt_value) {
  */
 anychart.pieModule.Chart.prototype.hovered = function(opt_value) {
   if (goog.isDef(opt_value)) {
-    this.hovered_.setupByJSON(opt_value);
+    this.hovered_.setup(opt_value);
     return this;
   }
   return this.hovered_;

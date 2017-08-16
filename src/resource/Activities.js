@@ -88,7 +88,7 @@ anychart.core.settings.populateAliases(anychart.resourceModule.Activities, ['fil
  */
 anychart.resourceModule.Activities.prototype.normal = function(opt_value) {
   if (goog.isDef(opt_value)) {
-    this.normal_.setupByJSON(opt_value);
+    this.normal_.setup(opt_value);
     return this;
   }
   return this.normal_;
@@ -102,7 +102,7 @@ anychart.resourceModule.Activities.prototype.normal = function(opt_value) {
  */
 anychart.resourceModule.Activities.prototype.hovered = function(opt_value) {
   if (goog.isDef(opt_value)) {
-    this.hovered_.setupByJSON(opt_value);
+    this.hovered_.setup(opt_value);
     return this;
   }
   return this.hovered_;
@@ -116,7 +116,7 @@ anychart.resourceModule.Activities.prototype.hovered = function(opt_value) {
  */
 anychart.resourceModule.Activities.prototype.selected = function(opt_value) {
   if (goog.isDef(opt_value)) {
-    this.selected_.setupByJSON(opt_value);
+    this.selected_.setup(opt_value);
     return this;
   }
   return this.selected_;

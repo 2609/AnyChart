@@ -81,7 +81,7 @@ anychart.vennModule.Intersections.prototype.SUPPORTED_SIGNALS =
  */
 anychart.vennModule.Intersections.prototype.normal = function(opt_value) {
   if (goog.isDef(opt_value)) {
-    this.normal_.setupByJSON(opt_value);
+    this.normal_.setup(opt_value);
     return this;
   }
   return this.normal_;
@@ -95,7 +95,7 @@ anychart.vennModule.Intersections.prototype.normal = function(opt_value) {
  */
 anychart.vennModule.Intersections.prototype.hovered = function(opt_value) {
   if (goog.isDef(opt_value)) {
-    this.hovered_.setupByJSON(opt_value);
+    this.hovered_.setup(opt_value);
     return this;
   }
   return this.hovered_;
@@ -109,7 +109,7 @@ anychart.vennModule.Intersections.prototype.hovered = function(opt_value) {
  */
 anychart.vennModule.Intersections.prototype.selected = function(opt_value) {
   if (goog.isDef(opt_value)) {
-    this.selected_.setupByJSON(opt_value);
+    this.selected_.setup(opt_value);
     return this;
   }
   return this.selected_;
