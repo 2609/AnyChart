@@ -282,10 +282,10 @@ anychart.heatmapModule.Chart.prototype.getXScaleWrongTypeError = function() {
 
 
 /**
- * @return {anychart.scales.Base.ScaleTypes}
+ * @return {anychart.enums.ScaleTypes}
  */
 anychart.heatmapModule.Chart.prototype.getYScaleDefaultType = function() {
-  return anychart.scales.Base.ScaleTypes.ORDINAL;
+  return anychart.enums.ScaleTypes.ORDINAL;
 };
 
 

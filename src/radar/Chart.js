@@ -139,10 +139,10 @@ anychart.radarModule.Chart.prototype.getXScaleWrongTypeError = function() {
 
 
 /**
- * @return {anychart.scales.Base.ScaleTypes}
+ * @return {anychart.enums.ScaleTypes}
  */
 anychart.radarModule.Chart.prototype.getYScaleDefaultType = function() {
-  return anychart.scales.Base.ScaleTypes.LINEAR;
+  return anychart.enums.ScaleTypes.LINEAR;
 };
 
 

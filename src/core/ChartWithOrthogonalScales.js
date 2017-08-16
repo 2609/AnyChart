@@ -163,10 +163,10 @@ anychart.core.ChartWithOrthogonalScales.prototype.allowLegendCategoriesMode = fu
 
 
 /**
- * @return {anychart.scales.Base.ScaleTypes}
+ * @return {anychart.enums.ScaleTypes}
  */
 anychart.core.ChartWithOrthogonalScales.prototype.getXScaleDefaultType = function() {
-  return anychart.scales.Base.ScaleTypes.ORDINAL;
+  return anychart.enums.ScaleTypes.ORDINAL;
 };
 
 
@@ -187,10 +187,10 @@ anychart.core.ChartWithOrthogonalScales.prototype.getXScaleWrongTypeError = func
 
 
 /**
- * @return {anychart.scales.Base.ScaleTypes}
+ * @return {anychart.enums.ScaleTypes}
  */
 anychart.core.ChartWithOrthogonalScales.prototype.getYScaleDefaultType = function() {
-  return anychart.scales.Base.ScaleTypes.LINEAR;
+  return anychart.enums.ScaleTypes.LINEAR;
 };
 
 

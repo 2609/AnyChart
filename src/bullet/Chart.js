@@ -208,7 +208,7 @@ anychart.bulletModule.Chart.prototype.scale = function(opt_value) {
   }
 
   if (goog.isDef(opt_value)) {
-    var val = anychart.scales.Base.setupScale(this.scale_, opt_value, anychart.scales.Base.ScaleTypes.LINEAR,
+    var val = anychart.scales.Base.setupScale(this.scale_, opt_value, anychart.enums.ScaleTypes.LINEAR,
         anychart.scales.Base.ScaleTypes.SCATTER);
     if (val) {
       this.scale_ = val;

@@ -421,7 +421,7 @@ anychart.scales.Base.createOfType = function(type, defaultType) {
  * all the setup is made through the scale signals listeners.
  * @param {?anychart.scales.Base} currentScale
  * @param {*=} opt_newScaleSetupValue
- * @param {?anychart.scales.Base.ScaleTypes=} opt_defaultScaleType
+ * @param {?anychart.enums.ScaleTypes=} opt_defaultScaleType
  * @param {anychart.scales.Base.ScaleTypes=} opt_allowedScaleTypes
  * @param {Array=} opt_errorParams - if set, dispatches error on wrong scale type.
  * @param {Function=} opt_signalsHandler
@@ -449,7 +449,8 @@ anychart.scales.Base.setupScale = function(currentScale, opt_newScaleSetupValue,
     var internalType = anychart.scales.Base.ScaleTypesMapping[type];
     if (!!(internalType & opt_allowedScaleTypes)) {
       if (!instance && type != currentType) {
-        instance = anychart.scales.Base.createOfType(internalType, opt_defaultScaleType || null);
+        instance = anychart.scales.Base.createOfType(internalType,
+            anychart.scales.Base.ScaleTypesMapping[/** @type {anychart.enums.ScaleTypes} */(opt_defaultScaleType)] || null);
       }
       if (instance) {
         instance.suspendSignalsDispatching();

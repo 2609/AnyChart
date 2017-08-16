@@ -133,7 +133,7 @@ anychart.mekkoModule.Chart.prototype.seriesInvalidated = function(event) {
  */
 anychart.mekkoModule.Chart.prototype.firstCategoriesScale = function(opt_value) {
   if (goog.isDef(opt_value)) {
-    var val = /** @type {?anychart.scales.Ordinal} */(anychart.scales.Base.setupScale(this.firstCategoriesScale_, opt_value, anychart.scales.Base.ScaleTypes.ORDINAL,
+    var val = /** @type {?anychart.scales.Ordinal} */(anychart.scales.Base.setupScale(this.firstCategoriesScale_, opt_value, anychart.enums.ScaleTypes.ORDINAL,
         anychart.scales.Base.ScaleTypes.ORDINAL, null, this.categoriesScaleInvalidated, this));
     if (val) {
       this.firstCategoriesScale_ = val;
@@ -142,7 +142,7 @@ anychart.mekkoModule.Chart.prototype.firstCategoriesScale = function(opt_value) 
     return this;
   }
   if (!this.firstCategoriesScale_) {
-    this.firstCategoriesScale_ = /** @type {anychart.scales.Ordinal} */(anychart.scales.Base.setupScale(this.firstCategoriesScale_, {}, anychart.scales.Base.ScaleTypes.ORDINAL,
+    this.firstCategoriesScale_ = /** @type {anychart.scales.Ordinal} */(anychart.scales.Base.setupScale(this.firstCategoriesScale_, {}, anychart.enums.ScaleTypes.ORDINAL,
         anychart.scales.Base.ScaleTypes.ORDINAL, null, this.categoriesScaleInvalidated, this));
     this.firstCategoriesScale_.resumeSignalsDispatching(false);
   }
@@ -157,7 +157,7 @@ anychart.mekkoModule.Chart.prototype.firstCategoriesScale = function(opt_value) 
  */
 anychart.mekkoModule.Chart.prototype.lastCategoriesScale = function(opt_value) {
   if (goog.isDef(opt_value)) {
-    var val = /** @type {?anychart.scales.Ordinal} */(anychart.scales.Base.setupScale(this.lastCategoriesScale_, opt_value, anychart.scales.Base.ScaleTypes.ORDINAL,
+    var val = /** @type {?anychart.scales.Ordinal} */(anychart.scales.Base.setupScale(this.lastCategoriesScale_, opt_value, anychart.enums.ScaleTypes.ORDINAL,
         anychart.scales.Base.ScaleTypes.ORDINAL, null, this.categoriesScaleInvalidated, this));
     if (val) {
       this.lastCategoriesScale_ = val;
@@ -166,7 +166,7 @@ anychart.mekkoModule.Chart.prototype.lastCategoriesScale = function(opt_value) {
     return this;
   }
   if (!this.lastCategoriesScale_) {
-    this.lastCategoriesScale_ = /** @type {anychart.scales.Ordinal} */(anychart.scales.Base.setupScale(this.lastCategoriesScale_, {}, anychart.scales.Base.ScaleTypes.ORDINAL,
+    this.lastCategoriesScale_ = /** @type {anychart.scales.Ordinal} */(anychart.scales.Base.setupScale(this.lastCategoriesScale_, {}, anychart.enums.ScaleTypes.ORDINAL,
         anychart.scales.Base.ScaleTypes.ORDINAL, null, this.categoriesScaleInvalidated, this));
     this.lastCategoriesScale_.resumeSignalsDispatching(false);
   }
@@ -212,10 +212,10 @@ anychart.mekkoModule.Chart.prototype.getXScaleWrongTypeError = function() {
 
 
 /**
- * @return {anychart.scales.Base.ScaleTypes}
+ * @return {anychart.enums.ScaleTypes}
  */
 anychart.mekkoModule.Chart.prototype.getYScaleDefaultType = function() {
-  return anychart.scales.Base.ScaleTypes.LINEAR;
+  return anychart.enums.ScaleTypes.LINEAR;
 };
 
 
