@@ -265,12 +265,27 @@ anychart.heatmapModule.Chart.prototype.scrollerChangeHandler = function(e) {
 };
 
 
-/** @inheritDoc */
-anychart.heatmapModule.Chart.prototype.checkXScaleType = function(scale) {
-  var res = (scale instanceof anychart.scales.Ordinal) && !scale.isColorScale();
-  if (!res)
-    anychart.core.reporting.error(anychart.enums.ErrorCode.INCORRECT_SCALE_TYPE, undefined, ['HeatMap chart scale', 'ordinal']);
-  return res;
+/**
+ * @return {anychart.scales.Base.ScaleTypes}
+ */
+anychart.heatmapModule.Chart.prototype.getXScaleAllowedTypes = function() {
+  return anychart.scales.Base.ScaleTypes.ORDINAL;
+};
+
+
+/**
+ * @return {Array}
+ */
+anychart.heatmapModule.Chart.prototype.getXScaleWrongTypeError = function() {
+  return ['HeatMap chart scale', 'ordinal'];
+};
+
+
+/**
+ * @return {anychart.scales.Base.ScaleTypes}
+ */
+anychart.heatmapModule.Chart.prototype.getYScaleDefaultType = function() {
+  return anychart.scales.Base.ScaleTypes.ORDINAL;
 };
 
 
@@ -282,19 +297,6 @@ anychart.heatmapModule.Chart.prototype.onGridSignal = function(event) {
 };
 
 
-/** @inheritDoc */
-anychart.heatmapModule.Chart.prototype.checkYScaleType = anychart.heatmapModule.Chart.prototype.checkXScaleType;
-
-
-/** @inheritDoc */
-anychart.heatmapModule.Chart.prototype.createScaleByType = function(value, isXScale, returnNullOnError) {
-  value = String(value).toLowerCase();
-  return (returnNullOnError && value != 'ordinal' && value != 'ord' && value != 'discrete') ?
-      null :
-      anychart.scales.ordinal();
-};
-
-
 /**
  * Color scale.
  * @param {anychart.colorScalesModule.Ordinal=} opt_value
@@ -302,15 +304,11 @@ anychart.heatmapModule.Chart.prototype.createScaleByType = function(value, isXSc
  */
 anychart.heatmapModule.Chart.prototype.colorScale = function(opt_value) {
   if (goog.isDef(opt_value)) {
-    if (this.colorScale_ != opt_value) {
-      if (this.colorScale_)
-        this.colorScale_.unlistenSignals(this.colorScaleInvalidated_, this);
-      this.colorScale_ = opt_value;
-      if (this.colorScale_)
-        this.colorScale_.listenSignals(this.colorScaleInvalidated_, this);
-
-      this.invalidate(anychart.ConsistencyState.HEATMAP_COLOR_SCALE | anychart.ConsistencyState.CHART_LEGEND,
-          anychart.Signal.NEEDS_REDRAW);
+    var val = anychart.scales.Base.setupScale(this.colorScale_, opt_value, null, anychart.scales.Base.ScaleTypes.COLOR_SCALES,
+        ['HeatMap chart color scale', 'ordinal-color, linear-color'], this.colorScaleInvalidated_, this);
+    if (val) {
+      this.colorScale_ = val;
+      this.colorScale_.resumeSignalsDispatching(true);
     }
     return this;
   }

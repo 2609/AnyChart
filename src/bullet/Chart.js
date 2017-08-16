@@ -208,11 +208,10 @@ anychart.bulletModule.Chart.prototype.scale = function(opt_value) {
   }
 
   if (goog.isDef(opt_value)) {
-    if (goog.isString(opt_value)) {
-      opt_value = anychart.scales.Base.fromString(opt_value, false);
-    }
-    if (this.scale_ != opt_value) {
-      this.scale_ = opt_value;
+    var val = anychart.scales.Base.setupScale(this.scale_, opt_value, anychart.scales.Base.ScaleTypes.LINEAR,
+        anychart.scales.Base.ScaleTypes.SCATTER);
+    if (val) {
+      this.scale_ = val;
       this.invalidate(
           anychart.ConsistencyState.BULLET_SCALES |
           anychart.ConsistencyState.BULLET_AXES |

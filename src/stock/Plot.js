@@ -1217,21 +1217,11 @@ anychart.stockModule.Plot.prototype.legend = function(opt_value) {
  */
 anychart.stockModule.Plot.prototype.yScale = function(opt_value) {
   if (goog.isDef(opt_value)) {
-    if (goog.isString(opt_value)) {
-      opt_value = anychart.scales.ScatterBase.fromString(opt_value, false);
-    }
-    if (!(opt_value instanceof anychart.scales.ScatterBase)) {
-      anychart.core.reporting.error(anychart.enums.ErrorCode.INCORRECT_SCALE_TYPE, undefined, ['Scatter chart scales', 'scatter', 'linear, log']);
-      return this;
-    }
-    if (this.yScale_ != opt_value) {
-      if (this.yScale_)
-        this.yScale_.unlistenSignals(this.yScaleInvalidated, this);
-      this.yScale_ = opt_value;
-      if (this.yScale_)
-        this.yScale_.listenSignals(this.yScaleInvalidated, this);
-      this.invalidateRedrawable(false);
-      this.dispatchSignal(anychart.Signal.NEEDS_REDRAW);
+    var val = anychart.scales.Base.setupScale(this.yScale_, opt_value, null,
+        anychart.scales.Base.ScaleTypes.SCATTER, ['Stock plot Y scale', 'scatter', 'linear, log'], this.yScaleInvalidated, this);
+    if (val) {
+      this.yScale_ = /** @type {anychart.scales.ScatterBase} */(val);
+      this.yScale_.resumeSignalsDispatching(true);
     }
     return this;
   } else {
