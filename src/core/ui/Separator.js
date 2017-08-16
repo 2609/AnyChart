@@ -588,7 +588,7 @@ anychart.core.ui.Separator.prototype.invalidate = function(state, opt_signal) {
 
 /** @inheritDoc */
 anychart.core.ui.Separator.prototype.serialize = function() {
-  var json = anychart.core.ui.Separator.base('serialize');
+  var json = anychart.core.ui.Separator.base(this, 'serialize');
 
   anychart.core.settings.serialize(this, this.SIMPLE_SEPARATOR_DESCRIPTORS, json, 'Separator');
 
