@@ -516,15 +516,6 @@ anychart.color.colorResolversCache = {};
 
 
 /**
- * Returns normalized null stroke or fill.
- * @return {string}
- */
-anychart.color.getNullColor = function() {
-  return 'none';
-};
-
-
-/**
  * Returns a color resolver for passed color names and type.
  * @param {(Array.<string>|null|boolean)} colorNames
  * @param {anychart.enums.ColorType} colorType
@@ -560,6 +551,15 @@ anychart.color.getColorResolver = function(colorNames, colorType) {
       result = anychart.color.colorResolversCache['transparent'] = function() { return anychart.color.TRANSPARENT_HANDLER; };
   }
   return result;
+};
+
+
+/**
+ * Returns normalized null stroke or fill.
+ * @return {string}
+ */
+anychart.color.getNullColor = function() {
+  return 'none';
 };
 
 

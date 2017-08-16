@@ -26,9 +26,9 @@ anychart.core.drawers.Marker = function(series) {
    * @private
    */
   this.sizeGetter_ = anychart.core.series.Base.getSettingsResolver(
-      ['markerSize', 'hoverMarkerSize', 'selectMarkerSize'], // names in data
+      ['markerSize', 'hoverMarkerSize', 'selectMarkerSize'],
       anychart.core.settings.numberNormalizer,
-      ['size', 'hoverSize', 'selectSize']); // names in series settings
+      ['size', 'hoverSize', 'selectSize']);
 };
 goog.inherits(anychart.core.drawers.Marker, anychart.core.drawers.Base);
 anychart.core.drawers.AvailableDrawers[anychart.enums.SeriesDrawerTypes.MARKER] = anychart.core.drawers.Marker;

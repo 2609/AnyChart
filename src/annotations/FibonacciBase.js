@@ -413,27 +413,17 @@ anychart.annotationsModule.FibonacciBase.prototype.serialize = function() {
   anychart.core.settings.serialize(this, anychart.annotationsModule.VALUE_ANCHOR_DESCRIPTORS, json, 'Annotation');
   anychart.core.settings.serialize(this, anychart.annotationsModule.SECOND_ANCHOR_POINT_DESCRIPTORS, json, 'Annotation');
 
-  //json['labels'] = this.labels().serialize();
-  //json['hoverLabels'] = this.hoverLabels().serialize();
-  //json['selectLabels'] = this.selectLabels().serialize();
-
   return json;
 };
 
 
 /** @inheritDoc */
 anychart.annotationsModule.FibonacciBase.prototype.setupByJSON = function(config, opt_default) {
-
+  anychart.annotationsModule.FibonacciBase.base(this, 'setupByJSON', config, opt_default);
   this.levels(config['levels']);
   anychart.core.settings.deserialize(this, anychart.annotationsModule.X_ANCHOR_DESCRIPTORS, config);
   anychart.core.settings.deserialize(this, anychart.annotationsModule.VALUE_ANCHOR_DESCRIPTORS, config);
   anychart.core.settings.deserialize(this, anychart.annotationsModule.SECOND_ANCHOR_POINT_DESCRIPTORS, config);
-
-  //this.labels().setupInternal(!!opt_default, config['labels']);
-  //this.hoverLabels().setupInternal(!!opt_default, config['hoverLabels']);
-  //this.selectLabels().setupInternal(!!opt_default, config['selectLabels']);
-
-  anychart.annotationsModule.FibonacciBase.base(this, 'setupByJSON', config, opt_default);
 };
 
 

@@ -78,12 +78,19 @@ anychart.linearGaugeModule.pointers.Tank = function(gauge, dataIndex) {
    */
   this.emptyHatch_ = null;
 
-  this.normal_.setMeta('emptyFill', [anychart.ConsistencyState.APPEARANCE, anychart.Signal.NEEDS_REDRAW | anychart.Signal.NEED_UPDATE_LEGEND]);
-  this.normal_.setMeta('emptyHatchFill', [anychart.ConsistencyState.APPEARANCE, anychart.Signal.NEEDS_REDRAW | anychart.Signal.NEED_UPDATE_LEGEND]);
-  this.hovered_.setMeta('emptyFill', [0, 0]);
-  this.hovered_.setMeta('emptyHatchFill', [0, 0]);
-  this.selected_.setMeta('emptyFill', [0, 0]);
-  this.selected_.setMeta('emptyHatchFill', [0, 0]);
+  var normalMeta = [
+    ['emptyFill', anychart.ConsistencyState.APPEARANCE, anychart.Signal.NEEDS_REDRAW | anychart.Signal.NEED_UPDATE_LEGEND],
+    ['emptyHatchFill', anychart.ConsistencyState.APPEARANCE, anychart.Signal.NEEDS_REDRAW | anychart.Signal.NEED_UPDATE_LEGEND]
+  ];
+  this.normal_.addMeta(normalMeta);
+
+  var hoveredSelectedMeta = [
+    ['emptyFill', 0, 0],
+    ['emptyHatchFill', 0, 0]
+  ];
+  this.hovered_.addMeta(hoveredSelectedMeta);
+  this.selected_.addMeta(hoveredSelectedMeta);
+
   this.emptyFillResolver = anychart.color.getColorResolver(['emptyFill', 'hoverEmptyFill', 'selectEmptyFill'], anychart.enums.ColorType.FILL);
   this.emptyHatchFillResolver = anychart.color.getColorResolver(['emptyHatchFill', 'hoverEmptyHatchFill', 'selectEmptyHatchFill'], anychart.enums.ColorType.HATCH_FILL);
 };

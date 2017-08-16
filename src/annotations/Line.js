@@ -154,12 +154,11 @@ anychart.annotationsModule.Line.prototype.serialize = function() {
 
 /** @inheritDoc */
 anychart.annotationsModule.Line.prototype.setupByJSON = function(config, opt_default) {
+  anychart.annotationsModule.Line.base(this, 'setupByJSON', config, opt_default);
 
   anychart.core.settings.deserialize(this, anychart.annotationsModule.X_ANCHOR_DESCRIPTORS, config);
   anychart.core.settings.deserialize(this, anychart.annotationsModule.VALUE_ANCHOR_DESCRIPTORS, config);
   anychart.core.settings.deserialize(this, anychart.annotationsModule.SECOND_ANCHOR_POINT_DESCRIPTORS, config);
-
-  anychart.annotationsModule.Line.base(this, 'setupByJSON', config, opt_default);
 };
 
 

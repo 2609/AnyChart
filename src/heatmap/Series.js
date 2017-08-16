@@ -63,27 +63,6 @@ anychart.heatmapModule.Series.prototype.TOKEN_ALIASES = (function() {
 
 
 /** @inheritDoc */
-/*anychart.heatmapModule.Series.prototype.labels = function(opt_value) {
-  var res = (/!** @type {anychart.heatmapModule.Chart} *!/(this.chart)).labels(opt_value);
-  return goog.isDef(opt_value) ? this : /!** @type {!anychart.core.ui.LabelsFactory} *!/(res);
-};*/
-
-
-/** @inheritDoc */
-/*anychart.heatmapModule.Series.prototype.hoverLabels = function(opt_value) {
-  var res = (/!** @type {anychart.heatmapModule.Chart} *!/(this.chart)).hoverLabels(opt_value);
-  return goog.isDef(opt_value) ? this : /!** @type {!anychart.core.ui.LabelsFactory} *!/(res);
-};*/
-
-
-/** @inheritDoc */
-/*anychart.heatmapModule.Series.prototype.selectLabels = function(opt_value) {
-  var res = (/!** @type {anychart.heatmapModule.Chart} *!/(this.chart)).selectLabels(opt_value);
-  return goog.isDef(opt_value) ? this : /!** @type {!anychart.core.ui.LabelsFactory} *!/(res);
-};*/
-
-
-/** @inheritDoc */
 anychart.heatmapModule.Series.prototype.tooltip = function(opt_value) {
   var res = (/** @type {anychart.heatmapModule.Chart} */(this.chart)).tooltip(opt_value);
   return goog.isDef(opt_value) ? this : /** @type {!anychart.core.ui.Tooltip} */(res);
@@ -479,7 +458,4 @@ anychart.heatmapModule.Series.prototype.getColorResolutionContext = function(opt
 (function() {
   var proto = anychart.heatmapModule.Series.prototype;
   proto['tooltip'] = proto.tooltip;
-  //proto['labels'] = proto.labels;
-  //proto['hoverLabels'] = proto.hoverLabels;
-  //proto['selectLabels'] = proto.selectLabels;
 })();

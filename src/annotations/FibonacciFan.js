@@ -293,19 +293,15 @@ anychart.annotationsModule.FibonacciFan.prototype.setDefaultSettings = function(
 /** @inheritDoc */
 anychart.annotationsModule.FibonacciFan.prototype.serialize = function() {
   var json = anychart.annotationsModule.FibonacciFan.base(this, 'serialize');
-
   json['timeLevels'] = this.timeLevels();
-
   return json;
 };
 
 
 /** @inheritDoc */
 anychart.annotationsModule.FibonacciFan.prototype.setupByJSON = function(config, opt_default) {
-
-  this.timeLevels(config['timeLevels']);
-
   anychart.annotationsModule.FibonacciFan.base(this, 'setupByJSON', config, opt_default);
+  this.timeLevels(config['timeLevels']);
 };
 
 

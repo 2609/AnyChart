@@ -3150,29 +3150,21 @@ anychart.pyramidFunnelModule.Chart.prototype.serialize = function() {
   json['type'] = this.getType();
   json['data'] = this.data().serialize();
 
-  //json['labels'] = this.labels().serialize();
-  //json['hoverLabels'] = this.hoverLabels().getChangedSettings();
-  //json['selectLabels'] = this.selectLabels().getChangedSettings();
-  //if (goog.isNull(json['hoverLabels']['enabled'])) {
-  //  delete json['hoverLabels']['enabled'];
-  //}
-  //if (goog.isNull(json['selectLabels']['enabled'])) {
-  //  delete json['selectLabels']['enabled'];
-  //}
-
   json['palette'] = this.palette().serialize();
   json['hatchFillPalette'] = this.hatchFillPalette().serialize();
   json['markerPalette'] = this.markerPalette().serialize();
   json['tooltip'] = this.tooltip().serialize();
 
-  //json['markers'] = this.markers().serialize();
-  //json['hoverMarkers'] = this.hoverMarkers().serialize();
-  //json['selectMarkers'] = this.selectMarkers().serialize();
-
   anychart.core.settings.serialize(this, anychart.pyramidFunnelModule.Chart.PROPERTY_DESCRIPTORS, json);
   json['normal'] = this.normal_.serialize();
   json['hovered'] = this.hovered_.serialize();
   json['selected'] = this.selected_.serialize();
+  if (goog.isNull(json['hovered']['labels']['enabled'])) {
+    delete json['hovered']['labels']['enabled'];
+  }
+  if (goog.isNull(json['selected']['labels']['enabled'])) {
+    delete json['selected']['labels']['enabled'];
+  }
 
   return {'chart': json};
 };
@@ -3412,12 +3404,7 @@ anychart.pyramidFunnelModule.Chart.LabelsDomain.prototype.getLabelBounds_ = func
   proto['markerPalette'] = proto.markerPalette;
 
   proto['labels'] = proto.labels;
-  //proto['hoverLabels'] = proto.hoverLabels;
-  //proto['selectLabels'] = proto.selectLabels;
-
   proto['markers'] = proto.markers;
-  //proto['hoverMarkers'] = proto.hoverMarkers;
-  //proto['selectMarkers'] = proto.selectMarkers;
 
   proto['hover'] = proto.hover;
   proto['unhover'] = proto.unhover;

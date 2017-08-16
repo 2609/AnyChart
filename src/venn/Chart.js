@@ -308,20 +308,6 @@ anychart.vennModule.Chart.prototype.getIterator = function() {
 };
 
 
-/** @inheritDoc */
-/*anychart.vennModule.Chart.prototype.resolveOption = function(name, point, normalizer, opt_seriesName) {
-  var iterator = this.getIterator();
-  var source = this;
-  if (iterator.meta('isIntersection'))
-    source = this.intersections();
-  //TODO (A.Kudryavtsev): Rework it to resolution chain.
-  var val = point.get(name) || source.getOwnOption(name) || this.getOwnOption(name) || source.getThemeOption(name) || this.getThemeOption(name);
-  if (goog.isDef(val))
-    val = normalizer(val);
-  return val;
-};*/
-
-
 /**
  * Returns proper settings due to the state if point settings are supported by the IShapeManagerUser.
  * @param {Array.<string>} names
@@ -513,69 +499,6 @@ anychart.vennModule.Chart.prototype.paletteInvalidated_ = function(event) {
 //endregion
 //region -- Labels
 /**
- * Getter/setter for labels.
- * @param {(Object|boolean|null)=} opt_value .
- * @return {!(anychart.core.ui.LabelsFactory|anychart.vennModule.Chart)} .
- */
-/*anychart.vennModule.Chart.prototype.labels = function(opt_value) {
-  if (!this.labels_) {
-    this.labels_ = new anychart.core.ui.LabelsFactory();
-
-    this.labels_.listenSignals(this.labelsInvalidated_, this);
-    this.labels_.setParentEventTarget(this);
-  }
-
-  if (goog.isDef(opt_value)) {
-    if (goog.isObject(opt_value) && !('enabled' in opt_value))
-      opt_value['enabled'] = true;
-    this.labels_.setup(opt_value);
-    return this;
-  }
-  return this.labels_;
-};*/
-
-
-/**
- * Getter/setter for series hover data labels.
- * @param {(Object|boolean|null)=} opt_value chart hover data labels settings.
- * @return {!(anychart.core.ui.LabelsFactory|anychart.vennModule.Chart)} Labels instance or itself for chaining call.
- */
-/*anychart.vennModule.Chart.prototype.hoverLabels = function(opt_value) {
-  if (!this.hoverLabels_) {
-    this.hoverLabels_ = new anychart.core.ui.LabelsFactory();
-  }
-
-  if (goog.isDef(opt_value)) {
-    if (goog.isObject(opt_value) && !('enabled' in opt_value))
-      opt_value['enabled'] = true;
-    this.hoverLabels_.setup(opt_value);
-    return this;
-  }
-  return this.hoverLabels_;
-};*/
-
-
-/**
- * Getter/setter for series select data labels.
- * @param {(Object|boolean|null)=} opt_value chart hover data labels settings.
- * @return {!(anychart.core.ui.LabelsFactory|anychart.vennModule.Chart)} Labels instance or itself for chaining call.
- */
-/*anychart.vennModule.Chart.prototype.selectLabels = function(opt_value) {
-  if (!this.selectLabels_) {
-    this.selectLabels_ = new anychart.core.ui.LabelsFactory();
-  }
-
-  if (goog.isDef(opt_value)) {
-    if (goog.isObject(opt_value) && !('enabled' in opt_value))
-      opt_value['enabled'] = true;
-    this.selectLabels_.setup(opt_value);
-    return this;
-  }
-  return this.selectLabels_;
-};*/
-
-
-/**
  * Internal label invalidation handler.
  * @param {anychart.SignalEvent} event Event object.
  * @private
@@ -589,71 +512,6 @@ anychart.vennModule.Chart.prototype.labelsInvalidated_ = function(event) {
 
 //endregion
 //region -- Markers
-/**
- * Getter/setter for markers.
- * @param {(Object|boolean|null|string)=} opt_value Series data markers settings.
- * @return {!(anychart.core.ui.MarkersFactory|anychart.vennModule.Chart)} Markers instance or itself for chaining call.
- */
-/*anychart.vennModule.Chart.prototype.markers = function(opt_value) {
-  if (!this.markers_) {
-    this.markers_ = new anychart.core.ui.MarkersFactory();
-    this.markers_.setParentEventTarget(this);
-    this.markers_.listenSignals(this.markersInvalidated_, this);
-  }
-
-  if (goog.isDef(opt_value)) {
-    if (goog.isObject(opt_value) && !('enabled' in opt_value))
-      opt_value['enabled'] = true;
-    this.markers_.setup(opt_value);
-    return this;
-  }
-  return this.markers_;
-};*/
-
-
-/**
- * Getter/setter for hoverMarkers.
- * @param {(Object|boolean|null|string)=} opt_value Series data markers settings.
- * @return {!(anychart.core.ui.MarkersFactory|anychart.vennModule.Chart)} Markers instance or itself for chaining call.
- */
-/*anychart.vennModule.Chart.prototype.hoverMarkers = function(opt_value) {
-  if (!this.hoverMarkers_) {
-    this.hoverMarkers_ = new anychart.core.ui.MarkersFactory();
-    this.hoverMarkers_.markConsistent(anychart.ConsistencyState.ALL);
-    // don't listen to it, for it will be reapplied at the next hover
-  }
-
-  if (goog.isDef(opt_value)) {
-    if (goog.isObject(opt_value) && !('enabled' in opt_value))
-      opt_value['enabled'] = true;
-    this.hoverMarkers_.setup(opt_value);
-    return this;
-  }
-  return this.hoverMarkers_;
-};*/
-
-
-/**
- * @param {(Object|boolean|null|string)=} opt_value Series data markers settings.
- * @return {!(anychart.core.ui.MarkersFactory|anychart.vennModule.Chart)} Markers instance or itself for chaining call.
- */
-/*anychart.vennModule.Chart.prototype.selectMarkers = function(opt_value) {
-  if (!this.selectMarkers_) {
-    this.selectMarkers_ = new anychart.core.ui.MarkersFactory();
-    this.selectMarkers_.markConsistent(anychart.ConsistencyState.ALL);
-    // don't listen to it, for it will be reapplied at the next hover
-  }
-
-  if (goog.isDef(opt_value)) {
-    if (goog.isObject(opt_value) && !('enabled' in opt_value))
-      opt_value['enabled'] = true;
-    this.selectMarkers_.setup(opt_value);
-    return this;
-  }
-  return this.selectMarkers_;
-};*/
-
-
 /**
  * Listener for markers invalidation.
  * @param {anychart.SignalEvent} event Invalidation event.

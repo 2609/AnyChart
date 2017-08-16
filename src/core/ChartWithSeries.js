@@ -759,68 +759,6 @@ anychart.core.ChartWithSeries.prototype.hatchFillPaletteInvalidated_ = function(
 //
 //----------------------------------------------------------------------------------------------------------------------
 /**
- * Getter/setter for current series data labels.
- * @param {(Object|boolean|null)=} opt_value Series data labels settings.
- * @return {!(anychart.core.ui.LabelsFactory|anychart.core.ChartWithSeries)} Labels instance or itself for chaining call.
- */
-/*anychart.core.ChartWithSeries.prototype.labels = function(opt_value) {
-  if (!this.labels_) {
-    this.labels_ = new anychart.core.ui.LabelsFactory();
-    this.labels_.markConsistent(anychart.ConsistencyState.ALL);
-    this.labels_.listenSignals(this.labelsInvalidated_, this);
-  }
-
-  if (goog.isDef(opt_value)) {
-    if (goog.isObject(opt_value) && !('enabled' in opt_value))
-      opt_value['enabled'] = true;
-    this.labels_.setup(opt_value);
-    return this;
-  }
-  return this.labels_;
-};*/
-
-
-/**
- * Gets or sets series hover data labels.
- * @param {(Object|boolean|null)=} opt_value Series data labels settings.
- * @return {!(anychart.core.ui.LabelsFactory|anychart.core.ChartWithSeries)} Labels instance or itself for chaining call.
- */
-/*anychart.core.ChartWithSeries.prototype.hoverLabels = function(opt_value) {
-  if (!this.hoverLabels_) {
-    this.hoverLabels_ = new anychart.core.ui.LabelsFactory();
-  }
-
-  if (goog.isDef(opt_value)) {
-    if (goog.isObject(opt_value) && !('enabled' in opt_value))
-      opt_value['enabled'] = true;
-    this.hoverLabels_.setup(opt_value);
-    return this;
-  }
-  return this.hoverLabels_;
-};*/
-
-
-/**
- * Gets or sets series select data labels.
- * @param {(Object|boolean|null)=} opt_value Series data labels settings.
- * @return {!(anychart.core.ui.LabelsFactory|anychart.core.ChartWithSeries)} Labels instance or itself for chaining call.
- */
-/*anychart.core.ChartWithSeries.prototype.selectLabels = function(opt_value) {
-  if (!this.selectLabels_) {
-    this.selectLabels_ = new anychart.core.ui.LabelsFactory();
-  }
-
-  if (goog.isDef(opt_value)) {
-    if (goog.isObject(opt_value) && !('enabled' in opt_value))
-      opt_value['enabled'] = true;
-    this.selectLabels_.setup(opt_value);
-    return this;
-  }
-  return this.selectLabels_;
-};*/
-
-
-/**
  * Getter/setter for labels.
  * @param {(Object|boolean|null)=} opt_value .
  * @return {anychart.core.ui.LabelsFactory|anychart.core.ChartWithSeries} .
@@ -1301,8 +1239,6 @@ anychart.core.ChartWithSeries.prototype.disposeInternal = function() {
   proto['normal'] = proto.normal;
   proto['hovered'] = proto.hovered;
   proto['selected'] = proto.selected;
-  //proto['hoverLabels'] = proto.hoverLabels;
-  //proto['selectLabels'] = proto.selectLabels;
   proto['isVertical'] = proto.isVertical;
 })();
 

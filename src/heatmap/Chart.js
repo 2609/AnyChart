@@ -115,18 +115,6 @@ anychart.heatmapModule.Chart.PROXY_METHODS = ([
   'normal',
   'hovered',
   'selected'
-  //'fill',
-  //'hoverFill',
-  //'selectFill',
-  //'stroke',
-  //'hoverStroke',
-  //'selectStroke',
-  //'hatchFill',
-  //'hoverHatchFill',
-  //'selectHatchFill',
-  //'markers',
-  //'hoverMarkers',
-  //'selectMarkers'
 ]);
 
 

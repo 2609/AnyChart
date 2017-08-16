@@ -184,13 +184,12 @@ anychart.annotationsModule.Triangle.prototype.serialize = function() {
 
 /** @inheritDoc */
 anychart.annotationsModule.Triangle.prototype.setupByJSON = function(config, opt_default) {
+  anychart.annotationsModule.Triangle.base(this, 'setupByJSON', config, opt_default);
 
   anychart.core.settings.deserialize(this, anychart.annotationsModule.X_ANCHOR_DESCRIPTORS, config);
   anychart.core.settings.deserialize(this, anychart.annotationsModule.VALUE_ANCHOR_DESCRIPTORS, config);
   anychart.core.settings.deserialize(this, anychart.annotationsModule.SECOND_ANCHOR_POINT_DESCRIPTORS, config);
   anychart.core.settings.deserialize(this, anychart.annotationsModule.THIRD_ANCHOR_POINT_DESCRIPTORS, config);
-
-  anychart.annotationsModule.Triangle.base(this, 'setupByJSON', config, opt_default);
 };
 
 

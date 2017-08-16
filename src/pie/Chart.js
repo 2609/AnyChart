@@ -4065,11 +4065,6 @@ anychart.pieModule.Chart.prototype.serialize = function() {
   var json = anychart.pieModule.Chart.base(this, 'serialize');
   json['type'] = this.getType();
   json['data'] = this.data().serialize();
-  //json['labels'] = this.labels().serialize();
-  //json['hoverLabels'] = this.hoverLabels().getChangedSettings();
-  //if (goog.isNull(json['hoverLabels']['enabled'])) {
-  //  delete json['hoverLabels']['enabled'];
-  //}
   json['palette'] = this.palette().serialize();
   json['hatchFillPalette'] = this.hatchFillPalette().serialize();
   json['tooltip'] = this.tooltip().serialize();
@@ -4077,6 +4072,9 @@ anychart.pieModule.Chart.prototype.serialize = function() {
   anychart.core.settings.serialize(this, anychart.pieModule.Chart.PROPERTY_DESCRIPTORS, json, 'Pie');
   json['normal'] = this.normal_.serialize();
   json['hovered'] = this.hovered_.serialize();
+  if (goog.isNull(json['hovered']['labels']['enabled'])) {
+    delete json['hovered']['labels']['enabled'];
+  }
 
   // The values of group() function can be function or null or 'none'. So we don't serialize it anyway.
   //if (goog.isFunction(this['group'])) {
@@ -4530,18 +4528,11 @@ anychart.pieModule.Chart.prototype.disposeInternal = function() {
   proto['group'] = proto.group;//doc|ex|non-tr
   proto['data'] = proto.data;//doc|ex|
   proto['labels'] = proto.labels;//doc|ex
-  //proto['hoverLabels'] = proto.hoverLabels;//doc|ex
   proto['getCenterPoint'] = proto.getCenterPoint;//doc|ex
   proto['getPixelRadius'] = proto.getPixelRadius;//doc|need-ex
   proto['getPixelInnerRadius'] = proto.getPixelInnerRadius;//doc|need-ex
   proto['getPixelExplode'] = proto.getPixelExplode;
   proto['palette'] = proto.palette;//doc|ex
-  //proto['fill'] = proto.fill;//doc|ex
-  //proto['stroke'] = proto.stroke;//doc|ex
-  //proto['hatchFill'] = proto.hatchFill;//doc|ex
-  //proto['hoverFill'] = proto.hoverFill;//doc|ex
-  //proto['hoverStroke'] = proto.hoverStroke;//doc|ex
-  //proto['hoverHatchFill'] = proto.hoverHatchFill;//doc|ex
   proto['explodeSlice'] = proto.explodeSlice;//doc|ex
   proto['explodeSlices'] = proto.explodeSlices;
   proto['tooltip'] = proto.tooltip;//doc|ex

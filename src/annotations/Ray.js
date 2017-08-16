@@ -168,12 +168,11 @@ anychart.annotationsModule.Ray.prototype.serialize = function() {
 
 /** @inheritDoc */
 anychart.annotationsModule.Ray.prototype.setupByJSON = function(config, opt_default) {
+  anychart.annotationsModule.Ray.base(this, 'setupByJSON', config, opt_default);
 
   anychart.core.settings.deserialize(this, anychart.annotationsModule.X_ANCHOR_DESCRIPTORS, config);
   anychart.core.settings.deserialize(this, anychart.annotationsModule.VALUE_ANCHOR_DESCRIPTORS, config);
   anychart.core.settings.deserialize(this, anychart.annotationsModule.SECOND_ANCHOR_POINT_DESCRIPTORS, config);
-
-  anychart.annotationsModule.Ray.base(this, 'setupByJSON', config, opt_default);
 };
 
 

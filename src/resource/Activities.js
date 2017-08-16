@@ -580,7 +580,6 @@ anychart.resourceModule.Activities.prototype.serialize = function() {
   json['normal'] = this.normal_.serialize();
   json['hovered'] = this.hovered_.serialize();
   json['selected'] = this.selected_.serialize();
-  //json['labels'] = this.labels().serialize();
   return json;
 };
 
@@ -619,9 +618,6 @@ anychart.resourceModule.Activities.prototype.disposeInternal = function() {
 (function() {
   var proto = anychart.resourceModule.Activities.prototype;
   //proto['color'] = proto.color;
-  //proto['stroke'] = proto.stroke;
-  //proto['fill'] = proto.fill;
-  //proto['hatchFill'] = proto.hatchFill;
   proto['normal'] = proto.normal;
   proto['hovered'] = proto.hovered;
   proto['selected'] = proto.selected;

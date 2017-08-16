@@ -121,19 +121,15 @@ anychart.annotationsModule.HorizontalLine.prototype.colorize = function(state) {
 /** @inheritDoc */
 anychart.annotationsModule.HorizontalLine.prototype.serialize = function() {
   var json = anychart.annotationsModule.HorizontalLine.base(this, 'serialize');
-
   anychart.core.settings.serialize(this, anychart.annotationsModule.VALUE_ANCHOR_DESCRIPTORS, json, 'Annotation');
-
   return json;
 };
 
 
 /** @inheritDoc */
 anychart.annotationsModule.HorizontalLine.prototype.setupByJSON = function(config, opt_default) {
-
-  anychart.core.settings.deserialize(this, anychart.annotationsModule.VALUE_ANCHOR_DESCRIPTORS, config);
-
   anychart.annotationsModule.HorizontalLine.base(this, 'setupByJSON', config, opt_default);
+  anychart.core.settings.deserialize(this, anychart.annotationsModule.VALUE_ANCHOR_DESCRIPTORS, config);
 };
 
 
