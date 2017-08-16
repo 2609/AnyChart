@@ -50,7 +50,6 @@ goog.mixin(goog.global['anychart']['themes']['defaultTheme']['chart'], {
           'enabled': null
         }
       },
-
       'color': '#e06666',
       'allowEdit': true,
       'hoverGap': 5
@@ -108,9 +107,11 @@ goog.mixin(goog.global['anychart']['themes']['defaultTheme']['chart'], {
         2.618,
         4.236
       ],
-      'labels': {
-        'position': 'left-center',
-        'anchor': 'right-center'
+      'normal': {
+        'labels': {
+          'position': 'left-center',
+          'anchor': 'right-center'
+        }
       }
     },
     'fibonacciTimezones': {
@@ -157,7 +158,9 @@ goog.mixin(goog.global['anychart']['themes']['defaultTheme']['chart'], {
     },
     'marker': {
       'markerType': 'arrow-up',
-      'size': 20,
+      'normal': {
+        'size': 20
+      },
       'anchor': 'center-top',
       'offsetX': 0,
       'offsetY': 0

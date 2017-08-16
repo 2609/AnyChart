@@ -1256,22 +1256,10 @@ anychart.annotationsModule.Base.prototype.hasOwnOption = function(name) {
  */
 anychart.annotationsModule.Base.prototype.setDefaultSettings = function(value) {
   this.themeSettings = value;
-  this.normal_.setupByJSON(this.themeSettings, true);
-  if (this.themeSettings['normal']) {
-    this.normal_.setupByJSON(this.themeSettings['normal'], true);
-  }
-  if (this.themeSettings['hovered']) {
-    this.hovered_.setupByJSON(this.themeSettings['hovered'], true);
-  }
-  if (this.themeSettings['selected']) {
-    this.selected_.setupByJSON(this.themeSettings['selected'], true);
-  }
-  if (value['normal'])
-    this.normal().markers().setup(value['normal']['markers']);
-  if (value['hovered'])
-    this.hovered().markers().setup(value['hovered']['markers']);
-  if (value['selected'])
-    this.selected().markers().setup(value['selected']['markers']);
+  this.normal_.setupInternal(true, this.themeSettings);
+  this.normal_.setupInternal(true, this.themeSettings['normal']);
+  this.hovered_.setupInternal(true, this.themeSettings['hovered']);
+  this.selected_.setupInternal(true, this.themeSettings['selected']);
 };
 
 
@@ -1282,9 +1270,6 @@ anychart.annotationsModule.Base.prototype.serialize = function() {
   json['type'] = this.getType();
 
   anychart.core.settings.serialize(this, anychart.annotationsModule.BASE_DESCRIPTORS, json, 'Annotation');
-  //json['markers'] = this.markers().serialize();
-  //json['hoverMarkers'] = this.hoverMarkers().serialize();
-  //json['selectMarkers'] = this.selectMarkers().serialize();
 
   json['normal'] = this.normal_.serialize();
   json['hovered'] = this.hovered_.serialize();
@@ -1296,23 +1281,13 @@ anychart.annotationsModule.Base.prototype.serialize = function() {
 
 /** @inheritDoc */
 anychart.annotationsModule.Base.prototype.setupByJSON = function(config, opt_default) {
-  anychart.core.settings.deserialize(this, anychart.annotationsModule.BASE_DESCRIPTORS, config);
-  //this.markers().setup(config['markers']);
-  //this.hoverMarkers().setup(config['hoverMarkers']);
-  //this.selectMarkers().setup(config['selectMarkers']);
-
-  this.normal_.setupByJSON(config, opt_default);
-  if (config['normal']) {
-    this.normal_.setupByJSON(config['normal'], opt_default);
-  }
-  if (config['hovered']) {
-    this.hovered_.setupByJSON(config['hovered'], opt_default);
-  }
-  if (config['selected']) {
-    this.selected_.setupByJSON(config['selected'], opt_default);
-  }
-
   anychart.annotationsModule.Base.base(this, 'setupByJSON', config, opt_default);
+  anychart.core.settings.deserialize(this, anychart.annotationsModule.BASE_DESCRIPTORS, config);
+
+  this.normal_.setupInternal(!!opt_default, config);
+  this.normal_.setupInternal(!!opt_default, config['normal']);
+  this.hovered_.setupInternal(!!opt_default, config['hovered']);
+  this.selected_.setupInternal(!!opt_default, config['selected']);
 };
 
 

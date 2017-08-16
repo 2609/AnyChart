@@ -717,16 +717,10 @@ anychart.core.series.Base.prototype.applyConfig = function(config, opt_reapplyCl
   this.recreateShapeManager();
 
   this.themeSettings = this.plot.defaultSeriesSettings()[anychart.utils.toCamelCase(this.type_)] || {};
-  this.normal_.setupByJSON(this.themeSettings, true);
-  if (this.themeSettings['normal']) {
-    this.normal_.setupByJSON(this.themeSettings['normal'], true);
-  }
-  if (this.themeSettings['hovered']) {
-    this.hovered_.setupByJSON(this.themeSettings['hovered'], true);
-  }
-  if (this.themeSettings['selected']) {
-    this.selected_.setupByJSON(this.themeSettings['selected'], true);
-  }
+  this.normal_.setupInternal(true, this.themeSettings);
+  this.normal_.setupInternal(true, this.themeSettings['normal']);
+  this.hovered_.setupInternal(true, this.themeSettings['hovered']);
+  this.selected_.setupInternal(true, this.themeSettings['selected']);
 
   if (this.supportsOutliers()) {
     this.indexToMarkerIndexes_ = {};
@@ -769,34 +763,6 @@ anychart.core.series.Base.prototype.recreateShapeManager = function() {
  * @param {boolean=} opt_reapplyClip
  */
 anychart.core.series.Base.prototype.applyDefaultsToElements = function(defaults, opt_resetLegendItem, opt_default, opt_reapplyClip) {
-  var normal = defaults['normal'];
-  var hovered = defaults['hovered'];
-  var selected = defaults['selected'];
-  if (normal) {
-    if (this.supportsLabels())
-      this.normal_.labels().setupInternal(!!opt_default, normal['labels']);
-    if (this.supportsMarkers())
-      this.normal_.markers().setup(normal['markers']);
-    if (this.supportsOutliers())
-      this.normal_.outlierMarkers().setup(normal['outlierMarkers']);
-  }
-  if (hovered) {
-    if (this.supportsLabels())
-      this.hovered_.labels().setupInternal(!!opt_default, hovered['labels']);
-    if (this.supportsMarkers())
-      this.hovered_.markers().setup(hovered['markers']);
-    if (this.supportsOutliers())
-      this.hovered_.outlierMarkers().setup(hovered['outlierMarkers']);
-  }
-  if (selected) {
-    if (this.supportsLabels())
-      this.selected_.labels().setupInternal(!!opt_default, selected['labels']);
-    if (this.supportsMarkers())
-      this.selected_.markers().setup(selected['markers']);
-    if (this.supportsOutliers())
-      this.selected_.outlierMarkers().setup(selected['outlierMarkers']);
-  }
-
   if (this.supportsError())
     this.error().setup(defaults['error']);
 
@@ -1101,15 +1067,6 @@ anychart.core.series.Base.prototype.isDiscreteBased = function() {
  */
 anychart.core.series.Base.prototype.isLineBased = function() {
   return this.check(anychart.core.drawers.Capabilities.IS_LINE_BASED);
-};
-
-
-/**
- * Tester if the series is scroller series.
- * @return {boolean}
- */
-anychart.core.series.Base.prototype.isScrollerSeries = function() {
-  return false;
 };
 
 
@@ -2075,6 +2032,26 @@ anychart.core.series.Base.prototype.getOption = function(name) {
 
 
 /**
+ * @param {anychart.core.StateSettings} stateObject Current state object.
+ * @param {Function} normalizer
+ * @param {Array.<string>} names
+ * @param {string} name
+ * @return {anychart.core.StateSettings}
+ */
+anychart.core.series.Base.prototype.resolveStateValue = function(stateObject, normalizer, names, name) {
+  var val = stateObject.ownSettings[name];
+  if (!goog.isDefAndNotNull(val)) {
+    val = stateObject.themeSettings[name];
+    if (!goog.isDefAndNotNull(val))
+      val = this.autoSettings[name];
+    if (goog.isDef(val))
+      val = normalizer(val);
+  }
+  return val;
+};
+
+
+/**
  * Returns proper settings due to the state if point settings are supported by the series.
  * @param {Array.<string>} names
  * @param {number} state
@@ -2108,18 +2085,7 @@ anychart.core.series.Base.prototype.resolveOption = function(names, state, point
       if (goog.isDef(val))
         return normalizer(val);
     }
-    if (names.length == 1 && (names[0].indexOf('select') != -1) && this.isScrollerSeries()) {
-      name = anychart.utils.decapitalize(names[0].replace('select', ''));
-      stateObject = this.selected_;
-    }
-    val = stateObject.ownSettings[name];
-    if (!goog.isDefAndNotNull(val)) {
-      val = stateObject.themeSettings[name];
-      if (!goog.isDefAndNotNull(val))
-        val = this.autoSettings[name];
-      if (goog.isDef(val))
-        val = normalizer(val);
-    }
+    val = this.resolveStateValue(stateObject, normalizer, names, name);
   }
   return val;
 };
@@ -4594,22 +4560,10 @@ anychart.core.series.Base.prototype.setupByJSON = function(config, opt_default) 
   this.clip(config['clip']);
   this.a11y(config['a11y']);
 
-  /*if (this.supportsLabels()) {
-    this.labels().setupInternal(!!opt_default, config['labels']);
-    this.hoverLabels().setupInternal(!!opt_default, config['hoverLabels']);
-    this.selectLabels().setupInternal(!!opt_default, config['selectLabels']);
-  }*/
-
-  this.normal_.setupByJSON(config, opt_default);
-  if (config['normal']) {
-    this.normal_.setupByJSON(config['normal'], opt_default);
-  }
-  if (config['hovered']) {
-    this.hovered_.setupByJSON(config['hovered'], opt_default);
-  }
-  if (config['selected']) {
-    this.selected_.setupByJSON(config['selected'], opt_default);
-  }
+  this.normal_.setupInternal(!!opt_default, config);
+  this.normal_.setupInternal(!!opt_default, config['normal']);
+  this.hovered_.setupInternal(!!opt_default, config['hovered']);
+  this.selected_.setupInternal(!!opt_default, config['selected']);
   anychart.core.settings.deserialize(this, anychart.core.series.Base.PROPERTY_DESCRIPTORS, config);
 
   this.applyDefaultsToElements(config, false, opt_default);

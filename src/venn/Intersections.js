@@ -321,14 +321,6 @@ anychart.vennModule.Intersections.prototype.serialize = function() {
   json['hovered'] = this.hovered_.serialize();
   json['selected'] = this.selected_.serialize();
 
-  //json['labels'] = this.labels().serialize();
-  //json['hoverLabels'] = this.hoverLabels().serialize();
-  //json['selectLabels'] = this.selectLabels().serialize();
-
-  //json['markers'] = this.markers().serialize();
-  //json['hoverMarkers'] = this.hoverMarkers().serialize();
-  //json['selectMarkers'] = this.selectMarkers().serialize();
-
   json['tooltip'] = this.tooltip().serialize();
 
   return json;
@@ -339,24 +331,10 @@ anychart.vennModule.Intersections.prototype.serialize = function() {
 anychart.vennModule.Intersections.prototype.setupByJSON = function(config, opt_default) {
   anychart.vennModule.Intersections.base(this, 'setupByJSON', config, opt_default);
 
-  this.normal_.setupByJSON(config, opt_default);
-  if (config['normal']) {
-    this.normal_.setupByJSON(config['normal'], opt_default);
-  }
-  if (config['hovered']) {
-    this.hovered_.setupByJSON(config['hovered'], opt_default);
-  }
-  if (config['selected']) {
-    this.selected_.setupByJSON(config['selected'], opt_default);
-  }
-
-  /*this.labels().setupInternal(!!opt_default, config['labels']);
-  this.hoverLabels().setupInternal(!!opt_default, config['hoverLabels']);
-  this.selectLabels().setupInternal(!!opt_default, config['selectLabels']);
-
-  this.markers().setupInternal(!!opt_default, config['markers']);
-  this.hoverMarkers().setupInternal(!!opt_default, config['hoverMarkers']);
-  this.selectMarkers().setupInternal(!!opt_default, config['selectMarkers']);*/
+  this.normal_.setupInternal(!!opt_default, config);
+  this.normal_.setupInternal(!!opt_default, config['normal']);
+  this.hovered_.setupInternal(!!opt_default, config['hovered']);
+  this.selected_.setupInternal(!!opt_default, config['selected']);
 
   this.tooltip().setupInternal(!!opt_default, config['tooltip']);
 };

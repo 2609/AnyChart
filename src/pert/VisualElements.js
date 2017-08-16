@@ -466,16 +466,10 @@ anychart.pertModule.VisualElements.prototype.setupByJSON = function(config, opt_
 
   anychart.core.settings.deserialize(this, anychart.pertModule.VisualElements.PROPERTY_DESCRIPTORS, config);
 
-  this.normal_.setupByJSON(config, opt_default);
-  if (config['normal']) {
-    this.normal_.setupByJSON(config['normal'], opt_default);
-  }
-  if (config['hovered']) {
-    this.hovered_.setupByJSON(config['hovered'], opt_default);
-  }
-  if (config['selected']) {
-    this.selected_.setupByJSON(config['selected'], opt_default);
-  }
+  this.normal_.setupInternal(!!opt_default, config);
+  this.normal_.setupInternal(!!opt_default, config['normal']);
+  this.hovered_.setupInternal(!!opt_default, config['hovered']);
+  this.selected_.setupInternal(!!opt_default, config['selected']);
 
   if ('tooltip' in config)
     this.tooltip().setupInternal(!!opt_default, config['tooltip']);

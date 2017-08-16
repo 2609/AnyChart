@@ -4108,23 +4108,9 @@ anychart.pieModule.Chart.prototype.setupByJSON = function(config, opt_default) {
     this.tooltip().setupInternal(!!opt_default, config['tooltip']);
 
   anychart.core.settings.deserialize(this, anychart.pieModule.Chart.PROPERTY_DESCRIPTORS, config);
-  // try to setup aliases
-  this.normal_.setupByJSON(config, opt_default);
-  if (config['normal']) {
-    this.normal_.setupByJSON(config['normal'], opt_default);
-  }
-  if (config['hovered']) {
-    this.hovered_.setupByJSON(config['hovered'], opt_default);
-  }
-
-  //this.labels().setupInternal(!!opt_default, config['labels']);
-  //this.hoverLabels().setupInternal(!!opt_default, config['hoverLabels']);
-  //this.fill(config['fill']);
-  //this.hoverFill(config['hoverFill']);
-  //this.stroke(config['stroke']);
-  //this.hoverStroke(config['hoverStroke']);
-  //this.hatchFill(config['hatchFill']);
-  //this.hoverHatchFill(config['hoverHatchFill']);
+  this.normal_.setupInternal(!!opt_default, config);
+  this.normal_.setupInternal(!!opt_default, config['normal']);
+  this.hovered_.setupInternal(!!opt_default, config['hovered']);
 };
 
 

@@ -3186,29 +3186,14 @@ anychart.pyramidFunnelModule.Chart.prototype.setupByJSON = function(config, opt_
 
   anychart.core.settings.deserialize(this, anychart.pyramidFunnelModule.Chart.PROPERTY_DESCRIPTORS, config);
 
-  // try to setup aliases
-  this.normal_.setupByJSON(config, opt_default);
-  if (config['normal']) {
-    this.normal_.setupByJSON(config['normal'], opt_default);
-  }
-  if (config['hovered']) {
-    this.hovered_.setupByJSON(config['hovered'], opt_default);
-  }
-  if (config['selected']) {
-    this.selected_.setupByJSON(config['selected'], opt_default);
-  }
+  this.normal_.setupInternal(!!opt_default, config);
+  this.normal_.setupInternal(!!opt_default, config['normal']);
+  this.hovered_.setupInternal(!!opt_default, config['hovered']);
+  this.selected_.setupInternal(!!opt_default, config['selected']);
   this.data(config['data']);
 
   this.hatchFillPalette(config['hatchFillPalette']);
   this.markerPalette(config['markerPalette']);
-
-  //this.labels().setupInternal(!!opt_default, config['labels']);
-  //this.hoverLabels().setupInternal(!!opt_default, config['hoverLabels']);
-  //this.selectLabels().setupInternal(!!opt_default, config['selectLabels']);
-
-  //this.markers().setup(config['markers']);
-  //this.hoverMarkers().setup(config['hoverMarkers']);
-  //this.selectMarkers().setup(config['selectMarkers']);
 
   this.palette(config['palette']);
 

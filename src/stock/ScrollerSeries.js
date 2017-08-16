@@ -77,8 +77,13 @@ anychart.stockModule.ScrollerSeries.prototype.applyConfig = function(config, opt
 
 
 /** @inheritDoc */
-anychart.stockModule.ScrollerSeries.prototype.isScrollerSeries = function() {
-  return true;
+anychart.stockModule.ScrollerSeries.prototype.resolveStateValue = function(stateObject, normalizer, names, name) {
+  if (names.length == 1 && (names[0].indexOf('select') != -1)) {
+    name = anychart.utils.decapitalize(names[0].replace('select', ''));
+    var newStateObject = this.selected_;
+    return anychart.stockModule.ScrollerSeries.base(this, 'resolveStateValue', newStateObject, normalizer, names, name);
+  }
+  return anychart.stockModule.ScrollerSeries.base(this, 'resolveStateValue', stateObject, normalizer, names, name);
 };
 
 

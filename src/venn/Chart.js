@@ -1770,11 +1770,7 @@ anychart.vennModule.Chart.prototype.drawMarker_ = function(state, iterator) {
  * @param {!Object} config
  */
 anychart.vennModule.Chart.prototype.setThemeSettings = function(config) {
-  for (var name in anychart.vennModule.Chart.SIMPLE_PROPS_DESCRIPTORS) {
-    var val = config[name];
-    if (goog.isDef(val))
-      this.themeSettings[name] = val;
-  }
+  anychart.core.settings.copy(this.themeSettings, anychart.vennModule.Chart.PROPERTY_DESCRIPTORS, config);
 };
 
 
@@ -1790,13 +1786,6 @@ anychart.vennModule.Chart.prototype.serialize = function() {
   json['normal'] = this.normal().serialize();
   json['hovered'] = this.hovered().serialize();
   json['selected'] = this.selected().serialize();
-  //json['labels'] = this.labels().serialize();
-  //json['selectLabels'] = this.selectLabels().serialize();
-  //json['hoverLabels'] = this.hoverLabels().serialize();
-
-  //json['markers'] = this.markers().serialize();
-  //json['selectMarkers'] = this.selectMarkers().serialize();
-  //json['hoverMarkers'] = this.hoverMarkers().serialize();
 
   json['palette'] = this.palette().serialize();
   json['hatchFillPalette'] = this.hatchFillPalette().serialize();
@@ -1811,35 +1800,21 @@ anychart.vennModule.Chart.prototype.serialize = function() {
 /** @inheritDoc */
 anychart.vennModule.Chart.prototype.setupByJSON = function(config, opt_default) {
   anychart.vennModule.Chart.base(this, 'setupByJSON', config, opt_default);
-  //if (opt_default)
-  //  this.themeSettings = config;
-  //else
-  anychart.core.settings.deserialize(this, anychart.vennModule.Chart.SIMPLE_PROPS_DESCRIPTORS, config);
+  if (opt_default)
+    this.setThemeSettings(config);
+  else
+    anychart.core.settings.deserialize(this, anychart.vennModule.Chart.SIMPLE_PROPS_DESCRIPTORS, config);
 
   this.data(config['data']);
 
-  this.normal_.setupByJSON(config, opt_default);
-  if (config['normal']) {
-    this.normal_.setupByJSON(config['normal'], opt_default);
-  }
-  if (config['hovered']) {
-    this.hovered_.setupByJSON(config['hovered'], opt_default);
-  }
-  if (config['selected']) {
-    this.selected_.setupByJSON(config['selected'], opt_default);
-  }
-
-  //this.labels().setupInternal(!!opt_default, config['labels']);
-  //this.hoverLabels().setupInternal(!!opt_default, config['hoverLabels']);
-  //this.selectLabels().setupInternal(!!opt_default, config['selectLabels']);
+  this.normal_.setupInternal(!!opt_default, config);
+  this.normal_.setupInternal(!!opt_default, config['normal']);
+  this.hovered_.setupInternal(!!opt_default, config['hovered']);
+  this.selected_.setupInternal(!!opt_default, config['selected']);
 
   this.palette().setupInternal(!!opt_default, config['palette']);
   this.markerPalette().setupInternal(!!opt_default, config['markerPalette']);
   this.hatchFillPalette().setupInternal(!!opt_default, config['hatchFillPalette']);
-
-  //this.markers().setupInternal(!!opt_default, config['markers']);
-  //this.hoverMarkers().setupInternal(!!opt_default, config['hoverMarkers']);
-  //this.selectMarkers().setupInternal(!!opt_default, config['selectMarkers']);
 
   this.intersections().setupInternal(!!opt_default, config['intersections']);
 };
@@ -1857,14 +1832,6 @@ anychart.vennModule.Chart.prototype.setupByJSON = function(config, opt_default) 
   proto['normal'] = proto.normal;
   proto['hovered'] = proto.hovered;
   proto['selected'] = proto.selected;
-
-  //proto['labels'] = proto.labels;
-  //proto['hoverLabels'] = proto.hoverLabels;
-  //proto['selectLabels'] = proto.selectLabels;
-
-  //proto['markers'] = proto.markers;
-  //proto['hoverMarkers'] = proto.hoverMarkers;
-  //proto['selectMarkers'] = proto.selectMarkers;
 
   proto['palette'] = proto.palette;
   proto['hatchFillPalette'] = proto.hatchFillPalette;

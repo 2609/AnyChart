@@ -589,17 +589,10 @@ anychart.resourceModule.Activities.prototype.serialize = function() {
 anychart.resourceModule.Activities.prototype.setupByJSON = function(config, opt_default) {
   anychart.resourceModule.Activities.base(this, 'setupByJSON', config);
   anychart.core.settings.deserialize(this, anychart.resourceModule.Activities.DESCRIPTORS, config);
-  this.normal_.setupByJSON(config, opt_default);
-  if (config['normal']) {
-    this.normal_.setupByJSON(config['normal'], opt_default);
-  }
-  if (config['hovered']) {
-    this.hovered_.setupByJSON(config['hovered'], opt_default);
-  }
-  if (config['selected']) {
-    this.selected_.setupByJSON(config['selected'], opt_default);
-  }
-  //this.labels().setupInternal(!!opt_default, config['labels']);
+  this.normal_.setupInternal(!!opt_default, config);
+  this.normal_.setupInternal(!!opt_default, config['normal']);
+  this.hovered_.setupInternal(!!opt_default, config['hovered']);
+  this.selected_.setupInternal(!!opt_default, config['selected']);
 };
 
 
