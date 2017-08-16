@@ -304,11 +304,17 @@ anychart.heatmapModule.Chart.prototype.onGridSignal = function(event) {
  */
 anychart.heatmapModule.Chart.prototype.colorScale = function(opt_value) {
   if (goog.isDef(opt_value)) {
-    var val = anychart.scales.Base.setupScale(this.colorScale_, opt_value, null, anychart.scales.Base.ScaleTypes.COLOR_SCALES,
-        ['HeatMap chart color scale', 'ordinal-color, linear-color'], this.colorScaleInvalidated_, this);
-    if (val) {
-      this.colorScale_ = val;
-      this.colorScale_.resumeSignalsDispatching(true);
+    if (goog.isNull(opt_value) && this.colorScale_) {
+      this.colorScale_ = null;
+      this.invalidate(anychart.ConsistencyState.HEATMAP_COLOR_SCALE | anychart.ConsistencyState.CHART_LEGEND,
+          anychart.Signal.NEEDS_REDRAW);
+    } else {
+      var val = anychart.scales.Base.setupScale(this.colorScale_, opt_value, null, anychart.scales.Base.ScaleTypes.COLOR_SCALES,
+          ['HeatMap chart color scale', 'ordinal-color, linear-color'], this.colorScaleInvalidated_, this);
+      if (val) {
+        this.colorScale_ = val;
+        this.colorScale_.resumeSignalsDispatching(true);
+      }
     }
     return this;
   }

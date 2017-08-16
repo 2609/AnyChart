@@ -1025,11 +1025,18 @@ anychart.tagCloudModule.Chart.prototype.scaleInvalidated = function(event) {
  */
 anychart.tagCloudModule.Chart.prototype.colorScale = function(opt_value) {
   if (goog.isDef(opt_value)) {
-    var val = anychart.scales.Base.setupScale(this.colorScale_, opt_value, null,
-        anychart.scales.Base.ScaleTypes.COLOR_SCALES, null, this.colorScaleInvalidated_, this);
-    if (val) {
-      this.colorScale_ = val;
-      this.colorScale_.resumeSignalsDispatching(true);
+    if (goog.isNull(opt_value) && this.colorScale_) {
+      this.colorScale_ = null;
+      this.invalidate(anychart.ConsistencyState.TAG_CLOUD_COLOR_SCALE,
+          anychart.Signal.NEEDS_REDRAW |
+          anychart.Signal.NEED_UPDATE_COLOR_RANGE);
+    } else {
+      var val = anychart.scales.Base.setupScale(this.colorScale_, opt_value, null,
+          anychart.scales.Base.ScaleTypes.COLOR_SCALES, null, this.colorScaleInvalidated_, this);
+      if (val) {
+        this.colorScale_ = val;
+        this.colorScale_.resumeSignalsDispatching(true);
+      }
     }
     return this;
   }

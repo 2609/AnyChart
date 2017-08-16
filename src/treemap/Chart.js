@@ -1362,17 +1362,23 @@ anychart.treemapModule.Chart.prototype.selectMarkers = function(opt_value) {
  */
 anychart.treemapModule.Chart.prototype.colorScale = function(opt_value) {
   if (goog.isDef(opt_value)) {
-    var val = anychart.scales.Base.setupScale(this.colorScale_, opt_value, null,
-        anychart.scales.Base.ScaleTypes.COLOR_SCALES, null, this.colorScaleInvalidated_, this);
-    if (val) {
-      this.colorScale_ = val;
-      goog.dispose(this.hintColorScale_);
-      if (this.colorScale_)
-        this.hintColorScale_ = /** @type {anychart.colorScalesModule.Ordinal|anychart.colorScalesModule.Linear} */ (anychart.scales.Base.fromString(this.colorScale_.getType(), null));
-      else
-        this.hintColorScale_ = null;
+    if (goog.isNull(opt_value) && this.colorScale_) {
+      this.colorScale_ = null;
+      this.invalidate(anychart.ConsistencyState.TREEMAP_COLOR_SCALE | anychart.ConsistencyState.CHART_LEGEND,
+          anychart.Signal.NEEDS_REDRAW);
+    } else {
+      var val = anychart.scales.Base.setupScale(this.colorScale_, opt_value, null,
+          anychart.scales.Base.ScaleTypes.COLOR_SCALES, null, this.colorScaleInvalidated_, this);
+      if (val) {
+        this.colorScale_ = val;
+        goog.dispose(this.hintColorScale_);
+        if (this.colorScale_)
+          this.hintColorScale_ = /** @type {anychart.colorScalesModule.Ordinal|anychart.colorScalesModule.Linear} */ (anychart.scales.Base.fromString(this.colorScale_.getType(), null));
+        else
+          this.hintColorScale_ = null;
 
-      this.colorScale_.resumeSignalsDispatching(true);
+        this.colorScale_.resumeSignalsDispatching(true);
+      }
     }
     return this;
   }
