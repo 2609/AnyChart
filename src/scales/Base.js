@@ -459,8 +459,8 @@ anychart.scales.Base.setupScale = function(currentScale, opt_newScaleSetupValue,
             currentScale.unlistenSignals(opt_signalsHandler, opt_signalsHandlerContext);
           }
           instance.listenSignals(opt_signalsHandler, opt_signalsHandlerContext);
-          instance.dispatchSignal(anychart.Signal.NEEDS_RECALCULATION);
         }
+        instance.dispatchSignal(anychart.Signal.NEEDS_RECALCULATION);
         result = currentScale = instance;
       }
       if (currentScale && config) {
