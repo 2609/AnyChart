@@ -1770,7 +1770,7 @@ anychart.vennModule.Chart.prototype.drawMarker_ = function(state, iterator) {
  * @param {!Object} config
  */
 anychart.vennModule.Chart.prototype.setThemeSettings = function(config) {
-  anychart.core.settings.copy(this.themeSettings, anychart.vennModule.Chart.PROPERTY_DESCRIPTORS, config);
+  anychart.core.settings.copy(this.themeSettings, anychart.vennModule.Chart.SIMPLE_PROPS_DESCRIPTORS, config);
 };
 
 
