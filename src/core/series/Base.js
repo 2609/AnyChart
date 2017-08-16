@@ -1838,7 +1838,7 @@ anychart.core.series.Base.prototype.getLegendIconColor = function(legendItemJson
         name = 'fill';
       }
     }
-    var resolver = anychart.color.getColorResolver2([name], colorType);
+    var resolver = anychart.color.getColorResolver([name], colorType);
     legendItemJson = resolver(this, anychart.PointState.NORMAL, true);
   }
   return legendItemJson;
@@ -2668,7 +2668,7 @@ anychart.core.series.Base.prototype.drawMarker = function(point, pointState, poi
  * @protected
  */
 anychart.core.series.Base.prototype.getMarkerFill = function() {
-  var fillGetter = anychart.color.getColorResolver2(
+  var fillGetter = anychart.color.getColorResolver(
       [this.check(anychart.core.drawers.Capabilities.USES_STROKE_AS_FILL) ? 'stroke' : 'fill'],
       anychart.enums.ColorType.FILL);
   var fill = /** @type {acgraph.vector.Fill} */(fillGetter(this, anychart.PointState.NORMAL, true, true));
@@ -2796,7 +2796,7 @@ anychart.core.series.Base.prototype.drawPointOutliers = function(iterator, point
  * @protected
  */
 anychart.core.series.Base.prototype.getOutliersFill = function() {
-  var fillGetter = anychart.color.getColorResolver2(['fill'], anychart.enums.ColorType.FILL);
+  var fillGetter = anychart.color.getColorResolver(['fill'], anychart.enums.ColorType.FILL);
   return /** @type {acgraph.vector.Fill} */(fillGetter(this, anychart.PointState.NORMAL, true));
 };
 

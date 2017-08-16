@@ -701,9 +701,9 @@ anychart.vennModule.Chart.prototype.createLegendItemsProvider = function(sourceM
       if (!goog.isString(itemText)) {
         itemText = String(goog.isDef(iterator.get('name')) ? iterator.get('name') : iterator.get('x'));
       }
-      var fillResolver = anychart.color.getColorResolver2(['fill'], anychart.enums.ColorType.FILL);
-      var strokeResolver = anychart.color.getColorResolver2(['stroke'], anychart.enums.ColorType.STROKE);
-      var hatchFillResolver = anychart.color.getColorResolver2(['hatchFill'], anychart.enums.ColorType.HATCH_FILL);
+      var fillResolver = anychart.color.getColorResolver(['fill'], anychart.enums.ColorType.FILL);
+      var strokeResolver = anychart.color.getColorResolver(['stroke'], anychart.enums.ColorType.STROKE);
+      var hatchFillResolver = anychart.color.getColorResolver(['hatchFill'], anychart.enums.ColorType.HATCH_FILL);
       var intersectionFill;
 
       if (iterator.meta('isIntersection')) {
@@ -1358,7 +1358,7 @@ anychart.vennModule.Chart.prototype.updatePaletteFill_ = function() {
       var set;
       var isIntersection = false;
       var tooltip = this.tooltip();
-      var fillResolver = anychart.color.getColorResolver2(['fill'], anychart.enums.ColorType.FILL);
+      var fillResolver = anychart.color.getColorResolver(['fill'], anychart.enums.ColorType.FILL);
       // var hatchFillResolver = anychart.color.getColorResolver(['hatchFill'], anychart.enums.ColorType.HATCH_FILL);
       if (sets.length == 1) { //Main circle, not an intersection.
         var color = this.palette().itemAt(i);

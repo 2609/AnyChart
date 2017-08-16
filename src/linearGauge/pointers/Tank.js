@@ -84,8 +84,8 @@ anychart.linearGaugeModule.pointers.Tank = function(gauge, dataIndex) {
   this.hovered_.setMeta('emptyHatchFill', [0, 0]);
   this.selected_.setMeta('emptyFill', [0, 0]);
   this.selected_.setMeta('emptyHatchFill', [0, 0]);
-  this.emptyFillResolver = anychart.color.getColorResolver2(['emptyFill', 'hoverEmptyFill', 'selectEmptyFill'], anychart.enums.ColorType.FILL);
-  this.emptyHatchFillResolver = anychart.color.getColorResolver2(['emptyHatchFill', 'hoverEmptyHatchFill', 'selectEmptyHatchFill'], anychart.enums.ColorType.HATCH_FILL);
+  this.emptyFillResolver = anychart.color.getColorResolver(['emptyFill', 'hoverEmptyFill', 'selectEmptyFill'], anychart.enums.ColorType.FILL);
+  this.emptyHatchFillResolver = anychart.color.getColorResolver(['emptyHatchFill', 'hoverEmptyHatchFill', 'selectEmptyHatchFill'], anychart.enums.ColorType.HATCH_FILL);
 };
 goog.inherits(anychart.linearGaugeModule.pointers.Tank, anychart.linearGaugeModule.pointers.Base);
 anychart.core.settings.populateAliases(anychart.linearGaugeModule.pointers.Tank, ['emptyFill', 'emptyHatchFill'], 'normal');

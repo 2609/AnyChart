@@ -430,11 +430,11 @@ anychart.pyramidFunnelModule.Chart.prototype.getDetachedIterator = function() {
 anychart.pyramidFunnelModule.Chart.prototype.colorizePoint_ = function(pointState) {
   var point = /** @type {acgraph.vector.Path} */ (this.getIterator().meta('point'));
   if (goog.isDef(point)) {
-    var fillResolver = anychart.color.getColorResolver2(['fill', 'hoverFill', 'selectFill'], anychart.enums.ColorType.FILL);
+    var fillResolver = anychart.color.getColorResolver(['fill', 'hoverFill', 'selectFill'], anychart.enums.ColorType.FILL);
     var fillColor = /** @type {acgraph.vector.Fill} */ (fillResolver(this, pointState, false, true));
     point.fill(fillColor);
 
-    var strokeResolver = anychart.color.getColorResolver2(['stroke', 'hoverStroke', 'selectStroke'], anychart.enums.ColorType.STROKE);
+    var strokeResolver = anychart.color.getColorResolver(['stroke', 'hoverStroke', 'selectStroke'], anychart.enums.ColorType.STROKE);
     var strokeColor = /** @type {acgraph.vector.Stroke} */ (strokeResolver(this, pointState, false, true));
     point.stroke(strokeColor);
   }
@@ -598,7 +598,7 @@ anychart.pyramidFunnelModule.Chart.prototype.hatchFillPaletteInvalidated_ = func
 anychart.pyramidFunnelModule.Chart.prototype.applyHatchFill = function(pointState) {
   var hatchPoint = /** @type {acgraph.vector.Path} */(this.getIterator().meta('hatchPoint'));
   if (goog.isDefAndNotNull(hatchPoint)) {
-    var hatchFillResolver = anychart.color.getColorResolver2(['hatchFill', 'hoverHatchFill', 'selectHatchFill'], anychart.enums.ColorType.HATCH_FILL);
+    var hatchFillResolver = anychart.color.getColorResolver(['hatchFill', 'hoverHatchFill', 'selectHatchFill'], anychart.enums.ColorType.HATCH_FILL);
     var color = hatchFillResolver(this, pointState, false);
     hatchPoint
         .stroke(null)
@@ -1035,7 +1035,7 @@ anychart.pyramidFunnelModule.Chart.prototype.updatePointOnAnimate = function(poi
     hatchPoint.clear();
     hatchPoint.deserialize(shape.serialize());
     var pointState = this.state.getPointStateByIndex(point.getIndex());
-    var hatchFillResolver = anychart.color.getColorResolver2(['hatchFill', 'hoverHatchFill', 'selectHatchFill'], anychart.enums.ColorType.HATCH_FILL);
+    var hatchFillResolver = anychart.color.getColorResolver(['hatchFill', 'hoverHatchFill', 'selectHatchFill'], anychart.enums.ColorType.HATCH_FILL);
     hatchPoint.stroke(null).fill(hatchFillResolver(this, pointState, false));
   }
 };
@@ -2620,7 +2620,7 @@ anychart.pyramidFunnelModule.Chart.prototype.markersInvalidated_ = function(even
  * @return {!acgraph.vector.Fill} Marker color for point.
  */
 anychart.pyramidFunnelModule.Chart.prototype.getMarkerFill = function() {
-  var fillGetter = anychart.color.getColorResolver2(['fill'], anychart.enums.ColorType.FILL);
+  var fillGetter = anychart.color.getColorResolver(['fill'], anychart.enums.ColorType.FILL);
   var fill = /** @type {acgraph.vector.Fill} */(fillGetter(this, anychart.PointState.NORMAL, true, true));
   return /** @type {acgraph.vector.Fill} */(anychart.color.setOpacity(fill, 1, true));
 };
@@ -3047,9 +3047,9 @@ anychart.pyramidFunnelModule.Chart.prototype.createLegendItemsProvider = functio
       itemText = String(goog.isDef(iterator.get('name')) ? iterator.get('name') : iterator.get('x'));
     }
 
-    var fillResolver = anychart.color.getColorResolver2(['fill'], anychart.enums.ColorType.FILL);
-    var strokeResolver = anychart.color.getColorResolver2(['stroke'], anychart.enums.ColorType.STROKE);
-    var hatchFillResolver = anychart.color.getColorResolver2(['hatchFill'], anychart.enums.ColorType.HATCH_FILL);
+    var fillResolver = anychart.color.getColorResolver(['fill'], anychart.enums.ColorType.FILL);
+    var strokeResolver = anychart.color.getColorResolver(['stroke'], anychart.enums.ColorType.STROKE);
+    var hatchFillResolver = anychart.color.getColorResolver(['hatchFill'], anychart.enums.ColorType.HATCH_FILL);
 
     var obj = {
       'enabled': true,

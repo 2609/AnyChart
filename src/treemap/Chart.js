@@ -2003,13 +2003,13 @@ anychart.treemapModule.Chart.prototype.colorizeShape = function(pointState) {
   if (shape) {
     var type = node.meta(anychart.treemapModule.Chart.DataFields.TYPE);
     var value = node.meta(anychart.treemapModule.Chart.DataFields.VALUE);
-    var fillResolver = anychart.color.getColorResolver2(['fill', 'hoverFill', 'selectFill'], anychart.enums.ColorType.FILL);
+    var fillResolver = anychart.color.getColorResolver(['fill', 'hoverFill', 'selectFill'], anychart.enums.ColorType.FILL);
     var fill = /** @type {acgraph.vector.Fill} */ (fillResolver(this, pointState, false));
     if (type == anychart.treemapModule.Chart.NodeType.RECT) {
       fill = anychart.color.setOpacity(fill, /** @type {number} */ (this.getOption('hintOpacity')), true);
     } else if (type == anychart.treemapModule.Chart.NodeType.HINT_LEAF)
       fill = this.hintColorScale_ ? this.hintColorScale_.valueToColor(value) : fill;
-    var strokeResolver = anychart.color.getColorResolver2(['stroke', 'hoverStroke', 'selectStroke'], anychart.enums.ColorType.STROKE);
+    var strokeResolver = anychart.color.getColorResolver(['stroke', 'hoverStroke', 'selectStroke'], anychart.enums.ColorType.STROKE);
     var stroke = /** @type {acgraph.vector.Stroke} */ (strokeResolver(this, pointState, false));
     shape.stroke(stroke);
     shape.fill(fill);
@@ -2025,7 +2025,7 @@ anychart.treemapModule.Chart.prototype.applyHatchFill = function(pointState) {
   var node = /** @type {anychart.treeDataModule.Tree.DataItem|anychart.treeDataModule.View.DataItem} */ (this.getIterator().getItem());
   var hatchFillShape = node.meta(anychart.treemapModule.Chart.DataFields.HATCH_SHAPE);
   if (goog.isDefAndNotNull(hatchFillShape)) {
-    var hatchFillResolver = anychart.color.getColorResolver2(['hatchFill', 'hoverHatchFill', 'selectHatchFill'], anychart.enums.ColorType.HATCH_FILL);
+    var hatchFillResolver = anychart.color.getColorResolver(['hatchFill', 'hoverHatchFill', 'selectHatchFill'], anychart.enums.ColorType.HATCH_FILL);
     var hatchFill = hatchFillResolver(this, pointState, false);
     hatchFillShape
         .stroke(null)
@@ -2327,7 +2327,7 @@ anychart.treemapModule.Chart.prototype.drawContent = function(bounds) {
       if (type == anychart.treemapModule.Chart.NodeType.RECT) {
         var shape = iterator.meta(anychart.treemapModule.Chart.DataFields.SHAPE);
         if (shape) {
-          var fillResolver = anychart.color.getColorResolver2(['fill'], anychart.enums.ColorType.FILL);
+          var fillResolver = anychart.color.getColorResolver(['fill'], anychart.enums.ColorType.FILL);
           var fill = /** @type {acgraph.vector.Fill} */ (fillResolver(this, anychart.PointState.NORMAL, false));
           fill = anychart.color.setOpacity(fill, /** @type {number} */ (this.getOption('hintOpacity')), true);
           shape.fill(fill);

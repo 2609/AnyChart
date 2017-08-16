@@ -91,9 +91,9 @@ anychart.linearGaugeModule.pointers.Base = function(gauge, dataIndex) {
   this.hovered_ = new anychart.core.StateSettings(this, hoveredSelectedDescriptorsMeta, anychart.PointState.HOVER);
   this.selected_ = new anychart.core.StateSettings(this, hoveredSelectedDescriptorsMeta, anychart.PointState.SELECT);
 
-  this.fillResolver = anychart.color.getColorResolver2(['fill', 'hoverFill', 'selectFill'], anychart.enums.ColorType.FILL);
-  this.strokeResolver = anychart.color.getColorResolver2(['stroke', 'hoverStroke', 'selectStroke'], anychart.enums.ColorType.STROKE);
-  this.hatchFillResolver = anychart.color.getColorResolver2(['hatchFill', 'hoverHatchFill', 'selectHatchFill'], anychart.enums.ColorType.HATCH_FILL);
+  this.fillResolver = anychart.color.getColorResolver(['fill', 'hoverFill', 'selectFill'], anychart.enums.ColorType.FILL);
+  this.strokeResolver = anychart.color.getColorResolver(['stroke', 'hoverStroke', 'selectStroke'], anychart.enums.ColorType.STROKE);
+  this.hatchFillResolver = anychart.color.getColorResolver(['hatchFill', 'hoverHatchFill', 'selectHatchFill'], anychart.enums.ColorType.HATCH_FILL);
 };
 goog.inherits(anychart.linearGaugeModule.pointers.Base, anychart.core.VisualBase);
 anychart.core.settings.populateAliases(anychart.linearGaugeModule.pointers.Base, ['fill', 'stroke', 'hatchFill', 'labels'], 'normal');

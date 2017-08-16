@@ -34,7 +34,7 @@ anychart.heatmapModule.Series = function(chart, plot, type, config, sortedMode) 
    * @private
    */
   this.strokeResolver_ = /** @type {function(anychart.core.series.Base, number, boolean=, boolean=):acgraph.vector.Stroke} */(
-      anychart.color.getColorResolver2(
+      anychart.color.getColorResolver(
       ['stroke', 'hoverStroke', 'selectStroke'], anychart.enums.ColorType.STROKE));
   this.normal_.setMeta('stroke', [
     anychart.ConsistencyState.SERIES_POINTS,
