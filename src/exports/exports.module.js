@@ -745,7 +745,6 @@ anychart.exports.shareWithFacebook = function(container, opt_captionOrOptions, o
   var h = 550;
   var left = Number((screen.width / 2) - (w / 2));
   var top = Number((screen.height / 2) - (h / 2));
-  var window = anychart.window;
   var popup = anychart.window.open('', '_blank', 'scrollbars=yes, width=' + w + ', height=' + h + ', top=' + top + ', left=' + left);
 
   var onSuccess = function(imgUrl) {
@@ -828,7 +827,6 @@ anychart.exports.shareWithTwitter = function(container) {
 
   if (goog.isDef(mapForm) && goog.isDef(dataInput)) {
     dataInput.value = anychart.exports.toSvg(container, exportOptions['width'], exportOptions['height']);
-    var window = anychart.window;
     var mapWindow = anychart.window.open('', 'Map', 'status=0,title=0,height=520,width=600,scrollbars=1, width=' + w + ', height=' + h + ', top=' + top + ', left=' + left);
     if (mapWindow) mapForm.submit();
   }
@@ -852,7 +850,6 @@ anychart.exports.shareWithLinkedIn = function(container, opt_captionOrOptions, o
   var h = 520;
   var left = Number((screen.width / 2) - (w / 2));
   var top = Number((screen.height / 2) - (h / 2));
-  var window = anychart.window;
   var popup = anychart.window.open('', '_blank', 'scrollbars=yes, width=' + w + ', height=' + h + ', top=' + top + ', left=' + left);
 
   var onSuccess = function(imgUrl) {
@@ -898,7 +895,6 @@ anychart.exports.shareWithPinterest = function(container, opt_linkOrOptions, opt
   var h = 520;
   var left = Number((screen.width / 2) - (w / 2));
   var top = Number((screen.height / 2) - (h / 2));
-  var window = anychart.window;
   var popup = anychart.window.open('', '_blank', 'scrollbars=yes, width=' + w + ', height=' + h + ', top=' + top + ', left=' + left);
 
   var onSuccess = function(imgUrl) {

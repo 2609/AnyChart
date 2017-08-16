@@ -91,12 +91,12 @@ anychart.fromJsonFile = function(url, opt_onSuccessOrContainer, opt_onError, opt
  */
 anychart.getChartCreationMethod_ = function(name, opt_onError, opt_context) {
   var win = anychart.window;
-  var anychart = win['anychart'];
-  if (!anychart) {
+  var any = win['anychart'];
+  if (!any) {
     if (opt_onError) opt_onError.call(opt_context, 500, 'AnyChart in not present on the page.');
     return null;
   }
-  var fn = anychart[name];
+  var fn = any[name];
   if (!fn) {
     if (opt_onError) opt_onError.call(opt_context, 500, goog.string.subs('anychart.%s is not available.', name));
     return null;

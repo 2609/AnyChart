@@ -292,7 +292,7 @@ anychart.core.VisualBase.prototype.isOwnStage = function() {
 anychart.core.VisualBase.prototype.container = function(opt_value) {
   if (goog.isDef(opt_value)) {
     /** @type {?(acgraph.vector.ILayer|Element)} */
-    var value = (goog.isString(opt_value) ? anychart.document.getElementById(opt_value || null) : opt_value);
+    var value = (goog.isString(opt_value) ? anychart.document.getElementById(opt_value) : opt_value);
     // var value = (goog.isString(opt_value) ? goog.dom.getElement(opt_value || null) : opt_value);
     var validContainer = value || goog.isNull(opt_value);
     if (this.originalContainer_ != validContainer) {
@@ -528,8 +528,9 @@ anychart.core.VisualBase.prototype.parentBounds = function(opt_boundsOrLeft, opt
   if (this.parentBounds_)
     return this.parentBounds_.clone();
   var stage;
-  if (this.container_ && (stage = this.container_.getStage()))
-    return anychart.window['isNodeJS'] ? anychart.math.rect(0, 0, 1024, 768) : stage.getBounds();
+  if (this.container_ && (stage = this.container_.getStage())) {
+    return goog.global['isNodeJS'] ? anychart.math.Rect.fromJSON(goog.global['defaultBounds']) : stage.getBounds();
+  }
   return null;
 };
 

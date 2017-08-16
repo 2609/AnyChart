@@ -1,6 +1,5 @@
 goog.provide('anychart.format.Context');
 
-goog.require('anychart');
 goog.require('anychart.base');
 goog.require('anychart.core.BaseContext');
 goog.require('anychart.format');
