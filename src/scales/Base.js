@@ -393,10 +393,10 @@ anychart.scales.Base.constructorsMap_;
 anychart.scales.Base.createOfType = function(type, defaultType) {
  if (!anychart.scales.Base.constructorsMap_) {
    anychart.scales.Base.constructorsMap_ = {};
-   anychart.scales.Base.constructorsMap_[anychart.scales.Base.ScaleTypes.LINEAR] = anychart.scales.linear();
-   anychart.scales.Base.constructorsMap_[anychart.scales.Base.ScaleTypes.LOG] = anychart.scales.log();
-   anychart.scales.Base.constructorsMap_[anychart.scales.Base.ScaleTypes.DATE_TIME] = anychart.scales.dateTime();
-   anychart.scales.Base.constructorsMap_[anychart.scales.Base.ScaleTypes.ORDINAL] = anychart.scales.ordinal();
+   anychart.scales.Base.constructorsMap_[anychart.scales.Base.ScaleTypes.LINEAR] = anychart.scales.linear;
+   anychart.scales.Base.constructorsMap_[anychart.scales.Base.ScaleTypes.LOG] = anychart.scales.log;
+   anychart.scales.Base.constructorsMap_[anychart.scales.Base.ScaleTypes.DATE_TIME] = anychart.scales.dateTime;
+   anychart.scales.Base.constructorsMap_[anychart.scales.Base.ScaleTypes.ORDINAL] = anychart.scales.ordinal;
    anychart.scales.Base.constructorsMap_[anychart.scales.Base.ScaleTypes.LINEAR_COLOR] = function() {
      var cls;
      return (cls = goog.global['anychart']['scales']['linearColor']) ?
