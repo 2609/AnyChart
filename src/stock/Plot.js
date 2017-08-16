@@ -1150,13 +1150,8 @@ anychart.stockModule.Plot.prototype.invalidateRedrawable = function(doInvalidate
 
   for (i = 0; i < this.priceIndicators_.length; i++) {
     var priceIndicator = this.priceIndicators_[i];
-    if (priceIndicator) {
-      priceIndicator.suspendSignalsDispatching();
-      // effectively invalidates all what's needed
-      priceIndicator.invalidate(anychart.ConsistencyState.BOUNDS | anychart.ConsistencyState.APPEARANCE,
-          anychart.Signal.NEEDS_REDRAW);
-      priceIndicator.resumeSignalsDispatching(false);
-    }
+    if (priceIndicator)
+      priceIndicator.invalidate(anychart.ConsistencyState.BOUNDS | anychart.ConsistencyState.APPEARANCE);
   }
 
   this.invalidate(anychart.ConsistencyState.STOCK_PLOT_SERIES |
@@ -2361,7 +2356,15 @@ anychart.stockModule.Plot.prototype.paletteInvalidated_ = function(event) {
 //----------------------------------------------------------------------------------------------------------------------
 /** @inheritDoc */
 anychart.stockModule.Plot.prototype.disposeInternal = function() {
-  goog.disposeAll(this.annotations_, this.background_, this.indicators_, this.series_, this.yAxes_, this.xAxis_);
+  goog.disposeAll(
+      this.annotations_,
+      this.background_,
+      this.indicators_,
+      this.series_,
+      this.yAxes_,
+      this.xAxis_,
+      this.priceIndicators_);
+
   this.annotations_ = null;
   this.background_ = null;
   delete this.indicators_;

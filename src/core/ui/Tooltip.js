@@ -2253,6 +2253,8 @@ anychart.core.ui.Tooltip.prototype.serialize = function() {
 
 /** @inheritDoc */
 anychart.core.ui.Tooltip.prototype.setupByJSON = function(config, opt_default) {
+  anychart.core.ui.Tooltip.base(this, 'setupByJSON', config, opt_default);
+
   if (opt_default) {
     this.setThemeSettings(config);
   } else {
@@ -2270,8 +2272,6 @@ anychart.core.ui.Tooltip.prototype.setupByJSON = function(config, opt_default) {
   contentConfig['position'] = contentConfig['position'] ? contentConfig['position'] : anychart.enums.Position.LEFT_TOP;
   contentConfig['anchor'] = contentConfig['anchor'] ? contentConfig['anchor'] : anychart.enums.Anchor.LEFT_TOP;
   this.contentInternal(contentConfig);
-
-  anychart.core.ui.Tooltip.base(this, 'setupByJSON', config, opt_default);
 };
 
 

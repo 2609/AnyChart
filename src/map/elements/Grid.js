@@ -817,12 +817,13 @@ anychart.mapModule.elements.Grid.prototype.serialize = function() {
 
 /** @inheritDoc */
 anychart.mapModule.elements.Grid.prototype.setupByJSON = function(config, opt_default) {
+  anychart.mapModule.elements.Grid.base(this, 'setupByJSON', config, opt_default);
+
   if (opt_default) {
     this.setThemeSettings(config);
   } else {
     anychart.core.settings.deserialize(this, this.SIMPLE_PROPS_DESCRIPTORS, config);
   }
-  anychart.mapModule.elements.Grid.base(this, 'setupByJSON', config, opt_default);
 };
 
 

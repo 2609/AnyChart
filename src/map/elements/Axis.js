@@ -1698,13 +1698,13 @@ anychart.mapModule.elements.Axis.prototype.setThemeSettings = function(config) {
 
 /** @inheritDoc */
 anychart.mapModule.elements.Axis.prototype.setupByJSON = function(config, opt_default) {
+  anychart.mapModule.elements.Axis.base(this, 'setupByJSON', config, opt_default);
+
   if (opt_default) {
     this.setThemeSettings(config);
   } else {
     anychart.core.settings.deserialize(this, this.SIMPLE_PROPS_DESCRIPTORS, config);
   }
-
-  anychart.mapModule.elements.Axis.base(this, 'setupByJSON', config, opt_default);
 
   this.title().setupInternal(!!opt_default, config['title']);
 

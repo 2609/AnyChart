@@ -433,12 +433,13 @@ anychart.mapModule.elements.AxisTicks.prototype.setThemeSettings = function(conf
 
 /** @inheritDoc */
 anychart.mapModule.elements.AxisTicks.prototype.setupByJSON = function(config, opt_default) {
+  anychart.mapModule.elements.AxisTicks.base(this, 'setupByJSON', config, opt_default);
+
   if (opt_default) {
     this.setThemeSettings(config);
   } else {
     anychart.core.settings.deserialize(this, this.SIMPLE_PROPS_DESCRIPTORS, config);
   }
-  anychart.mapModule.elements.AxisTicks.base(this, 'setupByJSON', config, opt_default);
 };
 
 

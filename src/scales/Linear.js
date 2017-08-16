@@ -217,7 +217,7 @@ anychart.scales.Linear.prototype.comparisonMode = function(opt_value) {
  */
 anychart.scales.Linear.prototype.compareWith = function(opt_value) {
   if (goog.isDef(opt_value)) {
-    opt_value = anychart.enums.normalizeDataSource(opt_value) || anychart.utils.normalizeTimestamp(opt_value);
+    opt_value = anychart.enums.normalizeDataSource(opt_value);
     if (this.compareWith_ != opt_value) {
       this.compareWith_ = opt_value;
       this.dispatchSignal(anychart.Signal.NEEDS_REAPPLICATION | anychart.Signal.NEEDS_RECALCULATION);

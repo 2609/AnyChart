@@ -740,13 +740,14 @@ anychart.core.ui.Background.prototype.setupSpecial = function(isDefault, var_arg
 
 /** @inheritDoc */
 anychart.core.ui.Background.prototype.setupByJSON = function(config, opt_default) {
+  anychart.core.ui.Background.base(this, 'setupByJSON', config, opt_default);
+
   if (opt_default) {
     this.setThemeSettings(config);
   } else {
     anychart.core.settings.deserialize(this, this.SIMPLE_PROPS_DESCRIPTORS, config);
     this.corners(config['corners']);
   }
-  anychart.core.ui.Background.base(this, 'setupByJSON', config, opt_default);
 };
 
 

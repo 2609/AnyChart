@@ -90,7 +90,7 @@ anychart.stockModule.CurrentPriceIndicator.prototype.SIMPLE_PROPS_DESCRIPTORS = 
       map,
       anychart.enums.PropertyHandlerType.SINGLE_ARG,
       'value',
-      function(value) {return anychart.enums.normalizeDataSource(value) || anychart.utils.normalizeTimestamp(value);});
+      anychart.enums.normalizeDataSource);
 
   anychart.core.settings.createDescriptor(
       map,
@@ -576,6 +576,8 @@ anychart.stockModule.CurrentPriceIndicator.prototype.setupByJSON = function(conf
   // proto['value'] = proto.value;
   // proto['valueField'] = proto.valueField
   // proto['stroke'] = proto.stroke;
+  // proto['risingStroke'] = proto.risingStroke;
+  // proto['fallingStroke'] = proto.fallingStroke;
   proto['label'] = proto.label;
   proto['fallingLabel'] = proto.fallingLabel;
   proto['risingLabel'] = proto.risingLabel;

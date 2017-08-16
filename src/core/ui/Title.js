@@ -1139,14 +1139,14 @@ anychart.core.ui.Title.prototype.setupSpecial = function(isDefault, var_args) {
 
 /** @inheritDoc */
 anychart.core.ui.Title.prototype.setupByJSON = function(config, opt_default) {
+  anychart.core.ui.Title.base(this, 'setupByJSON', config, opt_default);
+
   if (opt_default) {
     this.setThemeSettings(config);
   } else {
     anychart.core.settings.deserialize(this, this.TEXT_DESCRIPTORS, config);
     anychart.core.settings.deserialize(this, this.SIMPLE_PROPS_DESCRIPTORS, config);
   }
-
-  anychart.core.ui.Title.base(this, 'setupByJSON', config, opt_default);
 
   if ('background' in config)
     this.background(config['background']);

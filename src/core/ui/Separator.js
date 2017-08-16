@@ -588,15 +588,7 @@ anychart.core.ui.Separator.prototype.invalidate = function(state, opt_signal) {
 
 /** @inheritDoc */
 anychart.core.ui.Separator.prototype.serialize = function() {
-  var json = {};
-
-  var zIndex = anychart.core.Base.prototype.getOption.call(this, 'zIndex');
-  if (goog.isDef(zIndex))
-    json['zIndex'] = zIndex;
-
-  var enabled = anychart.core.Base.prototype.getOption.call(this, 'enabled');
-  if (goog.isDef(enabled))
-    json['enabled'] = enabled;
+  var json = anychart.core.ui.Separator.base('serialize');
 
   anychart.core.settings.serialize(this, this.SIMPLE_SEPARATOR_DESCRIPTORS, json, 'Separator');
 
@@ -610,10 +602,11 @@ anychart.core.ui.Separator.prototype.serialize = function() {
 
 /** @inheritDoc */
 anychart.core.ui.Separator.prototype.setupByJSON = function(config, opt_default) {
+  anychart.core.ui.Separator.base(this, 'setupByJSON', config, opt_default);
+
   anychart.core.settings.deserialize(this, this.SIMPLE_SEPARATOR_DESCRIPTORS, config);
+
   this.margin().setupInternal(!!opt_default, config['margin']);
-  this.zIndex(config['zIndex']);
-  this.enabled(config['enabled']);
 };
 
 

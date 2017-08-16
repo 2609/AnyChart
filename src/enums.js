@@ -1477,13 +1477,13 @@ anychart.enums.DataSource = {
 
 
 /**
- * Normalizes enum part of the value. To completely normalize passed value use
- * anychart.enums.normalizeDataSource(value) || anychart.utils.normalizeTimestamp(value)
+ * Normalize passed data source value.
  * @param {*} value
- * @return {?anychart.enums.DataSource}
+ * @return {anychart.enums.DataSource|number}
  */
 anychart.enums.normalizeDataSource = function(value) {
-  return /** @type {anychart.enums.DataSource} */(anychart.enums.normalize(anychart.enums.DataSource, value, null));
+  return /** @type {anychart.enums.DataSource|number} */(anychart.enums.normalize(anychart.enums.DataSource, value, null) ||
+      anychart.utils.normalizeTimestamp(value));
 };
 
 

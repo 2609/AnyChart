@@ -351,7 +351,10 @@ anychart.core.VisualBase.prototype.zIndex = function(opt_value) {
     }
     return this;
   }
-  return /** @type {number} */(goog.isDef(this.getOwnOption('zIndex')) ? this.getOwnOption('zIndex') : goog.isDef(this.autoZIndex) ? this.autoZIndex : this.getOption('zIndex'));
+  return /** @type {number} */(this.hasOwnOption('zIndex') ?
+      this.ownSettings['zIndex'] :
+      goog.isDef(this.autoZIndex) ?
+          this.autoZIndex : this.themeSettings['zIndex']);
 };
 
 
@@ -941,6 +944,8 @@ anychart.core.VisualBase.prototype.setupSpecial = function(isDefault, var_args) 
 
 /** @inheritDoc */
 anychart.core.VisualBase.prototype.setupByJSON = function(config, opt_default) {
+  anychart.core.VisualBase.base(this, 'setupByJSON', config, opt_default);
+
   if (opt_default) {
     if ('enabled' in config) this.themeSettings['enabled'] = config['enabled'];
     if ('zIndex' in config) this.themeSettings['zIndex'] = config['zIndex'];
@@ -949,8 +954,6 @@ anychart.core.VisualBase.prototype.setupByJSON = function(config, opt_default) {
     this.enabled(goog.isDefAndNotNull(enabled) ? enabled : !goog.isDef(enabled) ? true : undefined);
     this.zIndex(config['zIndex']);
   }
-
-  anychart.core.VisualBase.base(this, 'setupByJSON', config, opt_default);
 };
 
 
